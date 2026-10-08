@@ -1,4 +1,9 @@
-import { fitDink, strokeSide, receiveContact } from "./core/contact";
+import {
+  fitDink,
+  strokeSide,
+  receiveContact,
+  findVolleyContact,
+} from "./core/contact";
 import { defaultSpin, shotSpin } from "./core/spin";
 import "./style.css";
 import * as THREE from "three";
@@ -23,9 +28,10 @@ import {
   type Player,
   type Shot,
 } from "./core/scenario";
-import { trajectory, type Trajectory } from "./core/trajectory";
+import type { Trajectory } from "./core/trajectory";
 import {
   buildClips,
+  buildPreviewClip,
   sampleClipBall,
   sampleClipPlayers,
   type Clip,
@@ -106,7 +112,10 @@ const court = createCourt(scene),
   ball = new BallView(scene);
 let currentTrajectory: Trajectory | undefined;
 let shotKey = "";
+let lastIncomingKey = "";
 let restingTime: number | undefined;
+let restingPoseTime: number | undefined;
+let restingPlayers: Player[] | undefined;
 let dirty = true;
 let cameraPreset = "perspective";
 let session:
@@ -140,7 +149,7 @@ function fitCourt() {
     let extent = 0;
     for (const x of [-boundX, boundX])
       for (const z of [-boundZ, boundZ])
-        for (const y of [0, 1.4]) {
+        for (const y of [0, 2.9]) {
           const p = new THREE.Vector3(x, y, z).project(camera);
           extent = Math.max(extent, Math.abs(p.x), Math.abs(p.y));
         }
@@ -153,6 +162,45 @@ function fitCourt() {
   }
   controls.update();
 }
+function previewFullscreenActive() {
+  return (
+    document.fullscreenElement === container.parentElement ||
+    container.parentElement?.classList.contains("pseudo-fullscreen") === true
+  );
+}
+function syncPreviewFullscreenButton() {
+  const button = $<HTMLButtonElement>("fullscreen-toggle"),
+    active = previewFullscreenActive();
+  button.innerHTML = active ? icons.compress : icons.expand;
+  button.setAttribute("aria-pressed", String(active));
+  button.setAttribute("aria-label", active ? "Thoát toàn màn hình" : "Toàn màn hình");
+  button.title = active ? "Thoát toàn màn hình" : "Toàn màn hình";
+  invalidate();
+}
+async function togglePreviewFullscreen() {
+  const viewport = container.parentElement!;
+  if (previewFullscreenActive()) {
+    if (document.fullscreenElement === viewport) await document.exitFullscreen();
+    else {
+      viewport.classList.remove("pseudo-fullscreen");
+      document.body.classList.remove("preview-fullscreen");
+    }
+    syncPreviewFullscreenButton();
+    return;
+  }
+  if (viewport.requestFullscreen) {
+    try {
+      await viewport.requestFullscreen({ navigationUI: "hide" });
+      return;
+    } catch {
+      // Some mobile browsers deny element fullscreen; use the viewport fallback.
+    }
+  }
+  viewport.classList.add("pseudo-fullscreen");
+  document.body.classList.add("preview-fullscreen");
+  syncPreviewFullscreenButton();
+}
+document.addEventListener("fullscreenchange", syncPreviewFullscreenButton);
 function preset(name: string) {
   cameraPreset = name;
   const narrow = container.clientWidth < 650;
@@ -204,6 +252,8 @@ function ensureShot(): Shot {
 }
 function stop() {
   restingTime = undefined;
+  restingPoseTime = undefined;
+  restingPlayers = undefined;
   session = undefined;
   store.playing = false;
   lastTime = 0;
@@ -225,15 +275,30 @@ function updateClock() {
 function refresh() {
   simplifyShots();
   const step = store.step;
-  if (!session) players.update(step.players);
+  if (!session) players.update(restingPlayers ?? step.players);
   if (step.shot) store.selected = step.shot.hitter;
   players.select(store.selected);
-  if (!session) players.poseShot(step.shot, step.players);
-  const nextKey = JSON.stringify(step.shot);
+  if (!session)
+    players.poseShot(
+      step.shot,
+      restingPlayers ?? step.players,
+      restingPoseTime ?? restingTime,
+    );
+  const activeClip = session?.clips.find((c) => c.index === store.index);
+  const standalone = buildPreviewClip(store.scenario, store.index);
+  const displayTrajectory = activeClip?.trajectory ?? standalone.trajectory;
+  const outgoingCatch = activeClip?.intercepted ?? standalone.intercepted;
+  const nextKey = JSON.stringify([
+    standalone.shot,
+    displayTrajectory?.duration,
+    outgoingCatch?.point,
+  ]);
   if (nextKey !== shotKey) {
     restingTime = undefined;
+    restingPoseTime = undefined;
+    restingPlayers = undefined;
     shotKey = nextKey;
-    currentTrajectory = step.shot ? trajectory(step.shot) : undefined;
+    currentTrajectory = displayTrajectory;
     ball.set(currentTrajectory);
   }
   if (!session && currentTrajectory && restingTime === undefined)
@@ -259,6 +324,18 @@ function refresh() {
   $("coordinates").textContent =
     `${p.id}  /  X ${p.x.toFixed(2)} m  ·  Z ${p.z.toFixed(2)} m`;
   const s = step.shot;
+  const previous =
+    store.index > 0 ? store.scenario.steps[store.index - 1].shot : undefined;
+  const interception =
+    s?.volley && previous ? findVolleyContact(previous, p) : undefined;
+  const incomingKey = JSON.stringify([previous, interception?.point]);
+  if (incomingKey !== lastIncomingKey) {
+    lastIncomingKey = incomingKey;
+    ball.setIncoming(interception?.incoming, interception?.time);
+  }
+  ball.target.visible =
+    !!currentTrajectory && currentTrajectory.result !== "NET" && !outgoingCatch;
+  ball.setInterceptPoint(interception?.point ?? outgoingCatch?.point);
   const stroke = s ? strokeSide(p, s) : undefined;
   $("stroke-side").textContent =
     stroke?.kind === "forehand"
@@ -273,7 +350,11 @@ function refresh() {
   if (document.activeElement !== $("apex"))
     $<HTMLInputElement>("apex").value = s ? String(s.apex) : "";
   if (document.activeElement !== $("height"))
-    $<HTMLInputElement>("height").value = s ? String(s.from.y) : "";
+    $<HTMLInputElement>("height").value = s
+      ? interception
+        ? s.from.y.toFixed(3)
+        : String(s.from.y)
+      : "";
   $<HTMLInputElement>("apex").min = String(s?.from.y ?? 0.8);
   $<HTMLInputElement>("volley").checked = s?.volley ?? false;
   $<HTMLInputElement>("finish").checked = s?.finish ?? false;
@@ -299,15 +380,36 @@ function refresh() {
         s.type === "atp"
           ? "● ATP / vòng cột lưới"
           : "● Trong sân / không qua lưới";
+    if (outgoingCatch) status.textContent = "● Được chặn trước khi nảy";
     const region = document.createElement("span");
-    region.textContent = tr.kitchen ? "KITCHEN" : "";
+    region.textContent = outgoingCatch ? "VOLLEY" : tr.kitchen ? "KITCHEN" : "";
     title.append(status, region);
     detail.textContent = `Điểm rơi  ${s.to.x.toFixed(2)}, ${s.to.z.toFixed(2)} m · Bay ${tr.flightTime.toFixed(2)} s${tr.netClearance !== null ? ` · Lưới ${tr.netClearance >= 0 ? "+" : ""}${(tr.netClearance * 100).toFixed(1)} cm` : ""}`;
+    if (outgoingCatch)
+      detail.textContent = `Điểm chặn ${outgoingCatch.point.x.toFixed(2)}, ${outgoingCatch.point.z.toFixed(2)} m · cao ${outgoingCatch.point.y.toFixed(2)} m`;
     result.append(title, detail);
     const physics = document.createElement("div");
     physics.className = "result-detail";
-    physics.textContent = `${shotSpin(s).type === "top" ? "Topspin · " : ""}Nảy dự đoán ${tr.bounceHeight.toFixed(2)} m`;
+    physics.textContent = `${shotSpin(s).type === "top" ? "Topspin · " : ""}${outgoingCatch ? "Bóng được trả trước khi nảy" : `Nảy dự đoán ${tr.bounceHeight.toFixed(2)} m`}`;
     result.append(physics);
+    if (interception) {
+      const el = document.createElement("div");
+      el.className = "result-detail";
+      el.textContent = `Volley: chặn bóng trước nảy · cao ${interception.point.y.toFixed(2)} m · cách người ${interception.distance.toFixed(2)} m`;
+      result.append(el);
+    } else if (s.volley && previous) {
+      const el = document.createElement("div");
+      el.className = "result-warning";
+      el.textContent =
+        "Không có điểm volley trên đường bóng tới đội nhận. Kiểm tra cú trước và người đánh.";
+      result.append(el);
+    }
+    if (outgoingCatch) {
+      const el = document.createElement("div");
+      el.className = "result-detail";
+      el.textContent = `${outgoingCatch.receiver} chặn cú này trước khi bóng chạm đất.`;
+      result.append(el);
+    }
     if (tr.bounceOut && tr.result === "OK") {
       const note = document.createElement("div");
       note.className = "result-warning";
@@ -369,13 +471,19 @@ function refresh() {
     "import",
   ])
     $<HTMLInputElement>(id).disabled = store.playing;
+  $<HTMLInputElement>("height").disabled = store.playing || !!interception;
+  if (interception && !store.playing && !store.picking && store.mode === "edit")
+    $("hint").textContent =
+      "Volley: kéo người nhận để chọn điểm chặn trên đường bóng tới · bấm sân đặt điểm trả";
   $<HTMLButtonElement>("preview-shot").disabled = store.playing || !s;
   const sequencePlaying = store.playing && !session?.preview;
-  $("play").innerHTML = sequencePlaying ? icons.pause : icons.play;
-  $("play").setAttribute(
-    "aria-label",
-    sequencePlaying ? "Tạm dừng kịch bản" : "Phát toàn bộ kịch bản",
-  );
+  for (const id of ["play", "preview-play"]) {
+    $(id).innerHTML = sequencePlaying ? icons.pause : icons.play;
+    $(id).setAttribute(
+      "aria-label",
+      sequencePlaying ? "Tạm dừng kịch bản" : "Phát toàn bộ kịch bản",
+    );
+  }
   $("play-state").textContent = store.playing
     ? "Đang phát"
     : session?.paused
@@ -390,6 +498,9 @@ function refresh() {
   invalidate();
 }
 store.subscribe(refresh);
+players.ready
+  .then(refresh)
+  .catch(() => toast("Không tải được mô hình người chơi. Hãy tải lại trang."));
 function startPlayback(preview = false) {
   if (store.playing && session?.preview === preview) {
     store.playing = false;
@@ -400,17 +511,10 @@ function startPlayback(preview = false) {
   if (!session || session.preview !== preview) {
     restingTime = undefined;
     if (!preview) store.index = 0;
+    const fullClips = buildClips(store.scenario);
     const clips = preview
-      ? [
-          {
-            index: store.index,
-            start: 0,
-            move: 0,
-            end: currentTrajectory?.duration ?? 0,
-            trajectory: currentTrajectory,
-          },
-        ]
-      : buildClips(store.scenario);
+      ? [buildPreviewClip(store.scenario, store.index)]
+      : fullClips;
     session = {
       clips,
       elapsed: 0,
@@ -446,9 +550,10 @@ function tick(time: number) {
     }
     const local = session.elapsed - clip.start;
     const previous =
-      clip.index > session.clips[0].index
+      clip.startPlayers ??
+      (clip.index > session.clips[0].index
         ? store.scenario.steps[clip.index - 1].players
-        : session.initial;
+        : session.initial);
     const poses = sampleClipPlayers(
       previous,
       store.step.players,
@@ -457,16 +562,33 @@ function tick(time: number) {
       store.step.shot?.hitter,
     );
     players.update(poses);
-    players.poseShot(store.step.shot, poses);
+    players.poseShot(
+      store.step.shot,
+      poses,
+      local - clip.move,
+      session.elapsed,
+      clip.move,
+      clip.previousMotion
+        ? {
+            shot: clip.previousMotion.shot,
+            time: session.elapsed - clip.previousMotion.contactClock,
+            preparation: clip.previousMotion.preparation,
+          }
+        : undefined,
+    );
     const ballPosition = sampleClipBall(clip, local);
     ball.group.visible = !!ballPosition;
     if (ballPosition)
       ball.ball.position.set(ballPosition.x, ballPosition.y, ballPosition.z);
-    ball.rotate(clip.trajectory, Math.max(0, local - clip.move));
+    if (clip.incoming && local < clip.move)
+      ball.rotate(clip.incoming.trajectory, clip.incoming.fromTime + local);
+    else ball.rotate(clip.trajectory, Math.max(0, local - clip.move));
     updateClock();
     dirty = true;
     if (session.elapsed >= session.clips.at(-1)!.end) {
       restingTime = clip.trajectory?.duration;
+      restingPoseTime = local - clip.move;
+      restingPlayers = clone(poses);
       session = undefined;
       store.playing = false;
       lastTime = 0;
@@ -498,8 +620,7 @@ function point(event: PointerEvent) {
 }
 let pointerMoved = false;
 let lastPlayerTap:
-  | { id: PlayerId; time: number; x: number; y: number }
-  | undefined;
+  { id: PlayerId; time: number; x: number; y: number } | undefined;
 function chooseHitter(id: PlayerId) {
   edit(() =>
     store.edit(() => {
@@ -511,7 +632,14 @@ function chooseHitter(id: PlayerId) {
         store.index > 0
           ? store.scenario.steps[store.index - 1].shot
           : undefined;
-      shot.from = receiveContact(previous, player, shot.type, shot.from.y);
+      shot.from = receiveContact(
+        previous,
+        player,
+        shot.type,
+        shot.groundContactHeight ?? shot.from.y,
+        !!shot.volley,
+      );
+      shot.apex = Math.max(shot.apex, shot.from.y);
       shot.contactFixed = !!previous;
       fitDink(shot);
     }),
@@ -546,7 +674,10 @@ renderer.domElement.addEventListener("pointermove", (e) => {
   stop();
   const pos = snapPlayer(p.x, p.z);
   store.edit((step) => {
-    Object.assign(step.players.find((p) => p.id === dragging)!, pos);
+    Object.assign(
+      step.players.find((p) => p.id === dragging)!,
+      pos,
+    );
     if (step.shot && step.shot.hitter === dragging) {
       const p = step.players.find((p) => p.id === dragging)!;
       const previous =
@@ -557,8 +688,10 @@ renderer.domElement.addEventListener("pointermove", (e) => {
         previous,
         p,
         step.shot.type,
-        step.shot.from.y,
+        step.shot.groundContactHeight ?? step.shot.from.y,
+        !!step.shot.volley,
       );
+      step.shot.apex = Math.max(step.shot.apex, step.shot.from.y);
       step.shot.contactFixed = !!previous;
       fitDink(step.shot);
     }
@@ -618,6 +751,8 @@ renderer.domElement.addEventListener("lostpointercapture", () => {
 });
 document.addEventListener("keydown", (e) => {
   if (e.key === "Escape") {
+    if (container.parentElement?.classList.contains("pseudo-fullscreen"))
+      void togglePreviewFullscreen();
     store.picking = false;
 
     refresh();
@@ -630,6 +765,8 @@ document.addEventListener("visibilitychange", () => {
 document
   .querySelectorAll<HTMLButtonElement>("[data-camera]")
   .forEach((b) => (b.onclick = () => preset(b.dataset.camera!)));
+$("fullscreen-toggle").onclick = () => void togglePreviewFullscreen();
+$("preview-play").onclick = () => startPlayback(false);
 $("edit-mode").onclick = () => {
   store.mode = "edit";
   refresh();
@@ -657,9 +794,17 @@ document.querySelectorAll<HTMLButtonElement>("[data-shot]").forEach(
             store.index > 0
               ? store.scenario.steps[store.index - 1].shot
               : undefined;
-          s.from = receiveContact(previous, p, s.type, DEFAULT_HEIGHT[s.type]);
+          s.volley = VOLLEY_TYPES.has(s.type);
+          s.groundContactHeight = DEFAULT_HEIGHT[s.type];
+          s.from = receiveContact(
+            previous,
+            p,
+            s.type,
+            DEFAULT_HEIGHT[s.type],
+            !!s.volley,
+          );
           s.contactFixed = !!previous;
-          s.apex = DEFAULT_APEX[s.type];
+          s.apex = Math.max(DEFAULT_APEX[s.type], s.from.y);
           s.volley = VOLLEY_TYPES.has(s.type);
           s.topspin = defaultSpin(s.type).type === "top";
           s.autoBounce = true;
@@ -707,6 +852,7 @@ for (const field of ["apex", "height"])
         if (field === "apex") s.apex = value;
         else {
           s.from.y = value;
+          s.groundContactHeight = value;
           s.apex = Math.max(s.apex, value);
           fitDink(s);
         }
@@ -716,7 +862,24 @@ for (const field of ["apex", "height"])
 $<HTMLInputElement>("volley").onchange = () =>
   edit(() =>
     store.edit(() => {
-      ensureShot().volley = $<HTMLInputElement>("volley").checked;
+      const s = ensureShot(),
+        checked = $<HTMLInputElement>("volley").checked;
+      if (checked && !s.volley) s.groundContactHeight = s.from.y;
+      s.volley = checked;
+      const previous =
+        store.index > 0
+          ? store.scenario.steps[store.index - 1].shot
+          : undefined;
+      const player = store.step.players.find((p) => p.id === s.hitter)!;
+      s.from = receiveContact(
+        previous,
+        player,
+        s.type,
+        s.groundContactHeight ?? DEFAULT_HEIGHT[s.type],
+        checked,
+      );
+      s.apex = Math.max(s.apex, s.from.y);
+      fitDink(s);
     }),
   );
 $<HTMLInputElement>("finish").onchange = () =>

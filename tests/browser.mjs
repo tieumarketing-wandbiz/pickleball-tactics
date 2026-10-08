@@ -12,6 +12,7 @@ const saved = () =>
 try {
   await page.goto(base);
   await page.locator("canvas").waitFor();
+  await page.locator('[data-player="A1"]').click();
   await page.locator("#scenario-name").fill("Bài kiểm tra chiến thuật 🏓");
   await page.locator("#note").fill("Bước một: giao bóng");
   assert.equal(await page.locator("[data-shot]").count(), 15);
@@ -77,8 +78,8 @@ try {
   let height = 24;
   for (let i = 0; i < 8; i++) {
     const extent = Math.max(
-      3.3 / (height - 1.4) / tan / (rect.width / rect.height),
-      6.9 / (height - 1.4) / tan,
+      3.3 / (height - 2.9) / tan / (rect.width / rect.height),
+      6.9 / (height - 2.9) / tan,
     );
     if (extent <= 0.84) break;
     height *= extent / 0.84;
@@ -293,8 +294,8 @@ try {
   let touchHeight = 24;
   for (let i = 0; i < 8; i++) {
     const extent = Math.max(
-      3.3 / (touchHeight - 1.4) / tan / (touchRect.width / touchRect.height),
-      6.9 / (touchHeight - 1.4) / tan,
+      3.3 / (touchHeight - 2.9) / tan / (touchRect.width / touchRect.height),
+      6.9 / (touchHeight - 2.9) / tan,
     );
     if (extent <= 0.84) break;
     touchHeight *= extent / 0.84;
@@ -309,12 +310,12 @@ try {
     ((4.9 / (touchHeight - 0.6) / tan) * touchRect.height) / 2;
   await mobile.touchscreen.tap(touchX, touchY);
   assert.equal(
-    await mobile.locator('[data-player="A1"]').getAttribute("aria-pressed"),
+    await mobile.locator('[data-player="A2"]').getAttribute("aria-pressed"),
     "true",
   );
   await mobile.touchscreen.tap(touchX, touchY);
   assert.equal(
-    await mobile.locator('[data-player="B1"]').getAttribute("aria-pressed"),
+    await mobile.locator('[data-player="B2"]').getAttribute("aria-pressed"),
     "true",
     "Double-tap selects the hitter on mobile",
   );

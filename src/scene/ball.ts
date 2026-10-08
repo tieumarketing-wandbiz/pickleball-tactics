@@ -1,14 +1,18 @@
 import * as THREE from "three";
 import { COURT } from "../core/constants";
+import type { Point3 } from "../core/scenario";
 import type { Trajectory } from "../core/trajectory";
 export class BallView {
   ball: THREE.Mesh;
   path?: THREE.Mesh;
   bouncePath?: THREE.Line;
   target: THREE.Group;
+  incomingPath?: THREE.Line;
+  interceptMarker: THREE.Mesh;
   group = new THREE.Group();
   private spinTrajectory?: Trajectory;
   private baseOrientation = new THREE.Quaternion();
+  private baseSpinAngle = 0;
   constructor(scene: THREE.Scene) {
     scene.add(this.group);
     const canvas = document.createElement("canvas");
@@ -67,6 +71,18 @@ export class BallView {
       this.target.add(cross);
     }
     this.group.add(this.target);
+    this.interceptMarker = new THREE.Mesh(
+      new THREE.SphereGeometry(0.12, 12, 8),
+      new THREE.MeshBasicMaterial({
+        color: 0x70d9c1,
+        wireframe: true,
+        transparent: true,
+        opacity: 0.85,
+        depthWrite: false,
+      }),
+    );
+    this.interceptMarker.visible = false;
+    this.group.add(this.interceptMarker);
     this.group.visible = false;
   }
   set(tr?: Trajectory) {
@@ -117,16 +133,50 @@ export class BallView {
     this.target.visible = tr.result !== "NET";
     this.at(tr, 0);
   }
+  setIncoming(tr?: Trajectory, time?: number) {
+    if (this.incomingPath) {
+      this.group.remove(this.incomingPath);
+      this.incomingPath.geometry.dispose();
+      (this.incomingPath.material as THREE.Material).dispose();
+      this.incomingPath = undefined;
+    }
+    this.interceptMarker.visible = !!tr && time !== undefined;
+    if (!tr || time === undefined) return;
+    const points = Array.from({ length: 101 }, (_, i) => {
+      const p = tr.at((time * i) / 100);
+      return new THREE.Vector3(p.x, p.y, p.z);
+    });
+    this.incomingPath = new THREE.Line(
+      new THREE.BufferGeometry().setFromPoints(points),
+      new THREE.LineDashedMaterial({
+        color: 0x70d9c1,
+        dashSize: 0.12,
+        gapSize: 0.07,
+        transparent: true,
+        opacity: 0.55,
+        depthWrite: false,
+      }),
+    );
+    this.incomingPath.computeLineDistances();
+    this.group.add(this.incomingPath);
+    const point = tr.at(time);
+    this.interceptMarker.position.set(point.x, point.y, point.z);
+  }
+  setInterceptPoint(point?: Point3) {
+    this.interceptMarker.visible = !!point;
+    if (point) this.interceptMarker.position.set(point.x, point.y, point.z);
+  }
   rotate(tr: Trajectory | undefined, time: number) {
     if (!tr) return;
     if (this.spinTrajectory !== tr) {
       this.baseOrientation.copy(this.ball.quaternion);
       this.spinTrajectory = tr;
+      this.baseSpinAngle = tr.spinAngle(time);
     }
     this.ball.quaternion
       .setFromAxisAngle(
         new THREE.Vector3(tr.spinAxis.x, tr.spinAxis.y, tr.spinAxis.z),
-        tr.spinAngle(time),
+        tr.spinAngle(time) - this.baseSpinAngle,
       )
       .multiply(this.baseOrientation);
   }

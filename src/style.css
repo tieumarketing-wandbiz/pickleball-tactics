@@ -151,6 +151,24 @@ svg {
   overflow: hidden;
   background: #111e26;
 }
+.viewport:fullscreen {
+  width: 100vw;
+  height: 100vh;
+  min-height: 100vh;
+  max-height: none;
+}
+.viewport.pseudo-fullscreen {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  width: 100vw;
+  height: 100vh;
+  min-height: 100vh;
+  max-height: none;
+}
+body.preview-fullscreen {
+  overflow: hidden;
+}
 #scene {
   position: absolute;
   inset: 0;
@@ -194,6 +212,55 @@ h1 span {
   border: 1px solid #ffffff13;
   padding: 3px;
   border-radius: 7px;
+}
+.view-controls {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  pointer-events: auto;
+}
+.fullscreen-toggle {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0;
+  color: #dce7e7;
+  background: #192b33e6;
+  border-color: #ffffff13;
+}
+.fullscreen-toggle svg {
+  width: 17px;
+  height: 17px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.fullscreen-toggle:hover {
+  background: #263b44;
+  border-color: #ddf09466;
+}
+.preview-play {
+  display: none;
+  place-items: center;
+  width: 44px;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0;
+  margin: 0;
+  border-radius: 50%;
+  color: #1b2e2d;
+  background: var(--accent);
+}
+.preview-play:hover {
+  background: #e8f8a9;
+}
+.viewport:fullscreen .preview-play,
+.viewport.pseudo-fullscreen .preview-play {
+  display: grid;
 }
 .camera-bar button {
   min-height: 36px;

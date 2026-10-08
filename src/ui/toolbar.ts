@@ -4,12 +4,14 @@ export const icons = {
   pause: '<svg viewBox="0 0 24 24"><path d="M8 5v14M16 5v14"/></svg>',
   prev: '<svg viewBox="0 0 24 24"><path d="m15 6-6 6 6 6"/></svg>',
   next: '<svg viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></svg>',
+  expand: '<svg viewBox="0 0 24 24"><path d="M8 3H5a2 2 0 0 0-2 2v3m13-5h3a2 2 0 0 1 2 2v3M3 16v3a2 2 0 0 0 2 2h3m13-5v3a2 2 0 0 1-2 2h-3"/></svg>',
+  compress: '<svg viewBox="0 0 24 24"><path d="M8 3v3a2 2 0 0 1-2 2H3m13-5v3a2 2 0 0 0 2 2h3M3 16h3a2 2 0 0 1 2 2v3m13-5h-3a2 2 0 0 0-2 2v3"/></svg>',
 };
 export function buildUI() {
   document.querySelector("#app")!.innerHTML = `
   <header class="header"><div class="brand"><span class="brand-mark">C<span>↗</span></span><div>COURTSIDE<small>PICKLEBALL TACTICS / 3D</small></div></div><div class="header-tag"><span class="live-dot"></span> TACTICS LAB <span class="version">01—04</span></div><div class="file-actions"><button id="import">Nhập JSON</button><button id="export">Xuất JSON</button><button id="share" class="outline-accent">↗ Chia sẻ</button></div></header>
   <main class="workspace"><section class="viewport" aria-label="Sân pickleball 3D"><div id="scene"></div>
-  <div class="view-top"><div class="scene-title"><span class="eyebrow">SÂN ĐÔI / 6.10 × 13.41 M</span><h1>Đọc trận đấu.<br><span>Vẽ nước đi.</span></h1></div><div class="camera-bar" role="group" aria-label="Góc camera"><button data-camera="perspective" class="active">3D</button><button data-camera="top">Top</button><button data-camera="baseline">Baseline</button><button data-camera="side">Side</button></div></div>
+  <div class="view-top"><div class="scene-title"><span class="eyebrow">SÂN ĐÔI / 6.10 × 13.41 M</span><h1>Đọc trận đấu.<br><span>Vẽ nước đi.</span></h1></div><div class="view-controls"><div class="camera-bar" role="group" aria-label="Góc camera"><button data-camera="perspective" class="active">3D</button><button data-camera="top">Top</button><button data-camera="baseline">Baseline</button><button data-camera="side">Side</button></div><button id="preview-play" class="preview-play" type="button" aria-label="Phát toàn bộ kịch bản">${icons.play}</button><button id="fullscreen-toggle" class="fullscreen-toggle" type="button" aria-label="Toàn màn hình" title="Toàn màn hình">${icons.expand}</button></div></div>
   <div class="scene-bottom"><div class="legend"><span><i class="team-a"></i> Đội A</span><span><i class="team-b"></i> Đội B</span><span><i class="ball-dot"></i> Quỹ đạo</span></div><div class="mode-switch"><button id="edit-mode" class="active">✥ Chỉnh sửa</button><button id="view-mode">◎ Xoay sân</button></div></div>
   <div class="scene-hint" id="hint" role="status">Nháy đúp chọn người đánh · kéo để di chuyển · bấm sân đặt điểm rơi</div>
   </section>

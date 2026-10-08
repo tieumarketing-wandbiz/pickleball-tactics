@@ -42,3 +42,39 @@ Inspected `.playwright/atp-backhand.png`: a right-handed player outside the righ
 Simplified editor update: five new unit cases verify nearest opposite-team handoff and sender-return target without mutating the previous step, handoff from a formation without a shot, automatic rebound responding to class/apex/contact height while ignoring legacy manual restitution, boolean-only topspin overriding legacy spin, and incoming-bounce contact/FH/BH inferred from receiver movement. Legacy low-level restitution physics tests opt out of automatic estimation explicitly; the UI always uses automatic mode.
 
 Both browser scripts passed. Add Step selects the opposite receiver and starts the ball at the previous landing; all removed control IDs are absent; Topspin check/uncheck persists. Contact tests cover automatic FH/BH, outside-court ATP following an actual incoming dink bounce, predicted rebound, reload, and no page errors. Inspected `.playwright/next-step-ready.png` (ball on B side after A shot) and `automatic-return.png` (outside B receiver, Backhand paddle, ATP around the finite net, one Topspin checkbox and read-only bounce estimate). The bounce predictor uses illustrative shot-class/impact-speed gains, not measured court restitution.
+
+### Player posture update
+
+- 64 unit checks passed, including direction/lean, low-contact crouch, contact-frame paddle position, low-paddle shaft direction and timed swing/recovery for all shot types. Production build passed.
+- Browser suites passed: player dragging, double-click hitter selection, target placement, full timeline pause/resume, receiving FH/BH/ATP, JSON/reload/share and mobile controls. Screen projection fixtures use the new 2.9 m label fitting height.
+- Visually inspected overview/closer Dink, Drive, Smash contact/follow-through and outside ATP. Articulated torso/head/legs replace rigid capsules; feet stay planted, two-segment arms remain attached to grip, labels/bubble follow head. These are authored technique illustrations, not biomechanical measurements or a footwork simulation.
+
+### Supplied GLB and teammate label swap
+
+- Inspected original GLB metadata and front/back view: one mesh, no skin/animations. Added procedural 19-bone skin; reviewed close Drive/Dink/Smash poses and court overview. Normalized to 1.8 m, team-colored surface, fingers curl and a clavicle region reduces raised-arm stretching.
+- 69 unit tests passed, including all vertex skin sums, finite deformation across every shot class, foot ground bounds, skeleton independence, world stance contact and idempotent label migration without changing ball paths. Build passed; receiving/FH/BH/ATP browser suite passed.
+- Full desktop/mobile browser workflow also passed after updating fixtures for the requested A/B identity swap; final court and moving return frame reviewed with the supplied skinned model.
+
+### Stroke-specific athlete-style animation
+
+- 75 unit tests and production build passed. Motion tests cover continuous/nonzero paddle velocity through contact, short blocking versus long drives/lobs, overhead downswing, wrist action, shoulder rotation, backhand support, initial preparation and recovery. Skin deformation/ground bounds cover all 15 shot classes, including the Erne hop.
+- Desktop/mobile workflow and receiving/FH/BH/ATP browser suites passed. Visually inspected loaded/contact/follow poses of Drive, two-handed Backhand and Smash; also Dink, Block, Roll, Lob, ATP and Erne.
+- Rounded solid paddle replaces the disk; closed-grip morphs supplement the source hand, and all players carry a paddle. Body/hand paths are authored illustrations of technique, not captured professional animation.
+
+### Volley interception before first bounce
+
+- 82 unit tests passed: exact incoming-flight contact and spin, nearer-net receiver catches earlier, no fabricated intercept after NET/on sending team, no bounce/connector arc, idempotent JSON contact synchronization, and continuous receiver positions across the clip boundary.
+- Dedicated browser check passed for volley toggle, receiver drag, inferred/read-only height, restoring ground height, reload, single preview, rally and pause/resume. Full desktop/mobile and receive/FH/BH/ATP suites also passed. Build passed. Inspected the mint incoming curve and airborne marker in the editor.
+- No full umpiring added; authored shot targets remain intact, and impossible horizontal reach continues to warn.
+
+### Intercepted endpoint in editor and individual preview
+
+- Fixed the remaining raw landing in editor/single-shot preview. Central preview construction now trims to the actual airborne intercept, removes bounce continuation and uses that point as the effective endpoint. The reply preview starts directly there; receive-tail playback remains exclusive to the continuous rally.
+- Preserved completed ball/player poses across preview teardown; stable route keys prevent refresh from resetting the ball. Inspected completed source preview: endpoint at B1, height 1.08 m, old floor marker absent.
+- 85 unit tests and volley browser regression passed, including finisher interception, source/reply endpoint equality, held airborne completion and restoration when volley is unchecked. Production build passed.
+
+### Natural paddle grip refinement
+
+- Re-fitted wrist/knuckle landmarks to the supplied mesh's 3D hand plane. Closed fingers wrap continuously around the octagonal handle; the thumb opposes them, morph normals retain surface shading, and wrist skin weights preserve the palm/fingers under IK.
+- Distributed racket-facing twist through the forearm, adjusted low/waist-level racket orientation, and separated the dominant/supporting backhand grips on a longer handle. An unreachable supporting hand opens during approach/follow-through rather than gripping empty space.
+- Inspected forehand, two-handed backhand, low dink and overhead smash at grip close-up and whole-body distances. 87 unit tests passed, including primary-grip retention for both handednesses/all stroke types and supporting-hand contact/release. Production build and full desktop/mobile browser workflow passed.

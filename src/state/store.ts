@@ -1,6 +1,7 @@
-import { nextRallyStep } from "../core/contact";
+import { nextRallyStep, syncVolleyContacts } from "../core/contact";
 import {
   clone,
+  migratePlayerLayout,
   initialScenario,
   decodeScenario,
   parseScenario,
@@ -33,6 +34,9 @@ export class Store {
         this.startupMessage = "Không đọc được bản lưu; đã mở kịch bản mới.";
       }
     }
+    this.scenario = migratePlayerLayout(this.scenario);
+    syncVolleyContacts(this.scenario);
+    this.selected = this.scenario.steps[0].shot?.hitter ?? "A1";
   }
   get step(): Step {
     return this.scenario.steps[this.index];
@@ -42,6 +46,7 @@ export class Store {
     return () => this.listeners.delete(fn);
   }
   emit(persist = false) {
+    syncVolleyContacts(this.scenario);
     if (persist) {
       try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(this.scenario));
@@ -79,7 +84,7 @@ export class Store {
     this.emit(true);
   }
   load(s: Scenario) {
-    this.scenario = clone(s);
+    this.scenario = migratePlayerLayout(clone(s));
     this.index = 0;
     this.picking = false;
     this.emit(true);

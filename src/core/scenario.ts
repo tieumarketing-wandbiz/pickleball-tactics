@@ -31,6 +31,7 @@ export interface Shot {
   topspin?: boolean;
   autoBounce?: boolean;
   contactFixed?: boolean;
+  groundContactHeight?: number;
 }
 export interface Step {
   players: Player[];
@@ -39,6 +40,7 @@ export interface Step {
 }
 export interface Scenario {
   version: 1;
+  playerLayout?: 2;
   name: string;
   steps: Step[];
 }
@@ -47,17 +49,18 @@ export function initialScenario(): Scenario {
   return {
     version: 1,
     name: "Chiến thuật của tôi",
+    playerLayout: 2,
     steps: [
       {
         players: [
-          { id: "A1", x: -1.5, z: 4.9 },
-          { id: "A2", x: 1.5, z: 4.9 },
-          { id: "B1", x: 1.5, z: -4.9 },
-          { id: "B2", x: -1.5, z: -4.9 },
+          { id: "A1", x: 1.5, z: 4.9 },
+          { id: "A2", x: -1.5, z: 4.9 },
+          { id: "B1", x: -1.5, z: -4.9 },
+          { id: "B2", x: 1.5, z: -4.9 },
         ],
         note: "",
         shot: {
-          hitter: "A1",
+          hitter: "A2",
           from: { x: -1.5, y: 0.8, z: 4.9 },
           to: { x: 1.5, z: -4.3 },
           type: "serve",
@@ -78,6 +81,8 @@ export function validateScenario(input: unknown): Scenario {
   if (!input || typeof input !== "object")
     throw new Error("JSON phải chứa một kịch bản.");
   const data = input as Record<string, unknown>;
+  if (data.playerLayout !== undefined && data.playerLayout !== 2)
+    throw new Error("Bố trí nhãn người chơi không hợp lệ.");
   if (data.version !== undefined && data.version !== 1)
     throw new Error("Phiên bản kịch bản chưa được hỗ trợ.");
   if (
@@ -150,8 +155,17 @@ export function validateScenario(input: unknown): Scenario {
       );
   }
   // Reconstruct the public model, discarding unrelated input fields.
+  for (const step of data.steps as Step[]) {
+    const height = step.shot?.groundContactHeight;
+    if (
+      height !== undefined &&
+      (!finite(height) || height < COURT.ballRadius || height > 12)
+    )
+      throw new Error("Chiều cao đón bóng không hợp lệ.");
+  }
   return {
     version: 1,
+    ...(data.playerLayout === 2 ? { playerLayout: 2 as const } : {}),
     name: data.name,
     steps: (data.steps as Step[]).map((s) => ({
       players: s.players.map((p) => ({
@@ -180,6 +194,9 @@ export function validateScenario(input: unknown): Scenario {
                 : {}),
               ...(s.shot.autoBounce !== undefined
                 ? { autoBounce: s.shot.autoBounce }
+                : {}),
+              ...(s.shot.groundContactHeight !== undefined
+                ? { groundContactHeight: s.shot.groundContactHeight }
                 : {}),
               ...(s.shot.contactFixed !== undefined
                 ? { contactFixed: s.shot.contactFixed }
@@ -222,4 +239,21 @@ export function decodeScenario(hash: string): Scenario {
       `Không đọc được link: ${e instanceof Error ? e.message : "dữ liệu không hợp lệ"}`,
     );
   }
+}
+
+export function migratePlayerLayout(scenario: Scenario): Scenario {
+  if (scenario.playerLayout === 2) return scenario;
+  const next = clone(scenario);
+  const swap: Record<PlayerId, PlayerId> = {
+    A1: "A2",
+    A2: "A1",
+    B1: "B2",
+    B2: "B1",
+  };
+  for (const step of next.steps) {
+    for (const player of step.players) player.id = swap[player.id];
+    if (step.shot) step.shot.hitter = swap[step.shot.hitter];
+  }
+  next.playerLayout = 2;
+  return next;
 }

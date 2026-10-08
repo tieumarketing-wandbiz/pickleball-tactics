@@ -9,16 +9,18 @@
     "preview": "vite preview --host 0.0.0.0",
     "test": "vitest run",
     "test:e2e": "node tests/browser.mjs",
-    "test:contact": "node tests/contact-browser.mjs"
+    "test:contact": "node tests/contact-browser.mjs",
+    "test:volley": "node tests/volley-browser.mjs"
   },
   "dependencies": {
     "three": "^0.180.0"
   },
   "devDependencies": {
+    "@playwright/test": "^1.56.0",
+    "@types/node": "^22.20.5",
     "@types/three": "^0.180.0",
     "typescript": "^5.9.3",
     "vite": "^7.1.9",
-    "vitest": "^3.2.4",
-    "@playwright/test": "^1.56.0"
+    "vitest": "^3.2.4"
   }
 }

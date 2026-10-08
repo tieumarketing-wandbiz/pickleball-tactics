@@ -6,15 +6,16 @@ it("adding a step hands the ball to the nearest opposing receiver", () => {
   const old = initialScenario().steps[0],
     snapshot = structuredClone(old);
   const next = nextRallyStep(old, "A1");
-  expect(next.shot!.hitter).toBe("B1");
+  expect(next.shot!.hitter).toBe("B2");
   expect(next.shot!.from.x).toBe(old.shot!.to.x);
   expect(next.shot!.from.z).toBe(old.shot!.to.z);
-  expect(next.shot!.to).toEqual({ x: old.players[0].x, z: old.players[0].z });
+  const sender = old.players.find((p) => p.id === old.shot!.hitter)!;
+  expect(next.shot!.to).toEqual({ x: sender.x, z: sender.z });
   expect(next.shot!.type).toBe("drive");
   expect(next.shot!.autoBounce).toBe(true);
   expect(old).toEqual(snapshot);
   old.shot!.to.x = -1.5;
-  expect(nextRallyStep(old, "A1").shot!.hitter).toBe("B2");
+  expect(nextRallyStep(old, "A1").shot!.hitter).toBe("B1");
   const returned = nextRallyStep(next, "B1");
   expect(returned.shot!.hitter[0]).toBe("A");
 });

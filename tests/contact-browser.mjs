@@ -26,7 +26,7 @@ try {
   const previous = (await saved()).steps[0].shot;
   await page.locator("#add-step").click();
   const next = (await saved()).steps[1].shot;
-  assert.equal(next.hitter, "B1");
+  assert.equal(next.hitter, "B2");
   assert.deepEqual({ x: next.from.x, z: next.from.z }, previous.to);
   await page.locator('[data-camera="top"]').click();
   await page.waitForTimeout(250);
@@ -35,8 +35,8 @@ try {
   let height = 24;
   for (let i = 0; i < 8; i++) {
     const extent = Math.max(
-      3.3 / (height - 1.4) / tan / (rect.width / rect.height),
-      6.9 / (height - 1.4) / tan,
+      3.3 / (height - 2.9) / tan / (rect.width / rect.height),
+      6.9 / (height - 2.9) / tan,
     );
     if (extent <= 0.84) break;
     height *= extent / 0.84;
@@ -66,6 +66,7 @@ try {
   const scene = {
     version: 1,
     name: "Dink → ATP",
+    playerLayout: 2,
     steps: [
       {
         players,

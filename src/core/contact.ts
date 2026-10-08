@@ -3,9 +3,10 @@ import {
   DEFAULT_APEX,
   VOLLEY_TYPES,
   shotOrigin,
+  COURT,
 } from "./constants";
 import { trajectory } from "./trajectory";
-import type { Player, Shot } from "./scenario";
+import type { Player, Shot, Scenario } from "./scenario";
 export function strokeSide(player: Player, shot: Shot) {
   // A faces -z, B faces +z. Right-hand side therefore reverses across the net.
   const facing = player.id.startsWith("A") ? -1 : 1;
@@ -86,8 +87,14 @@ export function receiveContact(
   player: Player,
   type: Shot["type"],
   height: number,
+  volley = false,
 ) {
   if (!previous) return shotOrigin(player, type, height);
+  if (volley)
+    return (
+      findVolleyContact(previous, player)?.point ??
+      shotOrigin(player, type, height)
+    );
   const incoming = trajectory({ ...previous, finish: true, autoBounce: true });
   const start =
     incoming.collisionTime === null ? incoming.flightTime : incoming.duration;
@@ -106,4 +113,67 @@ export function receiveContact(
     }
   }
   return { x: best.x, y: height, z: best.z };
+}
+
+export function findVolleyContact(previous: Shot, player: Player) {
+  if (previous.hitter[0] === player.id[0]) return undefined;
+  const incoming = trajectory({ ...previous, finish: false });
+  const end =
+    Math.min(incoming.flightTime, incoming.collisionTime ?? Infinity) - 0.0001;
+  const ownSide = player.id.startsWith("A") ? 1 : -1;
+  const cost = (time: number) => {
+    const point = incoming.at(time);
+    if (point.z * ownSide < COURT.ballRadius || point.y < 0.2 || point.y > 2.5)
+      return Infinity;
+    return (point.x - player.x) ** 2 + (point.z - player.z) ** 2;
+  };
+  if (end <= 0) return undefined;
+  const count = 160;
+  let time = 0,
+    best = Infinity;
+  for (let i = 1; i <= count; i++) {
+    const t = (end * i) / count,
+      d = cost(t);
+    if (d < best) {
+      time = t;
+      best = d;
+    }
+  }
+  if (!Number.isFinite(best)) return undefined;
+  // Refine on the actual curve, independently of rendered samples or frame rate.
+  let lo = Math.max(0, time - end / count),
+    hi = Math.min(end, time + end / count);
+  const ratio = (Math.sqrt(5) - 1) / 2;
+  let a = hi - (hi - lo) * ratio,
+    b = lo + (hi - lo) * ratio;
+  for (let i = 0; i < 45; i++) {
+    if (cost(a) < cost(b)) {
+      hi = b;
+      b = a;
+      a = hi - (hi - lo) * ratio;
+    } else {
+      lo = a;
+      a = b;
+      b = lo + (hi - lo) * ratio;
+    }
+  }
+  const refined = (lo + hi) / 2;
+  if (cost(refined) < best) time = refined;
+  const point = incoming.at(time),
+    distance = Math.hypot(point.x - player.x, point.z - player.z);
+  return { point, time, distance, reachable: distance <= 1.1, incoming };
+}
+export function syncVolleyContacts(scenario: Scenario) {
+  for (let i = 1; i < scenario.steps.length; i++) {
+    const shot = scenario.steps[i].shot,
+      previous = scenario.steps[i - 1].shot;
+    if (!shot?.volley || !previous) continue;
+    const player = scenario.steps[i].players.find((p) => p.id === shot.hitter)!;
+    const intercept = findVolleyContact(previous, player);
+    if (!intercept) continue;
+    shot.groundContactHeight ??= shot.from.y;
+    shot.from = { ...intercept.point };
+    shot.apex = Math.max(shot.apex, Math.ceil(shot.from.y * 100) / 100);
+    fitDink(shot);
+  }
 }

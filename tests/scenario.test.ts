@@ -48,11 +48,11 @@ it("builds ordered transitions and interpolates by player identity", () => {
   const s = initialScenario();
   const next = structuredClone(s.steps[0]);
   next.players.reverse();
-  next.players.find((p) => p.id === "A1")!.x = 1.5;
+  next.players.find((p) => p.id === "A1")!.x = -1.5;
   s.steps.push(next);
   const clips = buildClips(s);
-  expect(clips[0].move).toBe(0);
-  expect(clips[0].end).toBe(clips[0].trajectory!.duration);
+  expect(clips[0].move).toBe(0.48);
+  expect(clips[0].end).toBe(clips[0].move + clips[0].trajectory!.duration);
   expect(clips[1].move).toBeGreaterThan(0);
   expect(clips[1].move).toBeLessThanOrEqual(0.65);
   expect(clips[1].start).toBe(clips[0].end);
@@ -85,4 +85,24 @@ it("saves finisher choice and accepts older shots without it", () => {
       steps: [{ ...s.steps[0], shot: { ...s.steps[0].shot, finish: "yes" } }],
     }),
   ).toThrow();
+});
+
+it("swaps legacy teammate identities once while retaining authored ball paths", async () => {
+  const { migratePlayerLayout } = await import("../src/core/scenario");
+  const old = initialScenario();
+  delete old.playerLayout;
+  const original = structuredClone(old),
+    converted = migratePlayerLayout(old);
+  expect(converted.steps[0].players.find((p) => p.id === "A1")!.x).toBe(
+    original.steps[0].players.find((p) => p.id === "A2")!.x,
+  );
+  expect(converted.steps[0].players.find((p) => p.id === "B1")!.x).toBe(
+    original.steps[0].players.find((p) => p.id === "B2")!.x,
+  );
+  expect(converted.steps[0].shot!.hitter).toBe("A1");
+  expect(converted.steps[0].shot!.from).toEqual(original.steps[0].shot!.from);
+  expect(migratePlayerLayout(parseScenario(JSON.stringify(converted)))).toEqual(
+    converted,
+  );
+  expect(old).toEqual(original);
 });
