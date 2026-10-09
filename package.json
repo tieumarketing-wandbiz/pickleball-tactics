@@ -10,15 +10,21 @@
     "test": "vitest run",
     "test:e2e": "node tests/browser.mjs",
     "test:contact": "node tests/contact-browser.mjs",
-    "test:volley": "node tests/volley-browser.mjs"
+    "test:volley": "node tests/volley-browser.mjs",
+    "rig:build": "vite-node tools/rig/finalize.ts --from-source",
+    "rig:validate": "vite-node tools/rig/validate.ts public/models/male-rigged.glb"
   },
   "dependencies": {
     "three": "^0.180.0"
   },
   "devDependencies": {
+    "@gltf-transform/core": "^4.5.1",
+    "@gltf-transform/extensions": "^4.5.1",
+    "@gltf-transform/functions": "^4.5.1",
     "@playwright/test": "^1.56.0",
     "@types/node": "^22.20.5",
     "@types/three": "^0.180.0",
+    "meshoptimizer": "^1.3.0",
     "typescript": "^5.9.3",
     "vite": "^7.1.9",
     "vitest": "^3.2.4"

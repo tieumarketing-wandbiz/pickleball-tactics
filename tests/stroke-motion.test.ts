@@ -1,4 +1,4 @@
-import { it, expect } from "vitest";
+import { describe, it, expect } from "vitest";
 import {
   STROKE_MOTION,
   sampleStroke,
@@ -70,4 +70,69 @@ it("returns to a shared ready stance after each shot", () => {
     expect(Math.hypot(...m.offset)).toBe(0);
     expect(m.hop).toBe(0);
   }
+});
+
+describe("pose-to-pose timeline (animation-principles.md)", () => {
+  const loadTime = (type: (typeof SHOT_TYPES)[number]) =>
+    -STROKE_MOTION[type].prepare * 0.55;
+  it("eases out of the load and accelerates monotonically into contact", () => {
+    for (const type of ["serve", "drive", "dink", "volley", "smash"] as const) {
+      // From the breakdown on (before it the lagging paddle may still be finishing the takeback
+      // while the hips already drive forward — that's the kinetic chain, tested below).
+      const start = loadTime(type) * 0.4;
+      let previous = -Infinity,
+        speed = 0;
+      for (let t = start; t <= 0; t += 0.005) {
+        const along = sampleStroke(type, t).offset[0];
+        expect(along).toBeGreaterThanOrEqual(previous - 1e-9);
+        previous = along;
+      }
+      // fastest close to contact: velocity just before contact beats the early forward swing
+      const v = (t: number) =>
+        (sampleStroke(type, t + 0.001).offset[0] -
+          sampleStroke(type, t - 0.001).offset[0]) /
+        0.002;
+      speed = v(-0.005);
+      expect(speed).toBeGreaterThan(v(start));
+    }
+  });
+  it("leads the forward swing with the hips while the paddle lags (kinetic chain)", () => {
+    const type = "drive",
+      load = sampleStroke(type, loadTime(type)),
+      t = loadTime(type) * 0.45,
+      mid = sampleStroke(type, t);
+    const hips = (mid.hipTwist - load.hipTwist) / (0 - load.hipTwist);
+    const paddle = (mid.offset[0] - load.offset[0]) / (0 - load.offset[0]);
+    expect(hips).toBeGreaterThan(paddle);
+  });
+  it("swings on an arc, not a straight line, from load through contact", () => {
+    for (const type of ["serve", "drive", "smash"] as const) {
+      const a = sampleStroke(type, loadTime(type)).offset,
+        b = sampleStroke(type, loadTime(type) * 0.4).offset;
+      // distance of the breakdown from the load→contact chord
+      const len = Math.hypot(...a),
+        dot = (a[0] * b[0] + a[1] * b[1] + a[2] * b[2]) / (len * len);
+      const off = Math.hypot(
+        b[0] - a[0] * dot,
+        b[1] - a[1] * dot,
+        b[2] - a[2] * dot,
+      );
+      expect(off).toBeGreaterThan(0.03);
+    }
+  });
+  it("settles back into ready with a small overshoot", () => {
+    const p = STROKE_MOTION.volley;
+    let peak = 0;
+    for (let t = p.followTime; t <= p.recover; t += 0.01)
+      peak = Math.max(peak, sampleStroke("volley", t).recovery);
+    expect(peak).toBeGreaterThan(1.03);
+    expect(peak).toBeLessThan(1.1);
+    expect(sampleStroke("volley", p.recover + 0.01).recovery).toBe(1);
+  });
+  it("holds the punch-volley finish before recovering", () => {
+    const p = STROKE_MOTION.punch;
+    expect(sampleStroke("punch", p.followTime + p.hold! * 0.9).offset).toEqual(
+      sampleStroke("punch", p.followTime).offset,
+    );
+  });
 });

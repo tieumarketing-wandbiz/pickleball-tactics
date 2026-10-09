@@ -3,7 +3,7 @@
 - A tactical court model, not a full rules engine or rigid-body simulation.
 - Dark slate workspace, teal court, darker kitchen, chalk lines; warm orange team A and mint team B. Lemon trajectory and selection.
 - A full-height desktop scene with a 320 px inspector; mobile court above stacked controls and a fixed bottom timeline. Vietnamese labels, Be Vietnam Pro with system fallback.
-- Custom Three.js geometry: meter-scale court, sloping net tape with repeating transparent mesh, capsule players with grounded selection rings, regulation-radius ball and static trajectory tube. No catalog kit or external model was used.
+- Custom Three.js geometry: meter-scale court, sloping net tape with repeating transparent mesh, capsule players with grounded selection rings, regulation-radius ball and static trajectory tube. The supplied player mesh is bundled as `public/models/male-base.glb`; there is no catalog kit.
 - One hemisphere fill and one directional shadow key at (-7, 15, 6), court and platform receive shadows; players and posts cast them. Shadow frustum fitted to the 18 m platform.
 - Scenario state owns player positions and shot parameters. Rendering interpolates presentation poses; pause never commits intermediate poses. Analytic trajectory and net profile are shared by checks and scene.
 - Edit mode owns player dragging and direct court clicks for ball destinations; double-click/double-tap selects the hitter. Dragging never changes hitter identity; dragging the hitter updates the shot origin. View mode owns rotation. The optional target button also brings the court into view on mobile. Destinations support out-of-court positions. Pointer capture and cancellation release dragging.

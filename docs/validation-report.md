@@ -6,6 +6,8 @@ Vite + TypeScript + Three.js, custom procedural court/net, four labeled capsule 
 
 ## Numerically checked
 
+Historical note: the early validation run below recorded 58 passing tests; the current suite has since grown, so that figure is retained as history rather than a current total.
+
 `npm test`: **58 passed**. Court dimensions/net profile, snap/clamp, all 15 shot presets landing within 1 cm, apex height, analytic NET and OUT, boundary lines, kitchen/serve/volley warnings, finite net span, invalid inputs, ground bounces, stop-at-landing versus finisher displacement, saved finisher flag and backward compatibility, UTF-8 URL and JSON roundtrips, malformed imports, legacy schema, zero-duration rejection, identity-based player interpolation, continuous/visible receive bridges across three shots, cross-net bridge clearance, partner movement during flight and formation-only ball retention.
 
 `npm run build`: **passed**, including strict TypeScript. App JS 46.11 kB / gzip 17.94 kB; Three.js/OrbitControls 526.01 kB / gzip 131.72 kB. Vite reports its standard >500 kB vendor chunk warning. These are bundle sizes, not measured device performance.

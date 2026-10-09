@@ -1,0 +1,15 @@
+serve    prep 0.48  worst velocity jump 16.01 /frame@240Hz on paddle.y at t=0.303  paddle max speed 20.1 m/s at t=0.307
+drive    prep 0.36  worst velocity jump 6.29 /frame@240Hz on paddle.y at t=0.265  paddle max speed 12.1 m/s at t=0.002
+dink     prep 0.25  worst velocity jump 4.25 /frame@240Hz on paddle.x at t=0.204  paddle max speed 9.4 m/s at t=-0.192
+drop     prep 0.32  worst velocity jump 2.93 /frame@240Hz on paddle.z at t=0.276  paddle max speed 9.1 m/s at t=-0.237
+lob      prep 0.34  worst velocity jump 4.19 /frame@240Hz on paddle.y at t=0.322  paddle max speed 7.8 m/s at t=0.327
+volley   prep 0.22  worst velocity jump 6.44 /frame@240Hz on paddle.z at t=0.184  paddle max speed 10.6 m/s at t=-0.166
+smash    prep 0.50  worst velocity jump 17.16 /frame@240Hz on paddle.y at t=0.354  paddle max speed 20.5 m/s at t=0.354
+block    prep 0.16  worst velocity jump 7.03 /frame@240Hz on paddle.y at t=0.144  paddle max speed 13.9 m/s at t=-0.123
+punch    prep 0.20  worst velocity jump 4.09 /frame@240Hz on paddle.z at t=0.312  paddle max speed 11.6 m/s at t=-0.150
+reset    prep 0.24  worst velocity jump 2.97 /frame@240Hz on paddle.x at t=0.206  paddle max speed 10.1 m/s at t=-0.182
+speedup  prep 0.21  worst velocity jump 5.76 /frame@240Hz on paddle.z at t=0.194  paddle max speed 11.8 m/s at t=-0.148
+roll     prep 0.22  worst velocity jump 3.04 /frame@240Hz on paddle.z at t=0.205  paddle max speed 13.3 m/s at t=-0.162
+flick    prep 0.17  worst velocity jump 2.50 /frame@240Hz on paddle.z at t=0.155  paddle max speed 14.8 m/s at t=-0.128
+atp      prep 0.32  worst velocity jump 3.89 /frame@240Hz on paddle.y at t=0.242  paddle max speed 13.3 m/s at t=-0.241
+erne     prep 0.24  worst velocity jump 3.61 /frame@240Hz on paddle.z at t=0.185  paddle max speed 7.8 m/s at t=-0.169

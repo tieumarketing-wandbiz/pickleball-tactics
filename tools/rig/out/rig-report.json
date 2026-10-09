@@ -1,0 +1,1567 @@
+{
+  "version": "v2",
+  "input": "D:\\AI\\Code\\Tieu\\pickleball-tactics-main\\tools\\rig\\source\\human-rig.glb",
+  "output": "D:\\AI\\Code\\Tieu\\pickleball-tactics-main\\tools\\rig\\out\\human-rig.fixed.glb",
+  "transform": {
+    "scale": 1.7999992915429348,
+    "rotationZDegrees": -90.0,
+    "beforeBounds": {
+      "min": [
+        -0.08158878982067108,
+        -0.39685049653053284,
+        -4.5319205810301355e-07
+      ],
+      "max": [
+        0.0815887302160263,
+        0.3968506455421448,
+        0.9999999403953552
+      ]
+    },
+    "afterBounds": {
+      "min": [
+        -0.7143307328224182,
+        -0.14685966074466705,
+        1.1368683772161603e-13
+      ],
+      "max": [
+        0.7143307328224182,
+        0.1468597650527954,
+        1.7999998331069946
+      ]
+    },
+    "blenderUpAxis": "Z",
+    "appFacing": "-Z"
+  },
+  "baselineTransform": {
+    "scale": 1.7999992915429348,
+    "rotationZDegrees": -90.0,
+    "beforeBounds": {
+      "min": [
+        -0.08158878982067108,
+        -0.39685049653053284,
+        -4.5319205810301355e-07
+      ],
+      "max": [
+        0.0815887302160263,
+        0.3968506455421448,
+        0.9999999403953552
+      ]
+    },
+    "afterBounds": {
+      "min": [
+        -0.7143307328224182,
+        -0.14685966074466705,
+        1.1368683772161603e-13
+      ],
+      "max": [
+        0.7143307328224182,
+        0.1468597650527954,
+        1.7999998331069946
+      ]
+    },
+    "blenderUpAxis": "Z",
+    "appFacing": "-Z"
+  },
+  "weld": {
+    "before": 5087,
+    "after": 4395
+  },
+  "jointCountBeforePrune": 65,
+  "jointCountAfterPrune": 52,
+  "prunedUnweightedLeaves": [
+    "mixamorig:LeftToe_End",
+    "mixamorig:RightToe_End",
+    "mixamorig:LeftHandIndex4",
+    "mixamorig:LeftHandMiddle4",
+    "mixamorig:LeftHandPinky4",
+    "mixamorig:LeftHandRing4",
+    "mixamorig:LeftHandThumb4",
+    "mixamorig:HeadTop_End",
+    "mixamorig:RightHandIndex4",
+    "mixamorig:RightHandMiddle4",
+    "mixamorig:RightHandPinky4",
+    "mixamorig:RightHandRing4",
+    "mixamorig:RightHandThumb4"
+  ],
+  "weightedBones": [
+    "mixamorig:Head",
+    "mixamorig:Hips",
+    "mixamorig:LeftArm",
+    "mixamorig:LeftFoot",
+    "mixamorig:LeftForeArm",
+    "mixamorig:LeftHand",
+    "mixamorig:LeftHandIndex1",
+    "mixamorig:LeftHandIndex2",
+    "mixamorig:LeftHandIndex3",
+    "mixamorig:LeftHandMiddle1",
+    "mixamorig:LeftHandMiddle2",
+    "mixamorig:LeftHandMiddle3",
+    "mixamorig:LeftHandPinky1",
+    "mixamorig:LeftHandPinky2",
+    "mixamorig:LeftHandPinky3",
+    "mixamorig:LeftHandRing1",
+    "mixamorig:LeftHandRing2",
+    "mixamorig:LeftHandRing3",
+    "mixamorig:LeftHandThumb1",
+    "mixamorig:LeftHandThumb2",
+    "mixamorig:LeftHandThumb3",
+    "mixamorig:LeftLeg",
+    "mixamorig:LeftShoulder",
+    "mixamorig:LeftToeBase",
+    "mixamorig:LeftUpLeg",
+    "mixamorig:Neck",
+    "mixamorig:RightArm",
+    "mixamorig:RightFoot",
+    "mixamorig:RightForeArm",
+    "mixamorig:RightHand",
+    "mixamorig:RightHandIndex1",
+    "mixamorig:RightHandIndex2",
+    "mixamorig:RightHandIndex3",
+    "mixamorig:RightHandMiddle1",
+    "mixamorig:RightHandMiddle2",
+    "mixamorig:RightHandMiddle3",
+    "mixamorig:RightHandPinky1",
+    "mixamorig:RightHandPinky2",
+    "mixamorig:RightHandPinky3",
+    "mixamorig:RightHandRing1",
+    "mixamorig:RightHandRing2",
+    "mixamorig:RightHandRing3",
+    "mixamorig:RightHandThumb1",
+    "mixamorig:RightHandThumb2",
+    "mixamorig:RightHandThumb3",
+    "mixamorig:RightLeg",
+    "mixamorig:RightShoulder",
+    "mixamorig:RightToeBase",
+    "mixamorig:RightUpLeg",
+    "mixamorig:Spine",
+    "mixamorig:Spine1",
+    "mixamorig:Spine2"
+  ],
+  "maxInfluences": 4,
+  "weightSumRange": [
+    1.0,
+    1.0
+  ],
+  "weightFixes": {
+    "kdTreeMirror": {
+      "copied": 2499,
+      "misses": 0,
+      "lateralAxis": "Blender Y on source"
+    },
+    "armTrunkVerticesCleaned": 370,
+    "pipeline": [
+      "source-space targeted trunk/upper-arm cleanup below armpit",
+      "source-space KD-tree mirror",
+      "weld seams",
+      "Limit Total 4",
+      "Normalize All"
+    ]
+  },
+  "audit": {
+    "before": {
+      "trunkUpperArm": 235,
+      "trunkUpperArmArmSideBelowArmpit": 123,
+      "clavicleTrunk": 383,
+      "clavicleUpperArm": 323,
+      "distalUpperArm": 150,
+      "illegalLeftRight": 109
+    },
+    "after": {
+      "trunkUpperArm": 87,
+      "trunkUpperArmArmSideBelowArmpit": 0,
+      "clavicleTrunk": 215,
+      "clavicleUpperArm": 261,
+      "distalUpperArm": 140,
+      "illegalLeftRight": 81
+    },
+    "rawBeforeFix": {
+      "trunkUpperArm": 235,
+      "trunkUpperArmArmSideBelowArmpit": 123,
+      "clavicleTrunk": 383,
+      "clavicleUpperArm": 323,
+      "distalUpperArm": 150,
+      "illegalLeftRight": 109
+    }
+  },
+  "lrAsymmetry": {
+    "before": 0.030031132546172602,
+    "beforeByBone": {
+      "mixamorig:LeftUpLeg|mixamorig:RightUpLeg": 0.07203524902128579,
+      "mixamorig:LeftLeg|mixamorig:RightLeg": 0.06499853693452705,
+      "mixamorig:LeftFoot|mixamorig:RightFoot": 0.06282720437186892,
+      "mixamorig:LeftToeBase|mixamorig:RightToeBase": 0.032287907129297244,
+      "mixamorig:LeftToe_End|mixamorig:RightToe_End": 0.0,
+      "mixamorig:LeftShoulder|mixamorig:RightShoulder": 0.02880613316892249,
+      "mixamorig:LeftArm|mixamorig:RightArm": 0.05157464357360558,
+      "mixamorig:LeftForeArm|mixamorig:RightForeArm": 0.03154651596333297,
+      "mixamorig:LeftHand|mixamorig:RightHand": 0.059771403886055785,
+      "mixamorig:LeftHandIndex1|mixamorig:RightHandIndex1": 0.057163529170141905,
+      "mixamorig:LeftHandIndex2|mixamorig:RightHandIndex2": 0.043684356394926606,
+      "mixamorig:LeftHandIndex3|mixamorig:RightHandIndex3": 0.04567684474388434,
+      "mixamorig:LeftHandIndex4|mixamorig:RightHandIndex4": 0.0,
+      "mixamorig:LeftHandMiddle1|mixamorig:RightHandMiddle1": 0.035117712622480604,
+      "mixamorig:LeftHandMiddle2|mixamorig:RightHandMiddle2": 0.03346990575225465,
+      "mixamorig:LeftHandMiddle3|mixamorig:RightHandMiddle3": 0.0336593179395932,
+      "mixamorig:LeftHandMiddle4|mixamorig:RightHandMiddle4": 0.0,
+      "mixamorig:LeftHandPinky1|mixamorig:RightHandPinky1": 0.03553393127689768,
+      "mixamorig:LeftHandPinky2|mixamorig:RightHandPinky2": 0.01332634226038703,
+      "mixamorig:LeftHandPinky3|mixamorig:RightHandPinky3": 0.011898839194482041,
+      "mixamorig:LeftHandPinky4|mixamorig:RightHandPinky4": 0.0,
+      "mixamorig:LeftHandRing1|mixamorig:RightHandRing1": 0.035535557893360464,
+      "mixamorig:LeftHandRing2|mixamorig:RightHandRing2": 0.02968490911453845,
+      "mixamorig:LeftHandRing3|mixamorig:RightHandRing3": 0.030107631897522913,
+      "mixamorig:LeftHandRing4|mixamorig:RightHandRing4": 0.0,
+      "mixamorig:LeftHandThumb1|mixamorig:RightHandThumb1": 0.023387962356086197,
+      "mixamorig:LeftHandThumb2|mixamorig:RightHandThumb2": 0.017796637903830227,
+      "mixamorig:LeftHandThumb3|mixamorig:RightHandThumb3": 0.021011771269723353,
+      "mixamorig:LeftHandThumb4|mixamorig:RightHandThumb4": 0.0
+    },
+    "after": 2.1876229412453115e-07,
+    "afterByBone": {
+      "mixamorig:LeftUpLeg|mixamorig:RightUpLeg": 0.0,
+      "mixamorig:LeftLeg|mixamorig:RightLeg": 0.0,
+      "mixamorig:LeftFoot|mixamorig:RightFoot": 0.0,
+      "mixamorig:LeftToeBase|mixamorig:RightToeBase": 0.0,
+      "mixamorig:LeftToe_End|mixamorig:RightToe_End": 0.0,
+      "mixamorig:LeftShoulder|mixamorig:RightShoulder": 3.6325084438548784e-06,
+      "mixamorig:LeftArm|mixamorig:RightArm": 2.7115980857565247e-06,
+      "mixamorig:LeftForeArm|mixamorig:RightForeArm": 0.0,
+      "mixamorig:LeftHand|mixamorig:RightHand": 0.0,
+      "mixamorig:LeftHandIndex1|mixamorig:RightHandIndex1": 0.0,
+      "mixamorig:LeftHandIndex2|mixamorig:RightHandIndex2": 0.0,
+      "mixamorig:LeftHandIndex3|mixamorig:RightHandIndex3": 0.0,
+      "mixamorig:LeftHandIndex4|mixamorig:RightHandIndex4": 0.0,
+      "mixamorig:LeftHandMiddle1|mixamorig:RightHandMiddle1": 0.0,
+      "mixamorig:LeftHandMiddle2|mixamorig:RightHandMiddle2": 0.0,
+      "mixamorig:LeftHandMiddle3|mixamorig:RightHandMiddle3": 0.0,
+      "mixamorig:LeftHandMiddle4|mixamorig:RightHandMiddle4": 0.0,
+      "mixamorig:LeftHandPinky1|mixamorig:RightHandPinky1": 0.0,
+      "mixamorig:LeftHandPinky2|mixamorig:RightHandPinky2": 0.0,
+      "mixamorig:LeftHandPinky3|mixamorig:RightHandPinky3": 0.0,
+      "mixamorig:LeftHandPinky4|mixamorig:RightHandPinky4": 0.0,
+      "mixamorig:LeftHandRing1|mixamorig:RightHandRing1": 0.0,
+      "mixamorig:LeftHandRing2|mixamorig:RightHandRing2": 0.0,
+      "mixamorig:LeftHandRing3|mixamorig:RightHandRing3": 0.0,
+      "mixamorig:LeftHandRing4|mixamorig:RightHandRing4": 0.0,
+      "mixamorig:LeftHandThumb1|mixamorig:RightHandThumb1": 0.0,
+      "mixamorig:LeftHandThumb2|mixamorig:RightHandThumb2": 0.0,
+      "mixamorig:LeftHandThumb3|mixamorig:RightHandThumb3": 0.0,
+      "mixamorig:LeftHandThumb4|mixamorig:RightHandThumb4": 0.0
+    }
+  },
+  "jointRestWorldPositions": {
+    "Hips": [
+      -0.0035157576203346252,
+      0.00351562537252903,
+      0.9949226975440979
+    ],
+    "LeftUpLeg": [
+      -0.09492194652557373,
+      0.03164061903953552,
+      0.9527351260185242
+    ],
+    "LeftFoot": [
+      -0.20039130747318268,
+      -0.05976538732647896,
+      0.08789268136024475
+    ],
+    "LeftArm": [
+      -0.17226576805114746,
+      -0.05273445323109627,
+      1.4378912448883057
+    ],
+    "LeftHand": [
+      -0.5840209722518921,
+      -0.028341049328446388,
+      1.1638020277023315
+    ],
+    "RightHand": [
+      0.585067629814148,
+      -0.028529124334454536,
+      1.163503646850586
+    ]
+  },
+  "poseSnapshots": {
+    "ready-front": {
+      "RightUpLeg": {
+        "head": [
+          0.08789,
+          0.03164,
+          0.95274
+        ],
+        "tail": [
+          0.12046,
+          0.16463,
+          0.52125
+        ]
+      },
+      "LeftArm": {
+        "head": [
+          -0.17227,
+          -0.05273,
+          1.43789
+        ],
+        "tail": [
+          -0.17454,
+          -0.01723,
+          1.16436
+        ]
+      },
+      "LeftForeArm": {
+        "head": [
+          -0.17454,
+          -0.01723,
+          1.16436
+        ],
+        "tail": [
+          -0.24672,
+          -0.21489,
+          1.2423
+        ]
+      },
+      "LeftHand": {
+        "head": [
+          -0.24672,
+          -0.21489,
+          1.2423
+        ],
+        "tail": [
+          -0.27001,
+          -0.24001,
+          1.28
+        ]
+      },
+      "RightArm": {
+        "head": [
+          0.16523,
+          -0.05273,
+          1.43789
+        ],
+        "tail": [
+          0.26368,
+          -0.28443,
+          1.55064
+        ]
+      },
+      "RightForeArm": {
+        "head": [
+          0.26368,
+          -0.28443,
+          1.55064
+        ],
+        "tail": [
+          0.29096,
+          -0.25993,
+          1.32252
+        ]
+      },
+      "RightHand": {
+        "head": [
+          0.29096,
+          -0.25993,
+          1.32252
+        ],
+        "tail": [
+          0.27001,
+          -0.24001,
+          1.27998
+        ]
+      }
+    },
+    "ready-side": {
+      "RightUpLeg": {
+        "head": [
+          0.08789,
+          0.03164,
+          0.95274
+        ],
+        "tail": [
+          0.12046,
+          0.16463,
+          0.52125
+        ]
+      },
+      "LeftArm": {
+        "head": [
+          -0.17227,
+          -0.05273,
+          1.43789
+        ],
+        "tail": [
+          -0.17454,
+          -0.01723,
+          1.16436
+        ]
+      },
+      "LeftForeArm": {
+        "head": [
+          -0.17454,
+          -0.01723,
+          1.16436
+        ],
+        "tail": [
+          -0.24672,
+          -0.21489,
+          1.2423
+        ]
+      },
+      "LeftHand": {
+        "head": [
+          -0.24672,
+          -0.21489,
+          1.2423
+        ],
+        "tail": [
+          -0.27001,
+          -0.24001,
+          1.28
+        ]
+      },
+      "RightArm": {
+        "head": [
+          0.16523,
+          -0.05273,
+          1.43789
+        ],
+        "tail": [
+          0.26368,
+          -0.28443,
+          1.55064
+        ]
+      },
+      "RightForeArm": {
+        "head": [
+          0.26368,
+          -0.28443,
+          1.55064
+        ],
+        "tail": [
+          0.29096,
+          -0.25993,
+          1.32252
+        ]
+      },
+      "RightHand": {
+        "head": [
+          0.29096,
+          -0.25993,
+          1.32252
+        ],
+        "tail": [
+          0.27001,
+          -0.24001,
+          1.27998
+        ]
+      }
+    },
+    "deep-dink-front": {
+      "RightUpLeg": {
+        "head": [
+          0.08789,
+          0.03164,
+          0.95274
+        ],
+        "tail": [
+          0.09747,
+          0.30398,
+          0.59126
+        ]
+      },
+      "LeftArm": {
+        "head": [
+          -0.17227,
+          -0.05273,
+          1.43789
+        ],
+        "tail": [
+          -0.13035,
+          -0.10688,
+          1.17069
+        ]
+      },
+      "LeftForeArm": {
+        "head": [
+          -0.13035,
+          -0.10688,
+          1.17069
+        ],
+        "tail": [
+          -0.2582,
+          -0.27256,
+          1.08969
+        ]
+      },
+      "LeftHand": {
+        "head": [
+          -0.2582,
+          -0.27256,
+          1.08969
+        ],
+        "tail": [
+          -0.3,
+          -0.3,
+          1.08
+        ]
+      },
+      "RightArm": {
+        "head": [
+          0.16523,
+          -0.05273,
+          1.43789
+        ],
+        "tail": [
+          0.33895,
+          -0.24877,
+          1.35139
+        ]
+      },
+      "RightForeArm": {
+        "head": [
+          0.33895,
+          -0.24877,
+          1.35139
+        ],
+        "tail": [
+          0.32369,
+          -0.29069,
+          1.1247
+        ]
+      },
+      "RightHand": {
+        "head": [
+          0.32369,
+          -0.29069,
+          1.1247
+        ],
+        "tail": [
+          0.3,
+          -0.3,
+          1.08
+        ]
+      }
+    },
+    "deep-dink-side": {
+      "RightUpLeg": {
+        "head": [
+          0.08789,
+          0.03164,
+          0.95274
+        ],
+        "tail": [
+          0.09747,
+          0.30398,
+          0.59126
+        ]
+      },
+      "LeftArm": {
+        "head": [
+          -0.17227,
+          -0.05273,
+          1.43789
+        ],
+        "tail": [
+          -0.13035,
+          -0.10688,
+          1.17069
+        ]
+      },
+      "LeftForeArm": {
+        "head": [
+          -0.13035,
+          -0.10688,
+          1.17069
+        ],
+        "tail": [
+          -0.2582,
+          -0.27256,
+          1.08969
+        ]
+      },
+      "LeftHand": {
+        "head": [
+          -0.2582,
+          -0.27256,
+          1.08969
+        ],
+        "tail": [
+          -0.3,
+          -0.3,
+          1.08
+        ]
+      },
+      "RightArm": {
+        "head": [
+          0.16523,
+          -0.05273,
+          1.43789
+        ],
+        "tail": [
+          0.33895,
+          -0.24877,
+          1.35139
+        ]
+      },
+      "RightForeArm": {
+        "head": [
+          0.33895,
+          -0.24877,
+          1.35139
+        ],
+        "tail": [
+          0.32369,
+          -0.29069,
+          1.1247
+        ]
+      },
+      "RightHand": {
+        "head": [
+          0.32369,
+          -0.29069,
+          1.1247
+        ],
+        "tail": [
+          0.3,
+          -0.3,
+          1.08
+        ]
+      }
+    },
+    "wide-lunge-front": {
+      "RightUpLeg": {
+        "head": [
+          0.08789,
+          0.03164,
+          0.95274
+        ],
+        "tail": [
+          0.13198,
+          0.07657,
+          0.50445
+        ]
+      },
+      "LeftArm": {
+        "head": [
+          -0.17227,
+          -0.05273,
+          1.43789
+        ],
+        "tail": [
+          -0.36139,
+          -0.13221,
+          1.25349
+        ]
+      },
+      "LeftForeArm": {
+        "head": [
+          -0.36139,
+          -0.13221,
+          1.25349
+        ],
+        "tail": [
+          -0.51507,
+          -0.19711,
+          1.10341
+        ]
+      },
+      "LeftHand": {
+        "head": [
+          -0.51507,
+          -0.19711,
+          1.10341
+        ],
+        "tail": [
+          -0.5501,
+          -0.21163,
+          1.06941
+        ]
+      },
+      "RightArm": {
+        "head": [
+          0.16523,
+          -0.05273,
+          1.43789
+        ],
+        "tail": [
+          0.22011,
+          -0.32202,
+          1.46161
+        ]
+      },
+      "RightForeArm": {
+        "head": [
+          0.22011,
+          -0.32202,
+          1.46161
+        ],
+        "tail": [
+          0.34364,
+          -0.29866,
+          1.26776
+        ]
+      },
+      "RightHand": {
+        "head": [
+          0.34364,
+          -0.29866,
+          1.26776
+        ],
+        "tail": [
+          0.34003,
+          -0.28002,
+          1.21995
+        ]
+      }
+    },
+    "wide-lunge-side": {
+      "RightUpLeg": {
+        "head": [
+          0.08789,
+          0.03164,
+          0.95274
+        ],
+        "tail": [
+          0.13198,
+          0.07657,
+          0.50445
+        ]
+      },
+      "LeftArm": {
+        "head": [
+          -0.17227,
+          -0.05273,
+          1.43789
+        ],
+        "tail": [
+          -0.36139,
+          -0.13221,
+          1.25349
+        ]
+      },
+      "LeftForeArm": {
+        "head": [
+          -0.36139,
+          -0.13221,
+          1.25349
+        ],
+        "tail": [
+          -0.51507,
+          -0.19711,
+          1.10341
+        ]
+      },
+      "LeftHand": {
+        "head": [
+          -0.51507,
+          -0.19711,
+          1.10341
+        ],
+        "tail": [
+          -0.5501,
+          -0.21163,
+          1.06941
+        ]
+      },
+      "RightArm": {
+        "head": [
+          0.16523,
+          -0.05273,
+          1.43789
+        ],
+        "tail": [
+          0.22011,
+          -0.32202,
+          1.46161
+        ]
+      },
+      "RightForeArm": {
+        "head": [
+          0.22011,
+          -0.32202,
+          1.46161
+        ],
+        "tail": [
+          0.34364,
+          -0.29866,
+          1.26776
+        ]
+      },
+      "RightHand": {
+        "head": [
+          0.34364,
+          -0.29866,
+          1.26776
+        ],
+        "tail": [
+          0.34003,
+          -0.28002,
+          1.21995
+        ]
+      }
+    },
+    "smash-front": {
+      "RightUpLeg": {
+        "head": [
+          0.08789,
+          0.03164,
+          0.95274
+        ],
+        "tail": [
+          0.13711,
+          0.03164,
+          0.50274
+        ]
+      },
+      "LeftArm": {
+        "head": [
+          -0.17227,
+          0.04341,
+          1.43376
+        ],
+        "tail": [
+          -0.25805,
+          0.04743,
+          1.69589
+        ]
+      },
+      "LeftForeArm": {
+        "head": [
+          -0.25805,
+          0.04743,
+          1.69589
+        ],
+        "tail": [
+          -0.09973,
+          -0.08963,
+          1.77654
+        ]
+      },
+      "LeftHand": {
+        "head": [
+          -0.09973,
+          -0.08963,
+          1.77654
+        ],
+        "tail": [
+          -0.04999,
+          -0.10001,
+          1.78002
+        ]
+      },
+      "RightArm": {
+        "head": [
+          0.16523,
+          0.04341,
+          1.43376
+        ],
+        "tail": [
+          0.24905,
+          -0.09935,
+          1.6544
+        ]
+      },
+      "RightForeArm": {
+        "head": [
+          0.24905,
+          -0.09935,
+          1.6544
+        ],
+        "tail": [
+          0.16546,
+          -0.09112,
+          1.86964
+        ]
+      },
+      "RightHand": {
+        "head": [
+          0.16546,
+          -0.09112,
+          1.86964
+        ],
+        "tail": [
+          0.16,
+          -0.1,
+          1.92001
+        ]
+      }
+    },
+    "smash-side": {
+      "RightUpLeg": {
+        "head": [
+          0.08789,
+          0.03164,
+          0.95274
+        ],
+        "tail": [
+          0.13711,
+          0.03164,
+          0.50274
+        ]
+      },
+      "LeftArm": {
+        "head": [
+          -0.17227,
+          0.04341,
+          1.43376
+        ],
+        "tail": [
+          -0.25805,
+          0.04743,
+          1.69589
+        ]
+      },
+      "LeftForeArm": {
+        "head": [
+          -0.25805,
+          0.04743,
+          1.69589
+        ],
+        "tail": [
+          -0.09973,
+          -0.08963,
+          1.77654
+        ]
+      },
+      "LeftHand": {
+        "head": [
+          -0.09973,
+          -0.08963,
+          1.77654
+        ],
+        "tail": [
+          -0.04999,
+          -0.10001,
+          1.78002
+        ]
+      },
+      "RightArm": {
+        "head": [
+          0.16523,
+          0.04341,
+          1.43376
+        ],
+        "tail": [
+          0.24905,
+          -0.09935,
+          1.6544
+        ]
+      },
+      "RightForeArm": {
+        "head": [
+          0.24905,
+          -0.09935,
+          1.6544
+        ],
+        "tail": [
+          0.16546,
+          -0.09112,
+          1.86964
+        ]
+      },
+      "RightHand": {
+        "head": [
+          0.16546,
+          -0.09112,
+          1.86964
+        ],
+        "tail": [
+          0.16,
+          -0.1,
+          1.92001
+        ]
+      }
+    },
+    "trunk-turn-front": {
+      "RightUpLeg": {
+        "head": [
+          0.08138,
+          0.04755,
+          0.95274
+        ],
+        "tail": [
+          0.1298,
+          0.05636,
+          0.50274
+        ]
+      },
+      "LeftArm": {
+        "head": [
+          -0.10956,
+          -0.17708,
+          1.42788
+        ],
+        "tail": [
+          -0.23996,
+          -0.35969,
+          1.26745
+        ]
+      },
+      "LeftForeArm": {
+        "head": [
+          -0.23996,
+          -0.35969,
+          1.26745
+        ],
+        "tail": [
+          -0.38597,
+          -0.45934,
+          1.12923
+        ]
+      },
+      "LeftHand": {
+        "head": [
+          -0.38597,
+          -0.45934,
+          1.12923
+        ],
+        "tail": [
+          -0.41108,
+          -0.47731,
+          1.08872
+        ]
+      },
+      "RightArm": {
+        "head": [
+          0.1163,
+          0.0729,
+          1.4479
+        ],
+        "tail": [
+          0.29648,
+          0.23401,
+          1.31499
+        ]
+      },
+      "RightForeArm": {
+        "head": [
+          0.29648,
+          0.23401,
+          1.31499
+        ],
+        "tail": [
+          0.39659,
+          0.40645,
+          1.19827
+        ]
+      },
+      "RightHand": {
+        "head": [
+          0.39659,
+          0.40645,
+          1.19827
+        ],
+        "tail": [
+          0.41494,
+          0.43657,
+          1.16082
+        ]
+      }
+    },
+    "trunk-turn-side": {
+      "RightUpLeg": {
+        "head": [
+          0.08138,
+          0.04755,
+          0.95274
+        ],
+        "tail": [
+          0.1298,
+          0.05636,
+          0.50274
+        ]
+      },
+      "LeftArm": {
+        "head": [
+          -0.10956,
+          -0.17708,
+          1.42788
+        ],
+        "tail": [
+          -0.23996,
+          -0.35969,
+          1.26745
+        ]
+      },
+      "LeftForeArm": {
+        "head": [
+          -0.23996,
+          -0.35969,
+          1.26745
+        ],
+        "tail": [
+          -0.38597,
+          -0.45934,
+          1.12923
+        ]
+      },
+      "LeftHand": {
+        "head": [
+          -0.38597,
+          -0.45934,
+          1.12923
+        ],
+        "tail": [
+          -0.41108,
+          -0.47731,
+          1.08872
+        ]
+      },
+      "RightArm": {
+        "head": [
+          0.1163,
+          0.0729,
+          1.4479
+        ],
+        "tail": [
+          0.29648,
+          0.23401,
+          1.31499
+        ]
+      },
+      "RightForeArm": {
+        "head": [
+          0.29648,
+          0.23401,
+          1.31499
+        ],
+        "tail": [
+          0.39659,
+          0.40645,
+          1.19827
+        ]
+      },
+      "RightHand": {
+        "head": [
+          0.39659,
+          0.40645,
+          1.19827
+        ],
+        "tail": [
+          0.41494,
+          0.43657,
+          1.16082
+        ]
+      }
+    },
+    "pronation-front": {
+      "RightUpLeg": {
+        "head": [
+          0.08789,
+          0.03164,
+          0.95274
+        ],
+        "tail": [
+          0.13711,
+          0.03164,
+          0.50274
+        ]
+      },
+      "LeftArm": {
+        "head": [
+          -0.17227,
+          -0.05273,
+          1.43789
+        ],
+        "tail": [
+          -0.4043,
+          -0.07383,
+          1.29023
+        ]
+      },
+      "LeftForeArm": {
+        "head": [
+          -0.4043,
+          -0.07383,
+          1.29023
+        ],
+        "tail": [
+          -0.58402,
+          -0.02834,
+          1.1638
+        ]
+      },
+      "LeftHand": {
+        "head": [
+          -0.58402,
+          -0.02834,
+          1.1638
+        ],
+        "tail": [
+          -0.61654,
+          -0.02056,
+          1.12538
+        ]
+      },
+      "RightArm": {
+        "head": [
+          0.16523,
+          -0.05273,
+          1.43789
+        ],
+        "tail": [
+          0.39727,
+          -0.07383,
+          1.29024
+        ]
+      },
+      "RightForeArm": {
+        "head": [
+          0.39727,
+          -0.07383,
+          1.29024
+        ],
+        "tail": [
+          0.58507,
+          -0.02853,
+          1.1635
+        ]
+      },
+      "RightHand": {
+        "head": [
+          0.58507,
+          -0.02853,
+          1.1635
+        ],
+        "tail": [
+          0.60733,
+          -0.0387,
+          1.11826
+        ]
+      }
+    },
+    "pronation-side": {
+      "RightUpLeg": {
+        "head": [
+          0.08789,
+          0.03164,
+          0.95274
+        ],
+        "tail": [
+          0.13711,
+          0.03164,
+          0.50274
+        ]
+      },
+      "LeftArm": {
+        "head": [
+          -0.17227,
+          -0.05273,
+          1.43789
+        ],
+        "tail": [
+          -0.4043,
+          -0.07383,
+          1.29023
+        ]
+      },
+      "LeftForeArm": {
+        "head": [
+          -0.4043,
+          -0.07383,
+          1.29023
+        ],
+        "tail": [
+          -0.58402,
+          -0.02834,
+          1.1638
+        ]
+      },
+      "LeftHand": {
+        "head": [
+          -0.58402,
+          -0.02834,
+          1.1638
+        ],
+        "tail": [
+          -0.61654,
+          -0.02056,
+          1.12538
+        ]
+      },
+      "RightArm": {
+        "head": [
+          0.16523,
+          -0.05273,
+          1.43789
+        ],
+        "tail": [
+          0.39727,
+          -0.07383,
+          1.29024
+        ]
+      },
+      "RightForeArm": {
+        "head": [
+          0.39727,
+          -0.07383,
+          1.29024
+        ],
+        "tail": [
+          0.58507,
+          -0.02853,
+          1.1635
+        ]
+      },
+      "RightHand": {
+        "head": [
+          0.58507,
+          -0.02853,
+          1.1635
+        ],
+        "tail": [
+          0.60733,
+          -0.0387,
+          1.11826
+        ]
+      }
+    },
+    "fist-grip-front": {
+      "RightUpLeg": {
+        "head": [
+          0.08789,
+          0.03164,
+          0.95274
+        ],
+        "tail": [
+          0.13711,
+          0.03164,
+          0.50274
+        ]
+      },
+      "LeftArm": {
+        "head": [
+          -0.17227,
+          -0.05273,
+          1.43789
+        ],
+        "tail": [
+          -0.4043,
+          -0.07383,
+          1.29023
+        ]
+      },
+      "LeftForeArm": {
+        "head": [
+          -0.4043,
+          -0.07383,
+          1.29023
+        ],
+        "tail": [
+          -0.58402,
+          -0.02834,
+          1.1638
+        ]
+      },
+      "LeftHand": {
+        "head": [
+          -0.58402,
+          -0.02834,
+          1.1638
+        ],
+        "tail": [
+          -0.61654,
+          -0.02056,
+          1.12538
+        ]
+      },
+      "RightArm": {
+        "head": [
+          0.16523,
+          -0.05273,
+          1.43789
+        ],
+        "tail": [
+          0.39727,
+          -0.07383,
+          1.29024
+        ]
+      },
+      "RightForeArm": {
+        "head": [
+          0.39727,
+          -0.07383,
+          1.29024
+        ],
+        "tail": [
+          0.58507,
+          -0.02853,
+          1.1635
+        ]
+      },
+      "RightHand": {
+        "head": [
+          0.58507,
+          -0.02853,
+          1.1635
+        ],
+        "tail": [
+          0.61743,
+          -0.02073,
+          1.12429
+        ]
+      }
+    },
+    "fist-grip-side": {
+      "RightUpLeg": {
+        "head": [
+          0.08789,
+          0.03164,
+          0.95274
+        ],
+        "tail": [
+          0.13711,
+          0.03164,
+          0.50274
+        ]
+      },
+      "LeftArm": {
+        "head": [
+          -0.17227,
+          -0.05273,
+          1.43789
+        ],
+        "tail": [
+          -0.4043,
+          -0.07383,
+          1.29023
+        ]
+      },
+      "LeftForeArm": {
+        "head": [
+          -0.4043,
+          -0.07383,
+          1.29023
+        ],
+        "tail": [
+          -0.58402,
+          -0.02834,
+          1.1638
+        ]
+      },
+      "LeftHand": {
+        "head": [
+          -0.58402,
+          -0.02834,
+          1.1638
+        ],
+        "tail": [
+          -0.61654,
+          -0.02056,
+          1.12538
+        ]
+      },
+      "RightArm": {
+        "head": [
+          0.16523,
+          -0.05273,
+          1.43789
+        ],
+        "tail": [
+          0.39727,
+          -0.07383,
+          1.29024
+        ]
+      },
+      "RightForeArm": {
+        "head": [
+          0.39727,
+          -0.07383,
+          1.29024
+        ],
+        "tail": [
+          0.58507,
+          -0.02853,
+          1.1635
+        ]
+      },
+      "RightHand": {
+        "head": [
+          0.58507,
+          -0.02853,
+          1.1635
+        ],
+        "tail": [
+          0.61743,
+          -0.02073,
+          1.12429
+        ]
+      }
+    }
+  },
+  "camera": {
+    "front": "Blender +Y looking toward chest after source -90 degree Z turn",
+    "side": "Blender +X"
+  },
+  "poses": {
+    "ready": {
+      "before": [
+        "v2-ready-before-front.png",
+        "v2-ready-before-side.png"
+      ],
+      "after": [
+        "v2-ready-after-front.png",
+        "v2-ready-after-side.png"
+      ]
+    },
+    "deep-dink": {
+      "before": [
+        "v2-deep-dink-before-front.png",
+        "v2-deep-dink-before-side.png"
+      ],
+      "after": [
+        "v2-deep-dink-after-front.png",
+        "v2-deep-dink-after-side.png"
+      ]
+    },
+    "wide-lunge": {
+      "before": [
+        "v2-wide-lunge-before-front.png",
+        "v2-wide-lunge-before-side.png"
+      ],
+      "after": [
+        "v2-wide-lunge-after-front.png",
+        "v2-wide-lunge-after-side.png"
+      ]
+    },
+    "smash": {
+      "before": [
+        "v2-smash-before-front.png",
+        "v2-smash-before-side.png"
+      ],
+      "after": [
+        "v2-smash-after-front.png",
+        "v2-smash-after-side.png"
+      ]
+    },
+    "trunk-turn": {
+      "before": [
+        "v2-trunk-turn-before-front.png",
+        "v2-trunk-turn-before-side.png"
+      ],
+      "after": [
+        "v2-trunk-turn-after-front.png",
+        "v2-trunk-turn-after-side.png"
+      ]
+    },
+    "pronation": {
+      "before": [
+        "v2-pronation-before-front.png",
+        "v2-pronation-before-side.png"
+      ],
+      "after": [
+        "v2-pronation-after-front.png",
+        "v2-pronation-after-side.png"
+      ]
+    },
+    "fist-grip": {
+      "before": [
+        "v2-fist-grip-before-front.png",
+        "v2-fist-grip-before-side.png"
+      ],
+      "after": [
+        "v2-fist-grip-after-front.png",
+        "v2-fist-grip-after-side.png"
+      ]
+    }
+  },
+  "notes": "Before renders use untouched Tripo weights. After renders use source-space KD-tree mirroring and targeted arm-side trunk cleanup before app normalization. Pose snapshots are captured after IK/pose evaluation and before each render."
+}

@@ -1,0 +1,159 @@
+{
+  "url": "http://localhost:4173/",
+  "startedAt": "2026-10-08T15:43:56.440Z",
+  "glbResponses": [
+    {
+      "url": "http://localhost:4173/models/male-base.glb",
+      "bytes": 269968
+    },
+    {
+      "url": "http://localhost:4173/models/male-base.glb",
+      "bytes": 269968
+    },
+    {
+      "url": "http://localhost:4173/models/male-base.glb",
+      "bytes": 269968
+    },
+    {
+      "url": "http://localhost:4173/models/male-base.glb",
+      "bytes": 269968
+    },
+    {
+      "url": "http://localhost:4173/models/male-base.glb",
+      "bytes": 269968
+    },
+    {
+      "url": "http://localhost:4173/models/male-base.glb",
+      "bytes": 269968
+    },
+    {
+      "url": "http://localhost:4173/models/male-base.glb",
+      "bytes": 269968
+    },
+    {
+      "url": "http://localhost:4173/models/male-base.glb",
+      "bytes": 269968
+    },
+    {
+      "url": "http://localhost:4173/models/male-base.glb",
+      "bytes": 269968
+    },
+    {
+      "url": "http://localhost:4173/models/male-base.glb",
+      "bytes": 269968
+    },
+    {
+      "url": "http://localhost:4173/models/male-base.glb",
+      "bytes": 269968
+    },
+    {
+      "url": "http://localhost:4173/models/male-base.glb",
+      "bytes": 269968
+    },
+    {
+      "url": "http://localhost:4173/models/male-base.glb",
+      "bytes": 269968
+    },
+    {
+      "url": "http://localhost:4173/models/male-base.glb",
+      "bytes": 269968
+    },
+    {
+      "url": "http://localhost:4173/models/male-base.glb",
+      "bytes": 269968
+    }
+  ],
+  "shots": {
+    "serve": {
+      "backswing": {
+        "file": "serve-backswing.png",
+        "playbackState": "Đang phát",
+        "delayMs": 100
+      },
+      "contact": {
+        "file": "serve-contact.png",
+        "playbackState": "Đang phát",
+        "delayMs": 300
+      },
+      "follow-through": {
+        "file": "serve-follow-through.png",
+        "playbackState": "Đang phát",
+        "delayMs": 500
+      },
+      "phasesVisiblyDiffer": true
+    },
+    "dink": {
+      "backswing": {
+        "file": "dink-backswing.png",
+        "playbackState": "Đang phát",
+        "delayMs": 100
+      },
+      "contact": {
+        "file": "dink-contact.png",
+        "playbackState": "Đang phát",
+        "delayMs": 300
+      },
+      "follow-through": {
+        "file": "dink-follow-through.png",
+        "playbackState": "Đang phát",
+        "delayMs": 500
+      },
+      "phasesVisiblyDiffer": true
+    },
+    "volley": {
+      "backswing": {
+        "file": "volley-backswing.png",
+        "playbackState": "Đang phát",
+        "delayMs": 100
+      },
+      "contact": {
+        "file": "volley-contact.png",
+        "playbackState": "Đang phát",
+        "delayMs": 300
+      },
+      "follow-through": {
+        "file": "volley-follow-through.png",
+        "playbackState": "Đang phát",
+        "delayMs": 500
+      },
+      "phasesVisiblyDiffer": true
+    },
+    "smash": {
+      "backswing": {
+        "file": "smash-backswing.png",
+        "playbackState": "Đang phát",
+        "delayMs": 100
+      },
+      "contact": {
+        "file": "smash-contact.png",
+        "playbackState": "Đang phát",
+        "delayMs": 300
+      },
+      "follow-through": {
+        "file": "smash-follow-through.png",
+        "playbackState": "Đang phát",
+        "delayMs": 500
+      },
+      "phasesVisiblyDiffer": true
+    }
+  },
+  "humanoidsVisibleMs": 2053,
+  "frameTimesMs": {
+    "samples": 598,
+    "mean": 8.361371237458194,
+    "p95": 8.400000000000546,
+    "max": 16.59999999999991,
+    "durationMs": 5007
+  },
+  "rallyDuration": "00:01",
+  "rallyCaptureClocks": [
+    "00:00",
+    "00:00",
+    "00:00",
+    "00:00",
+    "00:00",
+    "00:00"
+  ],
+  "rallyConsecutiveImagesDiffer": true,
+  "finishedAt": "2026-10-08T15:44:20.047Z"
+}

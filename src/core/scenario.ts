@@ -61,7 +61,7 @@ export function initialScenario(): Scenario {
         note: "",
         shot: {
           hitter: "A2",
-          from: { x: -1.5, y: 0.8, z: 4.9 },
+          from: { x: -1.5, y: 0.6, z: 4.9 },
           to: { x: 1.5, z: -4.3 },
           type: "serve",
           apex: 1.5,

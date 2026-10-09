@@ -1,0 +1,32 @@
+{
+  "version": "v2",
+  "vertexCountBeforeWeld": 5087,
+  "vertexCountAfterWeld": 4395,
+  "maxInfluences": 4,
+  "weightSumRange": [1.0, 1.0],
+  "auditBefore": {
+    "trunkUpperArm": 235,
+    "trunkUpperArmArmSideBelowArmpit": 123,
+    "clavicleTrunk": 383,
+    "clavicleUpperArm": 323,
+    "distalUpperArm": 150,
+    "illegalLeftRight": 109
+  },
+  "auditAfter": {
+    "trunkUpperArm": 87,
+    "trunkUpperArmArmSideBelowArmpit": 0,
+    "clavicleTrunk": 215,
+    "clavicleUpperArm": 261,
+    "distalUpperArm": 140,
+    "illegalLeftRight": 81
+  },
+  "lrAsymmetryMeanBefore": 0.030031132546172602,
+  "lrAsymmetryMeanAfter": 0.00000021876229412453115,
+  "kdTreeMirror": {
+    "lateralAxis": "Blender Y on source",
+    "copied": 2499,
+    "misses": 0
+  },
+  "armTrunkVerticesCleaned": 370,
+  "notes": "Source-space KD-tree name-swapping mirror, targeted side-specific trunk/upper-arm cleanup below the armpit plane, weld, Limit Total 4, Normalize All."
+}

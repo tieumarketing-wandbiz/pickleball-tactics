@@ -17,7 +17,7 @@ Mở URL Vite hiển thị. `npm run build` tạo thư mục `dist`; `npm run pr
 - **Xoay sân:** kéo để orbit; dùng 3D / Top / Baseline / Side để đổi góc nhìn. Trên điện thoại, chụm hai ngón để zoom trong chế độ xoay.
 - Bảng cú đánh có 15 lựa chọn: Giao bóng, Drive, Dink, Drop, Lob, Volley, Smash, Block volley, Punch volley, Reset, Speed-up, Roll, Flick, ATP và Erne. Chọn người đánh, loại cú và **Đặt điểm rơi trên sân**. Có thể chọn vùng ngoài sân để thử OUT. Esc hủy chọn điểm.
 - **Đón bóng / forehand-backhand:** app tự lấy điểm bóng đến từ cú trước. Kéo người nhận để app tìm vị trí đón trên lần nảy đầu và hiển thị vợt/FH/BH; không cần đặt điểm tiếp xúc hoặc cố định bóng bằng tay. Người nhận ngoài sân có thể đón bóng nảy để đánh ATP. Ngoài tầm với 1.1 m vẫn có cảnh báo.
-- **Mô hình người / chuyển động:** dùng file GLB người dùng cung cấp, chuẩn hóa cao 1.8 m và thêm rig 19 xương (file gốc không có xương/animation). Vai, thân, cánh tay, bàn tay, hông, gối và cổ chân biến dạng cùng mesh; màu áo phân biệt đội. Tư thế lấy từ điểm tiếp xúc, hướng trả và loại cú; Play có chuẩn bị, theo đà, phục hồi và bước chân với chân trụ giữ điểm tiếp đất. Đây là chuyển động thủ tục minh họa kỹ thuật, không phải mocap.
+- **Mô hình người / chuyển động:** ứng dụng đóng gói file GLB `public/models/male-base.glb` từ mesh do người dùng cung cấp, chuẩn hóa cao 1.8 m và hiện thêm rig 19 xương ở runtime (file gốc không có xương/animation). Vai, thân, cánh tay, bàn tay, hông, gối và cổ chân biến dạng cùng mesh; màu áo phân biệt đội. Tư thế lấy từ điểm tiếp xúc, hướng trả và loại cú; Play có chuẩn bị, theo đà, phục hồi và bước chân với chân trụ giữ điểm tiếp đất. Đây là chuyển động thủ tục minh họa kỹ thuật, không phải mocap.
 - **Động tác riêng cho 15 cú:** lấy đà, chạm bóng, theo đà và phục hồi; Drive/Serve kết thúc qua vai, Smash xuống hông đối diện, Dink/Reset/Block có động tác ngắn, Roll/Flick xoay cổ tay rõ hơn, ATP hạ người ngoài biên và Erne bật nhẹ sang bên. Vợt có mặt dày, viền và cán quấn, nằm trong tay ở cả tư thế chờ. [Chi tiết động tác và tham khảo kỹ thuật](docs/stroke-motion.md).
 - **Đổi nhãn đồng đội:** A1 ở vị trí A2 cũ, A2 ở A1 cũ; B1 ở B2 cũ, B2 ở B1 cũ. Kịch bản cũ được đổi ID/người đánh một lần và giữ nguyên tọa độ đường bóng. JSON mới lưu `playerLayout: 2` để reload/import không hoán đổi lần nữa.
 - **Dink sát lưới:** điểm rơi chọn chính xác tới 0.01 m, không ép ra xa lưới. App tự nâng vòm nếu cần để vượt lưới ít nhất 4 cm, giới hạn đỉnh 12 m; có thể chỉnh đỉnh bằng tay. Nếu không thể qua lưới, giữ đúng điểm bạn chọn và báo NET. Dink dài/cross-court có thể rơi trong kitchen rồi nảy vượt biên: bật Dứt điểm, xem trail nét đứt màu cam và cảnh báo riêng; lần rơi đầu vẫn được tính IN.
@@ -58,7 +58,7 @@ npm run test:e2e
 npm run test:contact
 ```
 
-Các kiểm tra trình duyệt yêu cầu Vite đang chạy trên cổng 5173 và Chromium của Playwright (`npx playwright install chromium` nếu máy chưa có). Dùng biến `PREVIEW_URL` nếu đổi địa chỉ. Test browser kiểm tra kéo đủ 4 người, chọn điểm OUT/OK, tạo 3 bước, pause/resume, JSON, reload, link và mobile.
+Các kiểm tra trình duyệt yêu cầu Vite đang chạy trên cổng 5173 và Chromium của Playwright (`npx playwright install chromium` nếu máy chưa có). `npm run test:e2e` (script `tests/browser.mjs`) tôn trọng biến `PREVIEW_URL`; `test:contact` và `test:volley` hiện dùng URL cố định http://localhost:5173/. Test browser kiểm tra kéo đủ 4 người, chọn điểm OUT/OK, tạo 3 bước, pause/resume, JSON, reload, link và mobile. `npm run test:volley` kiểm tra luồng đón volley giữa đường bay, gồm cập nhật tiếp xúc, preview và playback.
 
 ## Cloudflare Pages
 
@@ -66,4 +66,4 @@ Dự án là website tĩnh, đã sẵn sàng cấu hình Pages: build command `n
 
 ## Cấu trúc
 
-`src/core` chứa model, quỹ đạo, playback; `src/state` giữ trạng thái và tự lưu; `src/scene` tạo sân, capsule và bóng; `src/ui` tạo toolbar/timeline. `src/main.ts` nối scene với tương tác và vòng render, chỉ tiếp tục vẽ khi có thay đổi camera/state hoặc đang phát. Tab ẩn giữ thời gian phát. Font Be Vietnam Pro từ Google Fonts, có fallback system khi offline; geometry, texture lưới và nhãn được tạo bằng code, không dùng asset 3D ngoài.
+`src/core` chứa model, quỹ đạo, playback; `src/state` giữ trạng thái và tự lưu; `src/scene` tạo sân, capsule và bóng; `src/ui` tạo toolbar/timeline. `src/main.ts` nối scene với tương tác và vòng render, chỉ tiếp tục vẽ khi có thay đổi camera/state hoặc đang phát. Tab ẩn giữ thời gian phát. Font Be Vietnam Pro từ Google Fonts, có fallback system khi offline; geometry, texture lưới và nhãn được tạo bằng code. Mô hình người là asset 3D GLB được đóng gói tại `public/models/male-base.glb`.

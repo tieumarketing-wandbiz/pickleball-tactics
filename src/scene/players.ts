@@ -1,5 +1,5 @@
 import { strokeSide } from "../core/contact";
-import { Humanoid, loadHumanoidGeometry } from "./humanoid";
+import { Humanoid, loadHumanoidRig } from "./humanoid";
 import * as THREE from "three";
 import type { Player, Shot } from "../core/scenario";
 import type { PlayerId } from "../core/constants";
@@ -155,14 +155,13 @@ export class Players {
       this.markers.set(p.id, marker);
     }
     this.update(players);
-    this.ready = loadHumanoidGeometry().then((geometry) => {
+    this.ready = loadHumanoidRig().then((template) => {
       for (const [id, rig] of this.rigs) {
-        rig.actor = new Humanoid(geometry, id.startsWith("A") ? "A" : "B");
+        rig.actor = new Humanoid(template, id.startsWith("A") ? "A" : "B");
         rig.actor.mesh.userData.id = id;
-        this.markers.get(id)!.add(rig.actor.mesh);
+        this.markers.get(id)!.add(rig.actor.root);
         this.pickables.push(rig.actor.mesh);
       }
-      geometry.dispose();
       if (this.lastPose)
         this.poseShot(
           this.lastPose.shot,

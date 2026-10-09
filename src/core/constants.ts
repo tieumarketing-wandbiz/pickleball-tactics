@@ -88,12 +88,14 @@ export const DEFAULT_HEIGHT: Record<ShotType, number> = Object.fromEntries(
   SHOT_TYPES.map((type) => [
     type,
     type === "smash"
-      ? 2.3
-      : type === "atp"
-        ? 0.25
-        : type === "erne"
-          ? 1.05
-          : 0.8,
+      ? 2.2 // guide video: overhead contact 0.3–0.4 m above the head
+      : type === "serve"
+        ? 0.6 // guide video: underhand contact 0.45–0.6 m (rig arm reach caps it at the top)
+        : type === "atp"
+          ? 0.25
+          : type === "erne"
+            ? 1.05
+            : 0.8,
   ]),
 ) as Record<ShotType, number>;
 export const VOLLEY_TYPES: ReadonlySet<ShotType> = new Set([

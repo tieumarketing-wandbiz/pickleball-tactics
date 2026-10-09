@@ -2,3 +2,11 @@ node_modules/
 dist/
 .playwright/
 test-results/
+# multi-agent working files
+.agents/logs/
+.agents/qa/baseline-dist/
+tools/rig/out/*.png
+assets-src/*
+!assets-src/mixamo/
+assets-src/mixamo/*
+!assets-src/mixamo/clips-map.json

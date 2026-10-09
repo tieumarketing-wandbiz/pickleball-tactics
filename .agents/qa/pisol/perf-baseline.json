@@ -1,0 +1,20 @@
+{
+  "uniqueFrames": 58,
+  "renderCountDelta": 118,
+  "spanElapsed": 1.0250000000000006,
+  "meanCpuMs": 3.246551724215006,
+  "maxCpuMs": 6.199999999254942,
+  "calls": [
+    108
+  ],
+  "triangles": [
+    41440
+  ],
+  "gpuSupported": true,
+  "meanGpuMs": 2.1181654237288137,
+  "resources": {
+    "geometries": 90,
+    "textures": 22
+  },
+  "errors": []
+}

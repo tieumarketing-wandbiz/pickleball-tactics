@@ -39,8 +39,11 @@ describe("player posture", () => {
       follow = playerPose(p, shot, 0.22),
       ready = playerPose(p, shot, 1.2);
     expect(prepare.paddle.z).toBeGreaterThan(contact.paddle.z);
-    expect(follow.paddle.z).toBeLessThan(contact.paddle.z);
-    expect(ready.paddle.y).toBe(1.12);
+    // drive finish (technique-research E2): up and across the body
+    expect(follow.paddle.y).toBeGreaterThan(contact.paddle.y + 0.4);
+    const idle = playerPose(p).paddle; // shared ready stance
+    for (const k of ["x", "y", "z"] as const)
+      expect(ready.paddle[k]).toBeCloseTo(idle[k], 9);
     expect(ready.roll).toBeCloseTo(0, 8);
   });
   it("points the paddle down from the hand for low contact", () => {
@@ -51,7 +54,11 @@ describe("player posture", () => {
     expect(
       playerPose(p, { ...shot, from: { ...shot.from, y: 2.3 } }, 0).paddleRoll,
     ).toBeCloseTo(0, 8);
-    expect(playerPose(p, shot, 1.2).paddleRoll).toBeCloseTo(0, 8);
+    // Recovered paddle matches the idle ready stance (paddle head up ~65°, tilted to the dominant side).
+    expect(playerPose(p, shot, 1.2).paddleRoll).toBeCloseTo(
+      playerPose(p).paddleRoll,
+      8,
+    );
   });
   it("stays finite for every shot, zero travel and unreachable contacts", () => {
     for (const type of SHOT_TYPES)
@@ -78,5 +85,34 @@ describe("player posture", () => {
         expect(pose.hip.y).toBeGreaterThan(0.4);
         expect(Math.abs(pose.roll)).toBeLessThanOrEqual(0.32);
       }
+  });
+});
+
+describe("kitchen rule", () => {
+  it("never puts a volleying or smashing foot on or over the kitchen line", async () => {
+    const { COURT } = await import("../src/core/constants");
+    const { TOE_REACH } = await import("../src/core/player-pose");
+    for (const type of ["volley", "punch", "block", "smash"] as const)
+      for (const id of ["A1", "B1"] as const)
+        for (let t = -0.5; t <= 1; t += 0.05) {
+          const side = id === "A1" ? 1 : -1;
+          const player: Player = { id, x: 0, z: side * 2.3 };
+          const pose = playerPose(
+            player,
+            {
+              hitter: id,
+              type,
+              from: { x: 0.2, y: 1.1, z: side * 1.9 },
+              to: { x: 0, z: -side * 5 },
+              apex: 2,
+              volley: true,
+            },
+            t,
+          );
+          for (const foot of [pose.feet.L, pose.feet.R]) {
+            const toe = player.z + foot.z + pose.forward.z * TOE_REACH;
+            expect(side * toe).toBeGreaterThan(COURT.kitchen);
+          }
+        }
   });
 });

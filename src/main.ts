@@ -132,6 +132,8 @@ let pointerStart: { x: number; y: number } | undefined;
 let activePointer: number | undefined;
 let frame = 0;
 let lastTime = 0;
+const renderStats = { renders: 0, cpuMs: 0, calls: 0, triangles: 0, elapsed: 0, playing: false };
+if (import.meta.env.DEV) Object.assign(window, { __courtDebug: { stats: renderStats, renderer } });
 function invalidate() {
   dirty = true;
   requestFrame();
@@ -532,6 +534,7 @@ function startPlayback(preview = false) {
   requestFrame();
 }
 function tick(time: number) {
+  const cpuStart = performance.now();
   frame = 0;
   const dt = lastTime ? Math.max(0, (time - lastTime) / 1000) : 0;
   lastTime = time;
@@ -598,6 +601,9 @@ function tick(time: number) {
   }
   if (dirty || cameraMoving) {
     renderer.render(scene, camera);
+    Object.assign(renderStats, { renders: renderStats.renders + 1, cpuMs: performance.now() - cpuStart,
+      calls: renderer.info.render.calls, triangles: renderer.info.render.triangles,
+      elapsed: session?.elapsed ?? 0, playing: store.playing });
     dirty = false;
   }
   if (store.playing || cameraMoving) requestFrame();

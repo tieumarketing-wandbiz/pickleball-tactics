@@ -1,0 +1,17 @@
+<!doctype html>
+<!-- Dev-only pose inspection page (not part of the build). Open /src/debug/pose-lab.html?type=serve -->
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>pose lab</title>
+    <style>
+      body { margin: 0; background: #1b262c; color: #eee; font: 12px monospace; }
+      #labels { position: absolute; inset: 0; pointer-events: none; }
+      #labels div { position: absolute; padding: 2px 4px; }
+    </style>
+  </head>
+  <body>
+    <div id="labels"></div>
+    <script type="module" src="./pose-lab.ts"></script>
+  </body>
+</html>

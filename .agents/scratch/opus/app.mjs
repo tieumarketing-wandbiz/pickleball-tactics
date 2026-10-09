@@ -1,0 +1,13 @@
+import { chromium } from "@playwright/test";
+const out = process.argv[2];
+const b = await chromium.launch({ headless: true, channel: "msedge" });
+const page = await b.newPage({ viewport: { width: 1440, height: 950 } });
+const errs = []; page.on("pageerror", e => errs.push(e.message)); page.on("console", m => m.type()==="error" && errs.push(m.text()));
+const glbs = []; page.on("response", r => r.url().includes(".glb") && glbs.push(`${r.url()} ${r.status()}`));
+const t0 = Date.now();
+await page.goto("http://localhost:5173/");
+await page.locator("canvas").waitFor();
+await page.waitForTimeout(2500);
+(await import("node:fs")).writeFileSync(out, await page.screenshot());
+console.log("glbs", glbs, "errors", errs, "ms", Date.now()-t0);
+await b.close();
