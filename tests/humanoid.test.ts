@@ -16,7 +16,7 @@ import {
 import { segmentGap } from "../src/scene/rig";
 import { PADDLE_GRIP_Y, PADDLE_SUPPORT_OFFSET } from "../src/scene/paddle";
 import { SHOT_TYPES, DEFAULT_HEIGHT } from "../src/core/constants";
-import { STROKE_MOTION } from "../src/core/stroke-motion";
+import { STROKE_MOTION, strokeLoadTime, strokePreparation } from "../src/core/stroke-motion";
 import type { Player, Shot } from "../src/core/scenario";
 
 let rig: HumanoidRig;
@@ -326,7 +326,7 @@ describe("technique-research E3 checks", () => {
     apex: 2.5,
   });
   const p: Player = { id: "A1", x: 0, z: 2.6 };
-  const loadTime = (type: Shot["type"]) => -STROKE_MOTION[type].prepare * 0.55;
+  const loadTime = (type: Shot["type"]) => strokeLoadTime(type, strokePreparation(type));
   it("contact is in front of the pelvis for every shot", () => {
     const actor = new Humanoid(rig, "A"),
       paddle = new T.Group();

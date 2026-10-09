@@ -10,7 +10,7 @@ const smooth = ease;
 /** Contact distance ahead of the body the arm comfortably reaches (shots without their own). */
 const DEFAULT_REACH = 0.32;
 /** Ready paddle face centre relative to the player marker (forward, to the dominant side, up). */
-export const READY_PADDLE = { ahead: 0.4, side: -0.06, height: 1.3 };
+export const READY_PADDLE = { ahead: 0.4, side: 0.07, height: 1.3 };
 /** Ready stance elbow flare: elbows clearly off the ribs (animation-principles.md §3). */
 const READY_ELBOW_OUT = 1;
 /** Distance from the ankle joint to the shoe tip along the foot. */
@@ -26,7 +26,7 @@ export function readyStance(player: Player) {
     squat: mix(0.06, 0.09, kitchen),
     lean: mix(0.14, 0.32, kitchen),
     width: mix(0.48, 0.56, kitchen),
-    paddleRoll: -0.75 * (player.hand === "left" ? -1 : 1),
+    paddleRoll: -0.6 * (player.hand === "left" ? -1 : 1),
   };
 }
 export function playerPose(
@@ -43,6 +43,8 @@ export function playerPose(
   const ready = readyStance(player);
   // 0 = fully in the stroke, 1 = fully in the shared ready stance (start of preparation / recovered).
   // Every stroke, including the serve, has the same position AND velocity at the ready seam.
+  // The body is set by the load key (feet planted from the load to the settle); the recovery
+  // channel overshoots ready by a few percent and comes back (tennis-frames.md §3.3).
   const readiness = active ? Math.max(motion.recovery, motion.ready) : 1;
   const engaged = 1 - readiness;
   let dx = active && shot ? shot.to.x - shot.from.x : -Math.sin(baseYaw),
@@ -146,17 +148,17 @@ export function playerPose(
     : 0;
   // Each foot steps with the body shift; the dominant (rear) foot leads the recovery step.
   const shiftLength = Math.hypot(shift.x, shift.z);
+  // C1 step bump: zero height and zero slope at both ends, so the settle overshoot
+  // (readiness > 1) cannot push a shoe through the floor.
+  const bump = (g: number) => 4 * smooth(g) * smooth(1 - g);
   const foot = (sign: -1 | 1) => {
-    const g =
-      sign === hand
-        ? smooth((bodyShift - 0.35) / 0.65)
-        : smooth(bodyShift / 0.65);
+    const g = bodyShift;
     return {
       x:
         rightX * ((sign * width) / 2) + forwardX * sign * stagger + shift.x * g,
       z:
         rightZ * ((sign * width) / 2) + forwardZ * sign * stagger + shift.z * g,
-      lift: 4 * g * (1 - g) * 0.07 * Math.min(1, shiftLength / 0.2),
+      lift: bump(g) * 0.025 * Math.min(1, shiftLength / 0.2),
     };
   };
   const feet = { L: foot(-1), R: foot(1) };
@@ -206,7 +208,10 @@ export function playerPose(
         ? side * (Math.PI / 2 + 0.3 * clamp((0.7 - height) / 0.4, -1, 1))
         : 0;
   if (profile.headUp)
-    shotRoll = side * (0.5 + 1.3 * clamp((0.95 - height) / 0.5, 0, 1));
+    // A low lifting contact still keeps the wrist above the face centre; "head up" is
+    // a finish cue, not a reason to put the wrist below the knee during anticipation.
+    shotRoll = mix(height < 0.95 ? side * (Math.PI / 2 + 0.35 + 0.6 * clamp((0.95 - height) / 0.5, 0, 1)) : -side * 0.35,
+      -side * 0.35, motion.follow);
   shotRoll = mix(shotRoll, side * (Math.PI - 0.45), profile.headDown ?? 0);
   shotRoll -= side * motion.follow * profile.wrist * 0.35;
   let shotPitch =
@@ -225,7 +230,8 @@ export function playerPose(
     active,
     readiness,
     stanceYaw,
-    yaw: stanceYaw - (active ? side * (motion.twist + unitTurn) : 0),
+    yaw: stanceYaw - (active ? side * (motion.twist + unitTurn) : 0)
+      + (active && type === "drive" && kind !== "backhand" ? side * 0.35 * motion.follow * engaged : 0),
     hipYaw:
       stanceYaw - (active ? side * (motion.hipTwist + unitTurn * 0.5) : 0),
     pitch: -forwardLean,

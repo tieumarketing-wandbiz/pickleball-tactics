@@ -14,7 +14,7 @@ const num = (k: string, d: number) => (q.has(k) ? Number(q.get(k)) : d);
 const type = (q.get("type") ?? "serve") as ShotType | "idle";
 const id = (q.get("player") ?? "A1") as PlayerId;
 const prep = strokePreparation(type === "idle" ? "volley" : type);
-const times = (q.get("times") ?? `${-prep},${-prep * 0.55},0,0.15,0.35,0.8`)
+const times = (q.get("t") ?? q.get("times") ?? `${-prep},${-prep * 0.55},0,0.15,0.35,0.8`)
   .split(",")
   .map(Number);
 const px = num("px", 0),
@@ -92,7 +92,7 @@ const ALL_VIEWS: Record<string, T.Vector3> = {
   "3/4": new T.Vector3(2.3, 1.6, 2.3 * -facing),
   "f3/4": new T.Vector3(2.0, 1.4, -2.3 * -facing),
 };
-const views: [string, T.Vector3][] = (q.get("views") ?? "side,front,3/4")
+const views: [string, T.Vector3][] = (q.get("view") ?? q.get("views") ?? "side,front,3/4")
   .split(",")
   .map((n) => [n, ALL_VIEWS[n]]);
 const camera = new T.PerspectiveCamera(32, 1, 0.1, 50);
@@ -197,5 +197,8 @@ ${metrics}`;
       labels.appendChild(label);
     });
   });
+  // Explicit completion signal: reviewers wait for this, never an arbitrary loading delay.
+  renderer.domElement.dataset.ready = "true";
+  Object.assign(window, { __poseLab: { ready: true, type, times, views: views.map(([name]) => name) } });
   document.title = "ready";
 });

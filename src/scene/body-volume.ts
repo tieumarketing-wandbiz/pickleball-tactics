@@ -121,7 +121,9 @@ export class BodyVolume {
       _l.copy(p).sub(_p).applyQuaternion(_qi.copy(_q).invert());
       const d2 = ellipse(_l.x, _l.z, a.hx + (b.hx - a.hx) * u, a.hz + (b.hz - a.hz) * u, _e);
       // beyond the ends of the chain: distance to the flat cap
-      const end = (i === 0 && raw < 0) || (i === n - 2 && raw > 1);
+      // Every segment is finite. Leaving intermediate sections uncapped turns each waist
+      // ellipse into an infinite cylinder and falsely reports penetration far above/below it.
+      const end = raw < 0 || raw > 1;
       let d = d2;
       if (end) {
         const axial = (raw < 0 ? -raw : raw - 1) * Math.sqrt(len2);

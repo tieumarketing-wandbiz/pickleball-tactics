@@ -1,0 +1,52 @@
+
+[1m[46m RUN [49m[22m [36mv3.2.7 [39m[90mD:/AI/Code/Tieu/pickleball-tactics-main[39m
+
+ [31m❯[39m tests/humanoid.test.ts [2m([22m[2m13 tests[22m[2m | [22m[31m2 failed[39m[2m)[22m[33m 745[2mms[22m[39m
+   [32m✓[39m v2 Mixamo rig[2m > [22mloads the user's skeleton in app space facing −Z[32m 9[2mms[22m[39m
+   [33m[2m✓[22m[39m v2 Mixamo rig[2m > [22mkeeps every vertex finite through all shot poses with feet near the ground [33m 398[2mms[22m[39m
+   [32m✓[39m v2 Mixamo rig[2m > [22muses independent skeletons for each player[32m 3[2mms[22m[39m
+   [32m✓[39m v2 Mixamo rig[2m > [22mholds a stance foot in world coordinates while the body advances[32m 6[2mms[22m[39m
+   [32m✓[39m v2 Mixamo rig[2m > [22mkeeps the paddle handle in the dominant palm for both hands and every stroke[32m 35[2mms[22m[39m
+[31m   [31m×[31m v2 Mixamo rig[2m > [22mputs the support hand above the dominant hand on two-handed backhands[39m[32m 5[2mms[22m[39m
+[31m     → expected 0.09500877843788912 to be less than 0.09[39m
+   [32m✓[39m arms (user feedback round 2)[2m > [22mkeeps upper arm and forearm volumes off the torso[32m 132[2mms[22m[39m
+   [32m✓[39m arms (user feedback round 2)[2m > [22mkeeps elbows and wrists inside their joint limits[32m 140[2mms[22m[39m
+[31m   [31m×[31m arms (user feedback round 2)[2m > [22mready: paddle in front of the chest, head up 45–70°, elbows off the ribs, no arm across the midline[39m[32m 2[2mms[22m[39m
+[31m     → A1 right: expected 0.5133089767091708 to be greater than 0.7330382858376184[39m
+   [32m✓[39m arms (user feedback round 2)[2m > [22mfollows the guide-video rules for the serve and the dink[32m 2[2mms[22m[39m
+   [32m✓[39m technique-research E3 checks[2m > [22mcontact is in front of the pelvis for every shot[32m 3[2mms[22m[39m
+   [32m✓[39m technique-research E3 checks[2m > [22mdink, reset and block keep the pelvis from rising into contact[32m 2[2mms[22m[39m
+   [32m✓[39m technique-research E3 checks[2m > [22mlob finishes high; smash points the off hand up and finishes on the off side[32m 1[2mms[22m[39m
+
+[31m⎯⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 2 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m tests/humanoid.test.ts[2m > [22mv2 Mixamo rig[2m > [22mputs the support hand above the dominant hand on two-handed backhands
+[31m[1mAssertionError[22m: expected 0.09500877843788912 to be less than 0.09[39m
+[36m [2m❯[22m tests/humanoid.test.ts:[2m181:50[22m[39m
+    [90m179| [39m      [33m.[39m[34madd[39m(paddle[33m.[39mposition)[33m;[39m
+    [90m180| [39m    // (this rig's arms are short: the support hand gets within a few …
+    [90m181| [39m    [34mexpect[39m(actor[33m.[39m[34mpalm[39m([32m"Left"[39m)[33m.[39m[34mdistanceTo[39m(upper))[33m.[39m[34mtoBeLessThan[39m([34m0.09[39m)[33m;[39m
+    [90m   | [39m                                                 [31m^[39m
+    [90m182| [39m  })[33m;[39m
+    [90m183| [39m})[33m;[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/humanoid.test.ts[2m > [22marms (user feedback round 2)[2m > [22mready: paddle in front of the chest, head up 45–70°, elbows off the ribs, no arm across the midline
+[31m[1mAssertionError[22m: A1 right: expected 0.5133089767091708 to be greater than 0.7330382858376184[39m
+[36m [2m❯[22m tests/humanoid.test.ts:[2m250:44[22m[39m
+    [90m248| [39m        const head = new T.Vector3(0, 1, 0).applyQuaternion(paddle.qua…
+    [90m249| [39m        [35mconst[39m elevation [33m=[39m [33mMath[39m[33m.[39m[34masin[39m(head[33m.[39my)[33m;[39m
+    [90m250| [39m        [34mexpect[39m(elevation[33m,[39m [32m`[39m[36m${[39mid[36m}[39m[32m [39m[36m${[39mhand[36m}[39m[32m`[39m)[33m.[39m[34mtoBeGreaterThan[39m([34mdeg[39m([34m42[39m))[33m;[39m
+    [90m   | [39m                                           [31m^[39m
+    [90m251| [39m        [34mexpect[39m(elevation[33m,[39m [32m`[39m[36m${[39mid[36m}[39m[32m [39m[36m${[39mhand[36m}[39m[32m`[39m)[33m.[39m[34mtoBeLessThan[39m([34mdeg[39m([34m72[39m))[33m;[39m
+    [90m252| [39m        [90m// face toward the net (within 30°)[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[31m2 failed[39m[22m[2m | [22m[1m[32m11 passed[39m[22m[90m (13)[39m
+[2m   Start at [22m 20:49:50
+[2m   Duration [22m 1.17s[2m (transform 92ms, setup 0ms, collect 146ms, tests 745ms, environment 0ms, prepare 99ms)[22m
+

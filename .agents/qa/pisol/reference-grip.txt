@@ -1,0 +1,52 @@
+
+[1m[46m RUN [49m[22m [36mv3.2.7 [39m[90mD:/AI/Code/Tieu/pickleball-tactics-main[39m
+
+ [31m❯[39m tests/humanoid.test.ts [2m([22m[2m13 tests[22m[2m | [22m[31m2 failed[39m[2m)[22m[33m 546[2mms[22m[39m
+   [32m✓[39m v2 Mixamo rig[2m > [22mloads the user's skeleton in app space facing −Z[32m 9[2mms[22m[39m
+[31m   [31m×[31m v2 Mixamo rig[2m > [22mkeeps every vertex finite through all shot poses with feet near the ground[39m[32m 180[2mms[22m[39m
+[31m     → smash t=0: expected 0.22244454127943908 to be less than 0.18[39m
+   [32m✓[39m v2 Mixamo rig[2m > [22muses independent skeletons for each player[32m 3[2mms[22m[39m
+   [32m✓[39m v2 Mixamo rig[2m > [22mholds a stance foot in world coordinates while the body advances[32m 8[2mms[22m[39m
+   [32m✓[39m v2 Mixamo rig[2m > [22mkeeps the paddle handle in the dominant palm for both hands and every stroke[32m 38[2mms[22m[39m
+[31m   [31m×[31m v2 Mixamo rig[2m > [22mputs the support hand above the dominant hand on two-handed backhands[39m[32m 2[2mms[22m[39m
+[31m     → expected 0.10047739617176613 to be less than 0.09[39m
+   [32m✓[39m arms (user feedback round 2)[2m > [22mkeeps upper arm and forearm volumes off the torso[32m 137[2mms[22m[39m
+   [32m✓[39m arms (user feedback round 2)[2m > [22mkeeps elbows and wrists inside their joint limits[32m 152[2mms[22m[39m
+   [32m✓[39m arms (user feedback round 2)[2m > [22mready: paddle in front of the chest, head up 45–70°, elbows off the ribs, no arm across the midline[32m 2[2mms[22m[39m
+   [32m✓[39m arms (user feedback round 2)[2m > [22mfollows the guide-video rules for the serve and the dink[32m 3[2mms[22m[39m
+   [32m✓[39m technique-research E3 checks[2m > [22mcontact is in front of the pelvis for every shot[32m 3[2mms[22m[39m
+   [32m✓[39m technique-research E3 checks[2m > [22mdink, reset and block keep the pelvis from rising into contact[32m 2[2mms[22m[39m
+   [32m✓[39m technique-research E3 checks[2m > [22mlob finishes high; smash points the off hand up and finishes on the off side[32m 1[2mms[22m[39m
+
+[31m⎯⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 2 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m tests/humanoid.test.ts[2m > [22mv2 Mixamo rig[2m > [22mkeeps every vertex finite through all shot poses with feet near the ground
+[31m[1mAssertionError[22m: smash t=0: expected 0.22244454127943908 to be less than 0.18[39m
+[36m [2m❯[22m tests/humanoid.test.ts:[2m105:43[22m[39m
+    [90m103| [39m        }
+    [90m104| [39m        [34mexpect[39m(minY[33m,[39m [32m`[39m[36m${[39mtype[36m}[39m[32m t=[39m[36m${[39mtime[36m}[39m[32m`[39m)[33m.[39m[34mtoBeGreaterThan[39m([33m-[39m[34m0.06[39m)[33m;[39m
+    [90m105| [39m        [34mexpect[39m(minY[33m,[39m [32m`[39m[36m${[39mtype[36m}[39m[32m t=[39m[36m${[39mtime[36m}[39m[32m`[39m)[33m.[39m[34mtoBeLessThan[39m(
+    [90m   | [39m                                          [31m^[39m
+    [90m106| [39m          [34m0.06[39m [33m+[39m [34mplayerPose[39m(p[33m,[39m shot[33m,[39m time)[33m.[39mhop[33m,[39m
+    [90m107| [39m        )[33m;[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/humanoid.test.ts[2m > [22mv2 Mixamo rig[2m > [22mputs the support hand above the dominant hand on two-handed backhands
+[31m[1mAssertionError[22m: expected 0.10047739617176613 to be less than 0.09[39m
+[36m [2m❯[22m tests/humanoid.test.ts:[2m181:50[22m[39m
+    [90m179| [39m      [33m.[39m[34madd[39m(paddle[33m.[39mposition)[33m;[39m
+    [90m180| [39m    // (this rig's arms are short: the support hand gets within a few …
+    [90m181| [39m    [34mexpect[39m(actor[33m.[39m[34mpalm[39m([32m"Left"[39m)[33m.[39m[34mdistanceTo[39m(upper))[33m.[39m[34mtoBeLessThan[39m([34m0.09[39m)[33m;[39m
+    [90m   | [39m                                                 [31m^[39m
+    [90m182| [39m  })[33m;[39m
+    [90m183| [39m})[33m;[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[31m2 failed[39m[22m[2m | [22m[1m[32m11 passed[39m[22m[90m (13)[39m
+[2m   Start at [22m 20:55:22
+[2m   Duration [22m 1.01s[2m (transform 87ms, setup 0ms, collect 174ms, tests 546ms, environment 0ms, prepare 98ms)[22m
+

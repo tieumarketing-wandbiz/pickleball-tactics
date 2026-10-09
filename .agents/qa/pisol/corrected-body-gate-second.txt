@@ -1,0 +1,1347 @@
+
+[1m[46m RUN [49m[22m [36mv3.2.7 [39m[90mD:/AI/Code/Tieu/pickleball-tactics-main[39m
+
+ [31m❯[39m tests/body-gate.test.ts [2m([22m[2m32 tests[22m[2m | [22m[31m25 failed[39m[2m)[22m[33m 446[2mms[22m[39m
+[31m   [31m×[31m STEP 0 body gate — all 15 shots, A1/right[2m > [22mserve: 240 Hz paddle, pelvis, elbows, wrists, knees, feet; contact and speed peak[39m[32m 34[2mms[22m[39m
+[31m     → serve physiological acceleration (m/s²): [["RightHand",{"value":645.4862913346832,"time":-0.10833333333333334}]]: expected [ [ 'RightHand', { …(2) } ] ] to deeply equal [][39m
+[31m   [31m×[31m STEP 0 body gate — all 15 shots, A1/right[2m > [22mserve: volume clearance, midline, joint limits, planted/flat feet and knees[39m[32m 3[2mms[22m[39m
+[31m     → -0.45 Left arm gap 0.025m
+-0.45 Right arm gap -0.004m
+-0.35 Left arm gap 0.026m
+-0.35 Right arm gap 0.009m
+-0.25 Left arm gap 0.026m
+-0.25 Right arm gap -0.005m
+-0.15 Left arm gap 0.026m
+-0.15 Right arm gap -0.007m
+-0.05 Left arm gap 0.026m
+-0.05 Right arm gap -0.024m
+0.05 Left arm gap 0.025m
+0.05 Right arm gap -0.010m
+0.15 Left arm gap 0.025m
+0.25 Left arm gap 0.025m
+0.35 Left arm gap 0.025m
+0.45 Left arm gap 0.025m: expected [ '-0.45 Left arm gap 0.025m', …(20) ] to deeply equal [][39m
+   [32m✓[39m STEP 0 body gate — all 15 shots, A1/right[2m > [22mdrive: 240 Hz paddle, pelvis, elbows, wrists, knees, feet; contact and speed peak[32m 21[2mms[22m[39m
+[31m   [31m×[31m STEP 0 body gate — all 15 shots, A1/right[2m > [22mdrive: volume clearance, midline, joint limits, planted/flat feet and knees[39m[32m 2[2mms[22m[39m
+[31m     → -0.55 Left arm gap 0.025m
+-0.55 Right arm gap -0.004m
+-0.45 Left arm gap 0.025m
+-0.45 Right arm gap 0.003m
+-0.35 Left arm gap 0.025m
+-0.35 Right arm gap -0.006m
+-0.25 Left arm gap 0.026m
+-0.15 Left arm gap 0.025m
+-0.15 Right arm gap 0.017m
+-0.05 Left arm gap -0.055m
+-0.05 Right arm gap -0.032m
+0.05 Left arm gap 0.026m
+0.05 Right arm gap 0.020m
+0.15 Left arm gap 0.026m
+0.25 Left arm gap 0.025m
+0.35 Left arm gap 0.025m: expected [ '-0.55 Left arm gap 0.025m', …(22) ] to deeply equal [][39m
+[31m   [31m×[31m STEP 0 body gate — all 15 shots, A1/right[2m > [22mdink: 240 Hz paddle, pelvis, elbows, wrists, knees, feet; contact and speed peak[39m[32m 16[2mms[22m[39m
+[31m     → expected 0.16041666666666665 to be less than or equal to 0.04[39m
+[31m   [31m×[31m STEP 0 body gate — all 15 shots, A1/right[2m > [22mdink: volume clearance, midline, joint limits, planted/flat feet and knees[39m[32m 2[2mms[22m[39m
+[31m     → -0.25 Left arm gap 0.025m
+-0.25 Right arm gap -0.004m
+-0.15 Left arm gap 0.025m
+-0.15 Right arm gap 0.004m
+-0.05 Left arm gap 0.025m
+-0.05 Right arm gap -0.005m
+0.05 Left arm gap 0.025m
+0.15 Left arm gap 0.025m
+0.25 Left arm gap 0.025m
+0.35 Left arm gap 0.025m
+0.45 Left arm gap 0.025m
+0.45 Right arm gap 0.018m
+0.55 Left arm gap 0.025m
+0.55 Right arm gap -0.001m
+0.65 Left arm gap 0.025m
+0.65 Right arm gap -0.004m: expected [ '-0.25 Left arm gap 0.025m', …(15) ] to deeply equal [][39m
+   [32m✓[39m STEP 0 body gate — all 15 shots, A1/right[2m > [22mdrop: 240 Hz paddle, pelvis, elbows, wrists, knees, feet; contact and speed peak[32m 17[2mms[22m[39m
+[31m   [31m×[31m STEP 0 body gate — all 15 shots, A1/right[2m > [22mdrop: volume clearance, midline, joint limits, planted/flat feet and knees[39m[32m 1[2mms[22m[39m
+[31m     → -0.43 Left arm gap 0.025m
+-0.43 Right arm gap -0.004m
+-0.33 Left arm gap 0.026m
+-0.33 Right arm gap 0.023m
+-0.23 Left arm gap 0.026m
+-0.23 Right arm gap -0.034m
+-0.13 Left arm gap 0.025m
+-0.13 Right arm gap 0.007m
+-0.03 Left arm gap 0.024m
+-0.03 Right arm gap -0.031m
+0.07 Left arm gap 0.013m
+0.07 Right arm gap -0.001m
+0.17 Left arm gap 0.026m
+0.27 Left arm gap 0.026m
+0.37 Left arm gap 0.025m
+0.47 Left arm gap 0.025m: expected [ '-0.43 Left arm gap 0.025m', …(21) ] to deeply equal [][39m
+[31m   [31m×[31m STEP 0 body gate — all 15 shots, A1/right[2m > [22mlob: 240 Hz paddle, pelvis, elbows, wrists, knees, feet; contact and speed peak[39m[32m 13[2mms[22m[39m
+[31m     → lob physiological acceleration (m/s²): [["LeftFoot",{"value":239.09279005222794,"time":0.18333333333333332}],["RightFoot",{"value":191.44446792042365,"time":0.20416666666666666}]]: expected [ [ 'LeftFoot', { …(2) } ], …(1) ] to deeply equal [][39m
+[31m   [31m×[31m STEP 0 body gate — all 15 shots, A1/right[2m > [22mlob: volume clearance, midline, joint limits, planted/flat feet and knees[39m[32m 1[2mms[22m[39m
+[31m     → -0.31 Left arm gap 0.025m
+-0.31 Right arm gap -0.004m
+-0.21 Left arm gap 0.026m
+-0.21 Right arm gap -0.008m
+-0.11 Left arm gap 0.026m
+-0.11 Right arm gap -0.044m
+-0.01 Left arm gap 0.026m
+-0.01 Right arm gap -0.043m
+0.09 Left arm gap -0.029m
+0.19 Left arm gap -0.049m
+0.29 Left arm gap 0.005m
+0.29 Left foot drift
+0.39 Left arm gap 0.017m
+0.49 Left arm gap 0.023m
+0.59 Left arm gap 0.026m
+0.59 Right arm gap 0.018m: expected [ '-0.31 Left arm gap 0.025m', …(21) ] to deeply equal [][39m
+[31m   [31m×[31m STEP 0 body gate — all 15 shots, A1/right[2m > [22mvolley: 240 Hz paddle, pelvis, elbows, wrists, knees, feet; contact and speed peak[39m[32m 12[2mms[22m[39m
+[31m     → expected 0.16041666666666665 to be less than or equal to 0.04[39m
+[31m   [31m×[31m STEP 0 body gate — all 15 shots, A1/right[2m > [22mvolley: volume clearance, midline, joint limits, planted/flat feet and knees[39m[32m 1[2mms[22m[39m
+[31m     → -0.22 Left arm gap 0.025m
+-0.22 Right arm gap -0.004m
+-0.12 Left arm gap 0.026m
+-0.12 Right arm gap -0.022m
+-0.02 Left arm gap -0.008m
+-0.02 Right arm gap -0.074m
+0.08 Left arm gap 0.026m
+0.08 Right arm gap 0.014m
+0.18 Left arm gap 0.026m
+0.28 Left arm gap 0.025m
+0.28 Right arm gap 0.026m
+0.38 Left arm gap 0.025m
+0.38 Right arm gap 0.007m
+0.48 Left arm gap 0.025m
+0.48 Right arm gap -0.004m
+0.58 Left arm gap 0.025m: expected [ '-0.22 Left arm gap 0.025m', …(16) ] to deeply equal [][39m
+[31m   [31m×[31m STEP 0 body gate — all 15 shots, A1/right[2m > [22msmash: 240 Hz paddle, pelvis, elbows, wrists, knees, feet; contact and speed peak[39m[32m 17[2mms[22m[39m
+[31m     → smash physiological acceleration (m/s²): [["LeftFoot",{"value":173.13140258553688,"time":-0.14583333333333334}],["RightFoot",{"value":167.53019691411257,"time":-0.12916666666666668}]]: expected [ [ 'LeftFoot', { …(2) } ], …(1) ] to deeply equal [][39m
+[31m   [31m×[31m STEP 0 body gate — all 15 shots, A1/right[2m > [22msmash: volume clearance, midline, joint limits, planted/flat feet and knees[39m[32m 1[2mms[22m[39m
+[31m     → -0.50 Left arm gap 0.025m
+-0.50 Right arm gap -0.004m
+-0.40 Right arm gap 0.019m
+-0.10 Left foot drift
+-0.00 Left arm gap 0.026m
+-0.00 Left foot drift
+-0.00 Right foot drift
+0.10 Left arm gap 0.024m
+0.10 Left foot drift
+0.20 Left arm gap -0.007m
+0.20 Left foot drift
+0.30 Left arm gap -0.013m
+0.40 Left arm gap -0.024m
+0.50 Left arm gap -0.079m
+0.50 Right arm gap 0.024m
+0.60 Left arm gap -0.007m: expected [ '-0.50 Left arm gap 0.025m', …(22) ] to deeply equal [][39m
+[31m   [31m×[31m STEP 0 body gate — all 15 shots, A1/right[2m > [22mblock: 240 Hz paddle, pelvis, elbows, wrists, knees, feet; contact and speed peak[39m[32m 11[2mms[22m[39m
+[31m     → expected 0.17291666666666666 to be less than or equal to 0.04[39m
+[31m   [31m×[31m STEP 0 body gate — all 15 shots, A1/right[2m > [22mblock: volume clearance, midline, joint limits, planted/flat feet and knees[39m[32m 1[2mms[22m[39m
+[31m     → -0.22 Left arm gap 0.025m
+-0.22 Right arm gap -0.004m
+-0.12 Left arm gap 0.026m
+-0.12 Right arm gap -0.008m
+-0.02 Left arm gap 0.026m
+-0.02 Right arm gap -0.021m
+0.08 Left arm gap 0.026m
+0.08 Right arm gap -0.056m
+0.18 Left arm gap 0.026m
+0.18 Right arm gap -0.054m
+0.28 Left arm gap 0.026m
+0.28 Right arm gap 0.010m
+0.38 Left arm gap 0.026m
+0.38 Right arm gap 0.007m
+0.48 Left arm gap 0.025m
+0.48 Right arm gap -0.006m: expected [ '-0.22 Left arm gap 0.025m', …(17) ] to deeply equal [][39m
+[31m   [31m×[31m STEP 0 body gate — all 15 shots, A1/right[2m > [22mpunch: 240 Hz paddle, pelvis, elbows, wrists, knees, feet; contact and speed peak[39m[32m 14[2mms[22m[39m
+[31m     → expected 0.16458333333333333 to be less than or equal to 0.04[39m
+[31m   [31m×[31m STEP 0 body gate — all 15 shots, A1/right[2m > [22mpunch: volume clearance, midline, joint limits, planted/flat feet and knees[39m[32m 1[2mms[22m[39m
+[31m     → -0.22 Left arm gap 0.025m
+-0.22 Right arm gap -0.004m
+-0.12 Left arm gap 0.026m
+-0.12 Right arm gap -0.024m
+-0.02 Left arm gap 0.026m
+-0.02 Right arm gap -0.047m
+0.08 Left arm gap 0.026m
+0.18 Left arm gap 0.025m
+0.28 Left arm gap 0.024m
+0.28 Right arm gap -0.011m
+0.38 Left arm gap -0.026m
+0.38 Right arm gap -0.037m
+0.48 Left arm gap 0.026m
+0.48 Right arm gap -0.021m
+0.58 Left arm gap 0.025m
+0.58 Right arm gap -0.002m: expected [ '-0.22 Left arm gap 0.025m', …(17) ] to deeply equal [][39m
+   [32m✓[39m STEP 0 body gate — all 15 shots, A1/right[2m > [22mreset: 240 Hz paddle, pelvis, elbows, wrists, knees, feet; contact and speed peak[32m 10[2mms[22m[39m
+[31m   [31m×[31m STEP 0 body gate — all 15 shots, A1/right[2m > [22mreset: volume clearance, midline, joint limits, planted/flat feet and knees[39m[32m 1[2mms[22m[39m
+[31m     → -0.25 Left arm gap 0.025m
+-0.25 Right arm gap -0.004m
+-0.15 Left arm gap 0.026m
+-0.05 Left arm gap 0.026m
+-0.05 Right arm gap -0.006m
+0.05 Left arm gap 0.011m
+0.05 Right arm gap 0.022m
+0.15 Left arm gap 0.026m
+0.25 Left arm gap 0.026m
+0.35 Left arm gap 0.026m
+0.45 Left arm gap 0.025m
+0.45 Right arm gap 0.004m
+0.55 Left arm gap 0.025m
+0.55 Right arm gap -0.004m: expected [ '-0.25 Left arm gap 0.025m', …(13) ] to deeply equal [][39m
+   [32m✓[39m STEP 0 body gate — all 15 shots, A1/right[2m > [22mspeedup: 240 Hz paddle, pelvis, elbows, wrists, knees, feet; contact and speed peak[32m 12[2mms[22m[39m
+[31m   [31m×[31m STEP 0 body gate — all 15 shots, A1/right[2m > [22mspeedup: volume clearance, midline, joint limits, planted/flat feet and knees[39m[32m 1[2mms[22m[39m
+[31m     → -0.35 Left arm gap 0.025m
+-0.35 Right arm gap -0.004m
+-0.25 Left arm gap 0.026m
+-0.25 Right arm gap 0.014m
+-0.15 Left arm gap 0.026m
+-0.15 Right arm gap -0.032m
+-0.05 Left arm gap 0.026m
+-0.05 Right arm gap -0.020m
+0.05 Left arm gap -0.023m
+0.05 Right arm gap -0.009m
+0.15 Left arm gap 0.026m
+0.25 Left arm gap 0.026m
+0.35 Left arm gap 0.025m
+0.35 Right arm gap 0.026m
+0.45 Left arm gap 0.025m
+0.45 Right arm gap 0.003m: expected [ '-0.35 Left arm gap 0.025m', …(19) ] to deeply equal [][39m
+[31m   [31m×[31m STEP 0 body gate — all 15 shots, A1/right[2m > [22mroll: 240 Hz paddle, pelvis, elbows, wrists, knees, feet; contact and speed peak[39m[32m 12[2mms[22m[39m
+[31m     → expected 0.23124999999999998 to be less than or equal to 0.04[39m
+[31m   [31m×[31m STEP 0 body gate — all 15 shots, A1/right[2m > [22mroll: volume clearance, midline, joint limits, planted/flat feet and knees[39m[32m 1[2mms[22m[39m
+[31m     → -0.31 Left arm gap 0.025m
+-0.31 Right arm gap -0.004m
+-0.21 Left arm gap 0.025m
+-0.21 Right arm gap -0.005m
+-0.11 Left arm gap 0.026m
+-0.11 Right arm gap -0.090m
+-0.01 Left arm gap 0.025m
+-0.01 Right arm gap -0.038m
+0.09 Left arm gap -0.009m
+0.19 Left arm gap 0.026m
+0.29 Left arm gap 0.025m
+0.39 Left arm gap 0.025m
+0.39 Right arm gap 0.025m
+0.49 Left arm gap 0.025m
+0.49 Right arm gap -0.005m
+0.59 Left arm gap 0.025m: expected [ '-0.31 Left arm gap 0.025m', …(16) ] to deeply equal [][39m
+[31m   [31m×[31m STEP 0 body gate — all 15 shots, A1/right[2m > [22mflick: 240 Hz paddle, pelvis, elbows, wrists, knees, feet; contact and speed peak[39m[32m 8[2mms[22m[39m
+[31m     → flick physiological acceleration (m/s²): [["RightHand",{"value":701.0204353882157,"time":-0.004166666666666667}]]: expected [ [ 'RightHand', { …(2) } ] ] to deeply equal [][39m
+[31m   [31m×[31m STEP 0 body gate — all 15 shots, A1/right[2m > [22mflick: volume clearance, midline, joint limits, planted/flat feet and knees[39m[32m 1[2mms[22m[39m
+[31m     → -0.20 Left arm gap 0.025m
+-0.20 Right arm gap -0.004m
+-0.10 Left arm gap 0.026m
+-0.10 Right arm gap -0.033m
+0.00 Left arm gap 0.026m
+0.00 Right arm gap -0.024m
+0.10 Left arm gap 0.025m
+0.20 Left arm gap 0.026m
+0.30 Left arm gap 0.026m
+0.30 Right arm gap 0.025m
+0.40 Left arm gap 0.025m
+0.40 Right arm gap -0.000m
+0.50 Left arm gap 0.025m
+0.50 Right arm gap -0.004m: expected [ '-0.20 Left arm gap 0.025m', …(13) ] to deeply equal [][39m
+   [32m✓[39m STEP 0 body gate — all 15 shots, A1/right[2m > [22matp: 240 Hz paddle, pelvis, elbows, wrists, knees, feet; contact and speed peak[32m 13[2mms[22m[39m
+[31m   [31m×[31m STEP 0 body gate — all 15 shots, A1/right[2m > [22matp: volume clearance, midline, joint limits, planted/flat feet and knees[39m[32m 1[2mms[22m[39m
+[31m     → -0.38 Left arm gap 0.025m
+-0.38 Right arm gap -0.004m
+-0.28 Left arm gap 0.026m
+-0.28 Right arm gap 0.011m
+-0.18 Left arm gap 0.026m
+-0.18 Right arm gap -0.104m
+-0.08 Left arm gap 0.026m
+-0.08 Right arm gap 0.008m
+0.02 Left arm gap 0.026m
+0.02 Right arm gap -0.013m
+0.12 Left arm gap 0.026m
+0.12 Right arm gap 0.011m
+0.22 Left arm gap 0.026m
+0.22 Right arm gap 0.020m
+0.32 Left arm gap 0.026m
+0.32 Right arm gap 0.024m: expected [ '-0.38 Left arm gap 0.025m', …(25) ] to deeply equal [][39m
+[31m   [31m×[31m STEP 0 body gate — all 15 shots, A1/right[2m > [22merne: 240 Hz paddle, pelvis, elbows, wrists, knees, feet; contact and speed peak[39m[32m 13[2mms[22m[39m
+[31m     → erne physiological acceleration (m/s²): [["Hips",{"value":87.32047160986163,"time":0.09583333333333334}]]: expected [ [ 'Hips', { …(2) } ] ] to deeply equal [][39m
+[31m   [31m×[31m STEP 0 body gate — all 15 shots, A1/right[2m > [22merne: volume clearance, midline, joint limits, planted/flat feet and knees[39m[32m 1[2mms[22m[39m
+[31m     → -0.45 Left arm gap 0.025m
+-0.45 Right arm gap -0.004m
+-0.35 Left arm gap 0.025m
+-0.35 Right arm gap 0.003m
+-0.25 Left arm gap 0.025m
+-0.25 Right arm gap 0.012m
+-0.15 Left arm gap 0.026m
+-0.15 Right arm gap 0.013m
+-0.05 Left arm gap -0.055m
+-0.05 Right arm gap -0.016m
+0.05 Left arm gap -0.024m
+0.05 Right arm gap -0.054m
+0.15 Left arm gap -0.041m
+0.15 Right arm gap -0.033m
+0.25 Left arm gap -0.019m
+0.25 Right arm gap -0.023m: expected [ '-0.45 Left arm gap 0.025m', …(25) ] to deeply equal [][39m
+   [32m✓[39m cheap team/hand mirroring, backhands and idle preserve contact and limits[32m 184[2mms[22m[39m
+   [32m✓[39m three-step rally keeps player/root motion C1 across clip boundaries[32m 6[2mms[22m[39m
+ [31m❯[39m tests/humanoid.test.ts [2m([22m[2m13 tests[22m[2m | [22m[31m2 failed[39m[2m)[22m[33m 602[2mms[22m[39m
+   [32m✓[39m v2 Mixamo rig[2m > [22mloads the user's skeleton in app space facing −Z[32m 9[2mms[22m[39m
+[31m   [31m×[31m v2 Mixamo rig[2m > [22mkeeps every vertex finite through all shot poses with feet near the ground[39m[32m 196[2mms[22m[39m
+[31m     → smash t=0: expected 0.18916794303111592 to be less than 0.18[39m
+   [32m✓[39m v2 Mixamo rig[2m > [22muses independent skeletons for each player[32m 3[2mms[22m[39m
+   [32m✓[39m v2 Mixamo rig[2m > [22mholds a stance foot in world coordinates while the body advances[32m 8[2mms[22m[39m
+   [32m✓[39m v2 Mixamo rig[2m > [22mkeeps the paddle handle in the dominant palm for both hands and every stroke[32m 73[2mms[22m[39m
+   [32m✓[39m v2 Mixamo rig[2m > [22mputs the support hand above the dominant hand on two-handed backhands[32m 2[2mms[22m[39m
+   [32m✓[39m arms (user feedback round 2)[2m > [22mkeeps upper arm and forearm volumes off the torso[32m 136[2mms[22m[39m
+   [32m✓[39m arms (user feedback round 2)[2m > [22mkeeps elbows and wrists inside their joint limits[32m 143[2mms[22m[39m
+[31m   [31m×[31m arms (user feedback round 2)[2m > [22mready: paddle in front of the chest, head up 45–70°, elbows off the ribs, no arm across the midline[39m[32m 2[2mms[22m[39m
+[31m     → B1 left: expected 1.2869461058168508 to be less than 1.2566370614359172[39m
+   [32m✓[39m arms (user feedback round 2)[2m > [22mfollows the guide-video rules for the serve and the dink[32m 5[2mms[22m[39m
+   [32m✓[39m technique-research E3 checks[2m > [22mcontact is in front of the pelvis for every shot[32m 12[2mms[22m[39m
+   [32m✓[39m technique-research E3 checks[2m > [22mdink, reset and block keep the pelvis from rising into contact[32m 3[2mms[22m[39m
+   [32m✓[39m technique-research E3 checks[2m > [22mlob finishes high; smash points the off hand up and finishes on the off side[32m 2[2mms[22m[39m
+
+[31m⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 27 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m tests/body-gate.test.ts[2m > [22mSTEP 0 body gate — all 15 shots, A1/right[2m > [22mserve: 240 Hz paddle, pelvis, elbows, wrists, knees, feet; contact and speed peak
+[31m[1mAssertionError[22m: serve physiological acceleration (m/s²): [["RightHand",{"value":645.4862913346832,"time":-0.10833333333333334}]]: expected [ [ 'RightHand', { …(2) } ] ] to deeply equal [][39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- [][39m
+[31m+ [[39m
+[31m+   [[39m
+[31m+     "RightHand",[39m
+[31m+     {[39m
+[31m+       "time": -0.10833333333333334,[39m
+[31m+       "value": 645.4862913346832,[39m
+[31m+     },[39m
+[31m+   ],[39m
+[31m+ ][39m
+
+[36m [2m❯[22m tests/body-gate.test.ts:[2m66:97[22m[39m
+    [90m 64| [39m      const caps=(name:string)=>name==="paddle" ? 1500 : name==="Hips"…
+    [90m 65| [39m      const failures=Object.entries(report.acceleration).filter(([name…
+    [90m 66| [39m      expect(failures,`${type} physiological acceleration (m/s²): ${JS…
+    [90m   | [39m                                                                                                [31m^[39m
+    [90m 67| [39m      const spikes=Object.entries(report.spikes).filter(([name,a])=>a.…
+    [90m 68| [39m      expect(spikes,`${type} 9-sample median residual (m/s²): ${JSON.s…
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/27]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/body-gate.test.ts[2m > [22mSTEP 0 body gate — all 15 shots, A1/right[2m > [22mserve: volume clearance, midline, joint limits, planted/flat feet and knees
+[31m[1mAssertionError[22m: -0.45 Left arm gap 0.025m
+-0.45 Right arm gap -0.004m
+-0.35 Left arm gap 0.026m
+-0.35 Right arm gap 0.009m
+-0.25 Left arm gap 0.026m
+-0.25 Right arm gap -0.005m
+-0.15 Left arm gap 0.026m
+-0.15 Right arm gap -0.007m
+-0.05 Left arm gap 0.026m
+-0.05 Right arm gap -0.024m
+0.05 Left arm gap 0.025m
+0.05 Right arm gap -0.010m
+0.15 Left arm gap 0.025m
+0.25 Left arm gap 0.025m
+0.35 Left arm gap 0.025m
+0.45 Left arm gap 0.025m: expected [ '-0.45 Left arm gap 0.025m', …(20) ] to deeply equal [][39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- [][39m
+[31m+ [[39m
+[31m+   "-0.45 Left arm gap 0.025m",[39m
+[31m+   "-0.45 Right arm gap -0.004m",[39m
+[31m+   "-0.35 Left arm gap 0.026m",[39m
+[31m+   "-0.35 Right arm gap 0.009m",[39m
+[31m+   "-0.25 Left arm gap 0.026m",[39m
+[31m+   "-0.25 Right arm gap -0.005m",[39m
+[31m+   "-0.15 Left arm gap 0.026m",[39m
+[31m+   "-0.15 Right arm gap -0.007m",[39m
+[31m+   "-0.05 Left arm gap 0.026m",[39m
+[31m+   "-0.05 Right arm gap -0.024m",[39m
+[31m+   "0.05 Left arm gap 0.025m",[39m
+[31m+   "0.05 Right arm gap -0.010m",[39m
+[31m+   "0.15 Left arm gap 0.025m",[39m
+[31m+   "0.25 Left arm gap 0.025m",[39m
+[31m+   "0.35 Left arm gap 0.025m",[39m
+[31m+   "0.45 Left arm gap 0.025m",[39m
+[31m+   "0.55 Left arm gap 0.025m",[39m
+[31m+   "0.65 Left arm gap 0.025m",[39m
+[31m+   "0.65 Right arm gap 0.009m",[39m
+[31m+   "0.75 Left arm gap 0.025m",[39m
+[31m+   "0.75 Right arm gap -0.004m",[39m
+[31m+ ][39m
+
+[36m [2m❯[22m tests/body-gate.test.ts:[2m112:54[22m[39m
+    [90m110| [39m            position("RightLeg").sub(position("LeftLeg")).dot(right) <…
+    [90m111| [39m      }
+    [90m112| [39m      [34mexpect[39m(errors[33m,[39m errors[33m.[39m[34mslice[39m([34m0[39m[33m,[39m [34m16[39m)[33m.[39m[34mjoin[39m([32m"\n"[39m))[33m.[39m[34mtoEqual[39m([])[33m;[39m
+    [90m   | [39m                                                     [31m^[39m
+    [90m113| [39m    })[33m;[39m
+    [90m114| [39m  }
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/27]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/body-gate.test.ts[2m > [22mSTEP 0 body gate — all 15 shots, A1/right[2m > [22mdrive: volume clearance, midline, joint limits, planted/flat feet and knees
+[31m[1mAssertionError[22m: -0.55 Left arm gap 0.025m
+-0.55 Right arm gap -0.004m
+-0.45 Left arm gap 0.025m
+-0.45 Right arm gap 0.003m
+-0.35 Left arm gap 0.025m
+-0.35 Right arm gap -0.006m
+-0.25 Left arm gap 0.026m
+-0.15 Left arm gap 0.025m
+-0.15 Right arm gap 0.017m
+-0.05 Left arm gap -0.055m
+-0.05 Right arm gap -0.032m
+0.05 Left arm gap 0.026m
+0.05 Right arm gap 0.020m
+0.15 Left arm gap 0.026m
+0.25 Left arm gap 0.025m
+0.35 Left arm gap 0.025m: expected [ '-0.55 Left arm gap 0.025m', …(22) ] to deeply equal [][39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- [][39m
+[31m+ [[39m
+[31m+   "-0.55 Left arm gap 0.025m",[39m
+[31m+   "-0.55 Right arm gap -0.004m",[39m
+[31m+   "-0.45 Left arm gap 0.025m",[39m
+[31m+   "-0.45 Right arm gap 0.003m",[39m
+[31m+   "-0.35 Left arm gap 0.025m",[39m
+[31m+   "-0.35 Right arm gap -0.006m",[39m
+[31m+   "-0.25 Left arm gap 0.026m",[39m
+[31m+   "-0.15 Left arm gap 0.025m",[39m
+[31m+   "-0.15 Right arm gap 0.017m",[39m
+[31m+   "-0.05 Left arm gap -0.055m",[39m
+[31m+   "-0.05 Right arm gap -0.032m",[39m
+[31m+   "0.05 Left arm gap 0.026m",[39m
+[31m+   "0.05 Right arm gap 0.020m",[39m
+[31m+   "0.15 Left arm gap 0.026m",[39m
+[31m+   "0.25 Left arm gap 0.025m",[39m
+[31m+   "0.35 Left arm gap 0.025m",[39m
+[31m+   "0.45 Left arm gap 0.025m",[39m
+[31m+   "0.55 Left arm gap 0.025m",[39m
+[31m+   "0.55 Right arm gap 0.005m",[39m
+[31m+   "0.65 Left arm gap 0.025m",[39m
+[31m+   "0.65 Right arm gap -0.003m",[39m
+[31m+   "0.75 Left arm gap 0.025m",[39m
+[31m+   "0.75 Right arm gap -0.004m",[39m
+[31m+ ][39m
+
+[36m [2m❯[22m tests/body-gate.test.ts:[2m112:54[22m[39m
+    [90m110| [39m            position("RightLeg").sub(position("LeftLeg")).dot(right) <…
+    [90m111| [39m      }
+    [90m112| [39m      [34mexpect[39m(errors[33m,[39m errors[33m.[39m[34mslice[39m([34m0[39m[33m,[39m [34m16[39m)[33m.[39m[34mjoin[39m([32m"\n"[39m))[33m.[39m[34mtoEqual[39m([])[33m;[39m
+    [90m   | [39m                                                     [31m^[39m
+    [90m113| [39m    })[33m;[39m
+    [90m114| [39m  }
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/27]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/body-gate.test.ts[2m > [22mSTEP 0 body gate — all 15 shots, A1/right[2m > [22mdink: 240 Hz paddle, pelvis, elbows, wrists, knees, feet; contact and speed peak
+[41m[1m FAIL [22m[49m tests/body-gate.test.ts[2m > [22mSTEP 0 body gate — all 15 shots, A1/right[2m > [22mvolley: 240 Hz paddle, pelvis, elbows, wrists, knees, feet; contact and speed peak
+[31m[1mAssertionError[22m: expected 0.16041666666666665 to be less than or equal to 0.04[39m
+[36m [2m❯[22m tests/body-gate.test.ts:[2m75:41[22m[39m
+    [90m 73| [39m      const discontinuities=auditBoundaries(sample,boundaries).filter(…
+    [90m 74| [39m      expect(discontinuities,`${type} C0/C1 limits: ${JSON.stringify(d…
+    [90m 75| [39m      [34mexpect[39m([33mMath[39m[33m.[39m[34mabs[39m(report[33m.[39mpeakTime))[33m.[39m[34mtoBeLessThanOrEqual[39m([34m0.04[39m)[33m;[39m
+    [90m   | [39m                                        [31m^[39m
+    [90m 76| [39m      [34mpose[39m(a1[33m,[39m shot[33m,[39m [34m0[39m)[33m;[39m
+    [90m 77| [39m      expect(paddle.position.distanceTo(new T.Vector3(shot.from.x-a1.x…
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/27]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/body-gate.test.ts[2m > [22mSTEP 0 body gate — all 15 shots, A1/right[2m > [22mdink: volume clearance, midline, joint limits, planted/flat feet and knees
+[31m[1mAssertionError[22m: -0.25 Left arm gap 0.025m
+-0.25 Right arm gap -0.004m
+-0.15 Left arm gap 0.025m
+-0.15 Right arm gap 0.004m
+-0.05 Left arm gap 0.025m
+-0.05 Right arm gap -0.005m
+0.05 Left arm gap 0.025m
+0.15 Left arm gap 0.025m
+0.25 Left arm gap 0.025m
+0.35 Left arm gap 0.025m
+0.45 Left arm gap 0.025m
+0.45 Right arm gap 0.018m
+0.55 Left arm gap 0.025m
+0.55 Right arm gap -0.001m
+0.65 Left arm gap 0.025m
+0.65 Right arm gap -0.004m: expected [ '-0.25 Left arm gap 0.025m', …(15) ] to deeply equal [][39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- [][39m
+[31m+ [[39m
+[31m+   "-0.25 Left arm gap 0.025m",[39m
+[31m+   "-0.25 Right arm gap -0.004m",[39m
+[31m+   "-0.15 Left arm gap 0.025m",[39m
+[31m+   "-0.15 Right arm gap 0.004m",[39m
+[31m+   "-0.05 Left arm gap 0.025m",[39m
+[31m+   "-0.05 Right arm gap -0.005m",[39m
+[31m+   "0.05 Left arm gap 0.025m",[39m
+[31m+   "0.15 Left arm gap 0.025m",[39m
+[31m+   "0.25 Left arm gap 0.025m",[39m
+[31m+   "0.35 Left arm gap 0.025m",[39m
+[31m+   "0.45 Left arm gap 0.025m",[39m
+[31m+   "0.45 Right arm gap 0.018m",[39m
+[31m+   "0.55 Left arm gap 0.025m",[39m
+[31m+   "0.55 Right arm gap -0.001m",[39m
+[31m+   "0.65 Left arm gap 0.025m",[39m
+[31m+   "0.65 Right arm gap -0.004m",[39m
+[31m+ ][39m
+
+[36m [2m❯[22m tests/body-gate.test.ts:[2m112:54[22m[39m
+    [90m110| [39m            position("RightLeg").sub(position("LeftLeg")).dot(right) <…
+    [90m111| [39m      }
+    [90m112| [39m      [34mexpect[39m(errors[33m,[39m errors[33m.[39m[34mslice[39m([34m0[39m[33m,[39m [34m16[39m)[33m.[39m[34mjoin[39m([32m"\n"[39m))[33m.[39m[34mtoEqual[39m([])[33m;[39m
+    [90m   | [39m                                                     [31m^[39m
+    [90m113| [39m    })[33m;[39m
+    [90m114| [39m  }
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/27]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/body-gate.test.ts[2m > [22mSTEP 0 body gate — all 15 shots, A1/right[2m > [22mdrop: volume clearance, midline, joint limits, planted/flat feet and knees
+[31m[1mAssertionError[22m: -0.43 Left arm gap 0.025m
+-0.43 Right arm gap -0.004m
+-0.33 Left arm gap 0.026m
+-0.33 Right arm gap 0.023m
+-0.23 Left arm gap 0.026m
+-0.23 Right arm gap -0.034m
+-0.13 Left arm gap 0.025m
+-0.13 Right arm gap 0.007m
+-0.03 Left arm gap 0.024m
+-0.03 Right arm gap -0.031m
+0.07 Left arm gap 0.013m
+0.07 Right arm gap -0.001m
+0.17 Left arm gap 0.026m
+0.27 Left arm gap 0.026m
+0.37 Left arm gap 0.025m
+0.47 Left arm gap 0.025m: expected [ '-0.43 Left arm gap 0.025m', …(21) ] to deeply equal [][39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- [][39m
+[31m+ [[39m
+[31m+   "-0.43 Left arm gap 0.025m",[39m
+[31m+   "-0.43 Right arm gap -0.004m",[39m
+[31m+   "-0.33 Left arm gap 0.026m",[39m
+[31m+   "-0.33 Right arm gap 0.023m",[39m
+[31m+   "-0.23 Left arm gap 0.026m",[39m
+[31m+   "-0.23 Right arm gap -0.034m",[39m
+[31m+   "-0.13 Left arm gap 0.025m",[39m
+[31m+   "-0.13 Right arm gap 0.007m",[39m
+[31m+   "-0.03 Left arm gap 0.024m",[39m
+[31m+   "-0.03 Right arm gap -0.031m",[39m
+[31m+   "0.07 Left arm gap 0.013m",[39m
+[31m+   "0.07 Right arm gap -0.001m",[39m
+[31m+   "0.17 Left arm gap 0.026m",[39m
+[31m+   "0.27 Left arm gap 0.026m",[39m
+[31m+   "0.37 Left arm gap 0.025m",[39m
+[31m+   "0.47 Left arm gap 0.025m",[39m
+[31m+   "0.57 Left arm gap 0.025m",[39m
+[31m+   "0.57 Right arm gap 0.017m",[39m
+[31m+   "0.67 Left arm gap 0.025m",[39m
+[31m+   "0.67 Right arm gap -0.001m",[39m
+[31m+   "0.77 Left arm gap 0.025m",[39m
+[31m+   "0.77 Right arm gap -0.004m",[39m
+[31m+ ][39m
+
+[36m [2m❯[22m tests/body-gate.test.ts:[2m112:54[22m[39m
+    [90m110| [39m            position("RightLeg").sub(position("LeftLeg")).dot(right) <…
+    [90m111| [39m      }
+    [90m112| [39m      [34mexpect[39m(errors[33m,[39m errors[33m.[39m[34mslice[39m([34m0[39m[33m,[39m [34m16[39m)[33m.[39m[34mjoin[39m([32m"\n"[39m))[33m.[39m[34mtoEqual[39m([])[33m;[39m
+    [90m   | [39m                                                     [31m^[39m
+    [90m113| [39m    })[33m;[39m
+    [90m114| [39m  }
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/27]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/body-gate.test.ts[2m > [22mSTEP 0 body gate — all 15 shots, A1/right[2m > [22mlob: 240 Hz paddle, pelvis, elbows, wrists, knees, feet; contact and speed peak
+[31m[1mAssertionError[22m: lob physiological acceleration (m/s²): [["LeftFoot",{"value":239.09279005222794,"time":0.18333333333333332}],["RightFoot",{"value":191.44446792042365,"time":0.20416666666666666}]]: expected [ [ 'LeftFoot', { …(2) } ], …(1) ] to deeply equal [][39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- [][39m
+[31m+ [[39m
+[31m+   [[39m
+[31m+     "LeftFoot",[39m
+[31m+     {[39m
+[31m+       "time": 0.18333333333333332,[39m
+[31m+       "value": 239.09279005222794,[39m
+[31m+     },[39m
+[31m+   ],[39m
+[31m+   [[39m
+[31m+     "RightFoot",[39m
+[31m+     {[39m
+[31m+       "time": 0.20416666666666666,[39m
+[31m+       "value": 191.44446792042365,[39m
+[31m+     },[39m
+[31m+   ],[39m
+[31m+ ][39m
+
+[36m [2m❯[22m tests/body-gate.test.ts:[2m66:97[22m[39m
+    [90m 64| [39m      const caps=(name:string)=>name==="paddle" ? 1500 : name==="Hips"…
+    [90m 65| [39m      const failures=Object.entries(report.acceleration).filter(([name…
+    [90m 66| [39m      expect(failures,`${type} physiological acceleration (m/s²): ${JS…
+    [90m   | [39m                                                                                                [31m^[39m
+    [90m 67| [39m      const spikes=Object.entries(report.spikes).filter(([name,a])=>a.…
+    [90m 68| [39m      expect(spikes,`${type} 9-sample median residual (m/s²): ${JSON.s…
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/27]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/body-gate.test.ts[2m > [22mSTEP 0 body gate — all 15 shots, A1/right[2m > [22mlob: volume clearance, midline, joint limits, planted/flat feet and knees
+[31m[1mAssertionError[22m: -0.31 Left arm gap 0.025m
+-0.31 Right arm gap -0.004m
+-0.21 Left arm gap 0.026m
+-0.21 Right arm gap -0.008m
+-0.11 Left arm gap 0.026m
+-0.11 Right arm gap -0.044m
+-0.01 Left arm gap 0.026m
+-0.01 Right arm gap -0.043m
+0.09 Left arm gap -0.029m
+0.19 Left arm gap -0.049m
+0.29 Left arm gap 0.005m
+0.29 Left foot drift
+0.39 Left arm gap 0.017m
+0.49 Left arm gap 0.023m
+0.59 Left arm gap 0.026m
+0.59 Right arm gap 0.018m: expected [ '-0.31 Left arm gap 0.025m', …(21) ] to deeply equal [][39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- [][39m
+[31m+ [[39m
+[31m+   "-0.31 Left arm gap 0.025m",[39m
+[31m+   "-0.31 Right arm gap -0.004m",[39m
+[31m+   "-0.21 Left arm gap 0.026m",[39m
+[31m+   "-0.21 Right arm gap -0.008m",[39m
+[31m+   "-0.11 Left arm gap 0.026m",[39m
+[31m+   "-0.11 Right arm gap -0.044m",[39m
+[31m+   "-0.01 Left arm gap 0.026m",[39m
+[31m+   "-0.01 Right arm gap -0.043m",[39m
+[31m+   "0.09 Left arm gap -0.029m",[39m
+[31m+   "0.19 Left arm gap -0.049m",[39m
+[31m+   "0.29 Left arm gap 0.005m",[39m
+[31m+   "0.29 Left foot drift",[39m
+[31m+   "0.39 Left arm gap 0.017m",[39m
+[31m+   "0.49 Left arm gap 0.023m",[39m
+[31m+   "0.59 Left arm gap 0.026m",[39m
+[31m+   "0.59 Right arm gap 0.018m",[39m
+[31m+   "0.69 Left arm gap 0.025m",[39m
+[31m+   "0.69 Right arm gap -0.010m",[39m
+[31m+   "0.79 Left arm gap 0.025m",[39m
+[31m+   "0.79 Right arm gap -0.007m",[39m
+[31m+   "0.89 Left arm gap 0.025m",[39m
+[31m+   "0.89 Right arm gap -0.004m",[39m
+[31m+ ][39m
+
+[36m [2m❯[22m tests/body-gate.test.ts:[2m112:54[22m[39m
+    [90m110| [39m            position("RightLeg").sub(position("LeftLeg")).dot(right) <…
+    [90m111| [39m      }
+    [90m112| [39m      [34mexpect[39m(errors[33m,[39m errors[33m.[39m[34mslice[39m([34m0[39m[33m,[39m [34m16[39m)[33m.[39m[34mjoin[39m([32m"\n"[39m))[33m.[39m[34mtoEqual[39m([])[33m;[39m
+    [90m   | [39m                                                     [31m^[39m
+    [90m113| [39m    })[33m;[39m
+    [90m114| [39m  }
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/27]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/body-gate.test.ts[2m > [22mSTEP 0 body gate — all 15 shots, A1/right[2m > [22mvolley: volume clearance, midline, joint limits, planted/flat feet and knees
+[31m[1mAssertionError[22m: -0.22 Left arm gap 0.025m
+-0.22 Right arm gap -0.004m
+-0.12 Left arm gap 0.026m
+-0.12 Right arm gap -0.022m
+-0.02 Left arm gap -0.008m
+-0.02 Right arm gap -0.074m
+0.08 Left arm gap 0.026m
+0.08 Right arm gap 0.014m
+0.18 Left arm gap 0.026m
+0.28 Left arm gap 0.025m
+0.28 Right arm gap 0.026m
+0.38 Left arm gap 0.025m
+0.38 Right arm gap 0.007m
+0.48 Left arm gap 0.025m
+0.48 Right arm gap -0.004m
+0.58 Left arm gap 0.025m: expected [ '-0.22 Left arm gap 0.025m', …(16) ] to deeply equal [][39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- [][39m
+[31m+ [[39m
+[31m+   "-0.22 Left arm gap 0.025m",[39m
+[31m+   "-0.22 Right arm gap -0.004m",[39m
+[31m+   "-0.12 Left arm gap 0.026m",[39m
+[31m+   "-0.12 Right arm gap -0.022m",[39m
+[31m+   "-0.02 Left arm gap -0.008m",[39m
+[31m+   "-0.02 Right arm gap -0.074m",[39m
+[31m+   "0.08 Left arm gap 0.026m",[39m
+[31m+   "0.08 Right arm gap 0.014m",[39m
+[31m+   "0.18 Left arm gap 0.026m",[39m
+[31m+   "0.28 Left arm gap 0.025m",[39m
+[31m+   "0.28 Right arm gap 0.026m",[39m
+[31m+   "0.38 Left arm gap 0.025m",[39m
+[31m+   "0.38 Right arm gap 0.007m",[39m
+[31m+   "0.48 Left arm gap 0.025m",[39m
+[31m+   "0.48 Right arm gap -0.004m",[39m
+[31m+   "0.58 Left arm gap 0.025m",[39m
+[31m+   "0.58 Right arm gap -0.004m",[39m
+[31m+ ][39m
+
+[36m [2m❯[22m tests/body-gate.test.ts:[2m112:54[22m[39m
+    [90m110| [39m            position("RightLeg").sub(position("LeftLeg")).dot(right) <…
+    [90m111| [39m      }
+    [90m112| [39m      [34mexpect[39m(errors[33m,[39m errors[33m.[39m[34mslice[39m([34m0[39m[33m,[39m [34m16[39m)[33m.[39m[34mjoin[39m([32m"\n"[39m))[33m.[39m[34mtoEqual[39m([])[33m;[39m
+    [90m   | [39m                                                     [31m^[39m
+    [90m113| [39m    })[33m;[39m
+    [90m114| [39m  }
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/27]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/body-gate.test.ts[2m > [22mSTEP 0 body gate — all 15 shots, A1/right[2m > [22msmash: 240 Hz paddle, pelvis, elbows, wrists, knees, feet; contact and speed peak
+[31m[1mAssertionError[22m: smash physiological acceleration (m/s²): [["LeftFoot",{"value":173.13140258553688,"time":-0.14583333333333334}],["RightFoot",{"value":167.53019691411257,"time":-0.12916666666666668}]]: expected [ [ 'LeftFoot', { …(2) } ], …(1) ] to deeply equal [][39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- [][39m
+[31m+ [[39m
+[31m+   [[39m
+[31m+     "LeftFoot",[39m
+[31m+     {[39m
+[31m+       "time": -0.14583333333333334,[39m
+[31m+       "value": 173.13140258553688,[39m
+[31m+     },[39m
+[31m+   ],[39m
+[31m+   [[39m
+[31m+     "RightFoot",[39m
+[31m+     {[39m
+[31m+       "time": -0.12916666666666668,[39m
+[31m+       "value": 167.53019691411257,[39m
+[31m+     },[39m
+[31m+   ],[39m
+[31m+ ][39m
+
+[36m [2m❯[22m tests/body-gate.test.ts:[2m66:97[22m[39m
+    [90m 64| [39m      const caps=(name:string)=>name==="paddle" ? 1500 : name==="Hips"…
+    [90m 65| [39m      const failures=Object.entries(report.acceleration).filter(([name…
+    [90m 66| [39m      expect(failures,`${type} physiological acceleration (m/s²): ${JS…
+    [90m   | [39m                                                                                                [31m^[39m
+    [90m 67| [39m      const spikes=Object.entries(report.spikes).filter(([name,a])=>a.…
+    [90m 68| [39m      expect(spikes,`${type} 9-sample median residual (m/s²): ${JSON.s…
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/27]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/body-gate.test.ts[2m > [22mSTEP 0 body gate — all 15 shots, A1/right[2m > [22msmash: volume clearance, midline, joint limits, planted/flat feet and knees
+[31m[1mAssertionError[22m: -0.50 Left arm gap 0.025m
+-0.50 Right arm gap -0.004m
+-0.40 Right arm gap 0.019m
+-0.10 Left foot drift
+-0.00 Left arm gap 0.026m
+-0.00 Left foot drift
+-0.00 Right foot drift
+0.10 Left arm gap 0.024m
+0.10 Left foot drift
+0.20 Left arm gap -0.007m
+0.20 Left foot drift
+0.30 Left arm gap -0.013m
+0.40 Left arm gap -0.024m
+0.50 Left arm gap -0.079m
+0.50 Right arm gap 0.024m
+0.60 Left arm gap -0.007m: expected [ '-0.50 Left arm gap 0.025m', …(22) ] to deeply equal [][39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- [][39m
+[31m+ [[39m
+[31m+   "-0.50 Left arm gap 0.025m",[39m
+[31m+   "-0.50 Right arm gap -0.004m",[39m
+[31m+   "-0.40 Right arm gap 0.019m",[39m
+[31m+   "-0.10 Left foot drift",[39m
+[31m+   "-0.00 Left arm gap 0.026m",[39m
+[31m+   "-0.00 Left foot drift",[39m
+[31m+   "-0.00 Right foot drift",[39m
+[31m+   "0.10 Left arm gap 0.024m",[39m
+[31m+   "0.10 Left foot drift",[39m
+[31m+   "0.20 Left arm gap -0.007m",[39m
+[31m+   "0.20 Left foot drift",[39m
+[31m+   "0.30 Left arm gap -0.013m",[39m
+[31m+   "0.40 Left arm gap -0.024m",[39m
+[31m+   "0.50 Left arm gap -0.079m",[39m
+[31m+   "0.50 Right arm gap 0.024m",[39m
+[31m+   "0.60 Left arm gap -0.007m",[39m
+[31m+   "0.60 Right arm gap 0.021m",[39m
+[31m+   "0.70 Left arm gap 0.025m",[39m
+[31m+   "0.70 Right arm gap 0.003m",[39m
+[31m+   "0.80 Left arm gap 0.026m",[39m
+[31m+   "0.80 Right arm gap -0.003m",[39m
+[31m+   "0.90 Left arm gap 0.025m",[39m
+[31m+   "0.90 Right arm gap -0.004m",[39m
+[31m+ ][39m
+
+[36m [2m❯[22m tests/body-gate.test.ts:[2m112:54[22m[39m
+    [90m110| [39m            position("RightLeg").sub(position("LeftLeg")).dot(right) <…
+    [90m111| [39m      }
+    [90m112| [39m      [34mexpect[39m(errors[33m,[39m errors[33m.[39m[34mslice[39m([34m0[39m[33m,[39m [34m16[39m)[33m.[39m[34mjoin[39m([32m"\n"[39m))[33m.[39m[34mtoEqual[39m([])[33m;[39m
+    [90m   | [39m                                                     [31m^[39m
+    [90m113| [39m    })[33m;[39m
+    [90m114| [39m  }
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/27]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/body-gate.test.ts[2m > [22mSTEP 0 body gate — all 15 shots, A1/right[2m > [22mblock: 240 Hz paddle, pelvis, elbows, wrists, knees, feet; contact and speed peak
+[31m[1mAssertionError[22m: expected 0.17291666666666666 to be less than or equal to 0.04[39m
+[36m [2m❯[22m tests/body-gate.test.ts:[2m75:41[22m[39m
+    [90m 73| [39m      const discontinuities=auditBoundaries(sample,boundaries).filter(…
+    [90m 74| [39m      expect(discontinuities,`${type} C0/C1 limits: ${JSON.stringify(d…
+    [90m 75| [39m      [34mexpect[39m([33mMath[39m[33m.[39m[34mabs[39m(report[33m.[39mpeakTime))[33m.[39m[34mtoBeLessThanOrEqual[39m([34m0.04[39m)[33m;[39m
+    [90m   | [39m                                        [31m^[39m
+    [90m 76| [39m      [34mpose[39m(a1[33m,[39m shot[33m,[39m [34m0[39m)[33m;[39m
+    [90m 77| [39m      expect(paddle.position.distanceTo(new T.Vector3(shot.from.x-a1.x…
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/27]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/body-gate.test.ts[2m > [22mSTEP 0 body gate — all 15 shots, A1/right[2m > [22mblock: volume clearance, midline, joint limits, planted/flat feet and knees
+[31m[1mAssertionError[22m: -0.22 Left arm gap 0.025m
+-0.22 Right arm gap -0.004m
+-0.12 Left arm gap 0.026m
+-0.12 Right arm gap -0.008m
+-0.02 Left arm gap 0.026m
+-0.02 Right arm gap -0.021m
+0.08 Left arm gap 0.026m
+0.08 Right arm gap -0.056m
+0.18 Left arm gap 0.026m
+0.18 Right arm gap -0.054m
+0.28 Left arm gap 0.026m
+0.28 Right arm gap 0.010m
+0.38 Left arm gap 0.026m
+0.38 Right arm gap 0.007m
+0.48 Left arm gap 0.025m
+0.48 Right arm gap -0.006m: expected [ '-0.22 Left arm gap 0.025m', …(17) ] to deeply equal [][39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- [][39m
+[31m+ [[39m
+[31m+   "-0.22 Left arm gap 0.025m",[39m
+[31m+   "-0.22 Right arm gap -0.004m",[39m
+[31m+   "-0.12 Left arm gap 0.026m",[39m
+[31m+   "-0.12 Right arm gap -0.008m",[39m
+[31m+   "-0.02 Left arm gap 0.026m",[39m
+[31m+   "-0.02 Right arm gap -0.021m",[39m
+[31m+   "0.08 Left arm gap 0.026m",[39m
+[31m+   "0.08 Right arm gap -0.056m",[39m
+[31m+   "0.18 Left arm gap 0.026m",[39m
+[31m+   "0.18 Right arm gap -0.054m",[39m
+[31m+   "0.28 Left arm gap 0.026m",[39m
+[31m+   "0.28 Right arm gap 0.010m",[39m
+[31m+   "0.38 Left arm gap 0.026m",[39m
+[31m+   "0.38 Right arm gap 0.007m",[39m
+[31m+   "0.48 Left arm gap 0.025m",[39m
+[31m+   "0.48 Right arm gap -0.006m",[39m
+[31m+   "0.58 Left arm gap 0.025m",[39m
+[31m+   "0.58 Right arm gap -0.004m",[39m
+[31m+ ][39m
+
+[36m [2m❯[22m tests/body-gate.test.ts:[2m112:54[22m[39m
+    [90m110| [39m            position("RightLeg").sub(position("LeftLeg")).dot(right) <…
+    [90m111| [39m      }
+    [90m112| [39m      [34mexpect[39m(errors[33m,[39m errors[33m.[39m[34mslice[39m([34m0[39m[33m,[39m [34m16[39m)[33m.[39m[34mjoin[39m([32m"\n"[39m))[33m.[39m[34mtoEqual[39m([])[33m;[39m
+    [90m   | [39m                                                     [31m^[39m
+    [90m113| [39m    })[33m;[39m
+    [90m114| [39m  }
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[13/27]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/body-gate.test.ts[2m > [22mSTEP 0 body gate — all 15 shots, A1/right[2m > [22mpunch: 240 Hz paddle, pelvis, elbows, wrists, knees, feet; contact and speed peak
+[31m[1mAssertionError[22m: expected 0.16458333333333333 to be less than or equal to 0.04[39m
+[36m [2m❯[22m tests/body-gate.test.ts:[2m75:41[22m[39m
+    [90m 73| [39m      const discontinuities=auditBoundaries(sample,boundaries).filter(…
+    [90m 74| [39m      expect(discontinuities,`${type} C0/C1 limits: ${JSON.stringify(d…
+    [90m 75| [39m      [34mexpect[39m([33mMath[39m[33m.[39m[34mabs[39m(report[33m.[39mpeakTime))[33m.[39m[34mtoBeLessThanOrEqual[39m([34m0.04[39m)[33m;[39m
+    [90m   | [39m                                        [31m^[39m
+    [90m 76| [39m      [34mpose[39m(a1[33m,[39m shot[33m,[39m [34m0[39m)[33m;[39m
+    [90m 77| [39m      expect(paddle.position.distanceTo(new T.Vector3(shot.from.x-a1.x…
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[14/27]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/body-gate.test.ts[2m > [22mSTEP 0 body gate — all 15 shots, A1/right[2m > [22mpunch: volume clearance, midline, joint limits, planted/flat feet and knees
+[31m[1mAssertionError[22m: -0.22 Left arm gap 0.025m
+-0.22 Right arm gap -0.004m
+-0.12 Left arm gap 0.026m
+-0.12 Right arm gap -0.024m
+-0.02 Left arm gap 0.026m
+-0.02 Right arm gap -0.047m
+0.08 Left arm gap 0.026m
+0.18 Left arm gap 0.025m
+0.28 Left arm gap 0.024m
+0.28 Right arm gap -0.011m
+0.38 Left arm gap -0.026m
+0.38 Right arm gap -0.037m
+0.48 Left arm gap 0.026m
+0.48 Right arm gap -0.021m
+0.58 Left arm gap 0.025m
+0.58 Right arm gap -0.002m: expected [ '-0.22 Left arm gap 0.025m', …(17) ] to deeply equal [][39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- [][39m
+[31m+ [[39m
+[31m+   "-0.22 Left arm gap 0.025m",[39m
+[31m+   "-0.22 Right arm gap -0.004m",[39m
+[31m+   "-0.12 Left arm gap 0.026m",[39m
+[31m+   "-0.12 Right arm gap -0.024m",[39m
+[31m+   "-0.02 Left arm gap 0.026m",[39m
+[31m+   "-0.02 Right arm gap -0.047m",[39m
+[31m+   "0.08 Left arm gap 0.026m",[39m
+[31m+   "0.18 Left arm gap 0.025m",[39m
+[31m+   "0.28 Left arm gap 0.024m",[39m
+[31m+   "0.28 Right arm gap -0.011m",[39m
+[31m+   "0.38 Left arm gap -0.026m",[39m
+[31m+   "0.38 Right arm gap -0.037m",[39m
+[31m+   "0.48 Left arm gap 0.026m",[39m
+[31m+   "0.48 Right arm gap -0.021m",[39m
+[31m+   "0.58 Left arm gap 0.025m",[39m
+[31m+   "0.58 Right arm gap -0.002m",[39m
+[31m+   "0.68 Left arm gap 0.025m",[39m
+[31m+   "0.68 Right arm gap -0.004m",[39m
+[31m+ ][39m
+
+[36m [2m❯[22m tests/body-gate.test.ts:[2m112:54[22m[39m
+    [90m110| [39m            position("RightLeg").sub(position("LeftLeg")).dot(right) <…
+    [90m111| [39m      }
+    [90m112| [39m      [34mexpect[39m(errors[33m,[39m errors[33m.[39m[34mslice[39m([34m0[39m[33m,[39m [34m16[39m)[33m.[39m[34mjoin[39m([32m"\n"[39m))[33m.[39m[34mtoEqual[39m([])[33m;[39m
+    [90m   | [39m                                                     [31m^[39m
+    [90m113| [39m    })[33m;[39m
+    [90m114| [39m  }
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[15/27]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/body-gate.test.ts[2m > [22mSTEP 0 body gate — all 15 shots, A1/right[2m > [22mreset: volume clearance, midline, joint limits, planted/flat feet and knees
+[31m[1mAssertionError[22m: -0.25 Left arm gap 0.025m
+-0.25 Right arm gap -0.004m
+-0.15 Left arm gap 0.026m
+-0.05 Left arm gap 0.026m
+-0.05 Right arm gap -0.006m
+0.05 Left arm gap 0.011m
+0.05 Right arm gap 0.022m
+0.15 Left arm gap 0.026m
+0.25 Left arm gap 0.026m
+0.35 Left arm gap 0.026m
+0.45 Left arm gap 0.025m
+0.45 Right arm gap 0.004m
+0.55 Left arm gap 0.025m
+0.55 Right arm gap -0.004m: expected [ '-0.25 Left arm gap 0.025m', …(13) ] to deeply equal [][39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- [][39m
+[31m+ [[39m
+[31m+   "-0.25 Left arm gap 0.025m",[39m
+[31m+   "-0.25 Right arm gap -0.004m",[39m
+[31m+   "-0.15 Left arm gap 0.026m",[39m
+[31m+   "-0.05 Left arm gap 0.026m",[39m
+[31m+   "-0.05 Right arm gap -0.006m",[39m
+[31m+   "0.05 Left arm gap 0.011m",[39m
+[31m+   "0.05 Right arm gap 0.022m",[39m
+[31m+   "0.15 Left arm gap 0.026m",[39m
+[31m+   "0.25 Left arm gap 0.026m",[39m
+[31m+   "0.35 Left arm gap 0.026m",[39m
+[31m+   "0.45 Left arm gap 0.025m",[39m
+[31m+   "0.45 Right arm gap 0.004m",[39m
+[31m+   "0.55 Left arm gap 0.025m",[39m
+[31m+   "0.55 Right arm gap -0.004m",[39m
+[31m+ ][39m
+
+[36m [2m❯[22m tests/body-gate.test.ts:[2m112:54[22m[39m
+    [90m110| [39m            position("RightLeg").sub(position("LeftLeg")).dot(right) <…
+    [90m111| [39m      }
+    [90m112| [39m      [34mexpect[39m(errors[33m,[39m errors[33m.[39m[34mslice[39m([34m0[39m[33m,[39m [34m16[39m)[33m.[39m[34mjoin[39m([32m"\n"[39m))[33m.[39m[34mtoEqual[39m([])[33m;[39m
+    [90m   | [39m                                                     [31m^[39m
+    [90m113| [39m    })[33m;[39m
+    [90m114| [39m  }
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[16/27]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/body-gate.test.ts[2m > [22mSTEP 0 body gate — all 15 shots, A1/right[2m > [22mspeedup: volume clearance, midline, joint limits, planted/flat feet and knees
+[31m[1mAssertionError[22m: -0.35 Left arm gap 0.025m
+-0.35 Right arm gap -0.004m
+-0.25 Left arm gap 0.026m
+-0.25 Right arm gap 0.014m
+-0.15 Left arm gap 0.026m
+-0.15 Right arm gap -0.032m
+-0.05 Left arm gap 0.026m
+-0.05 Right arm gap -0.020m
+0.05 Left arm gap -0.023m
+0.05 Right arm gap -0.009m
+0.15 Left arm gap 0.026m
+0.25 Left arm gap 0.026m
+0.35 Left arm gap 0.025m
+0.35 Right arm gap 0.026m
+0.45 Left arm gap 0.025m
+0.45 Right arm gap 0.003m: expected [ '-0.35 Left arm gap 0.025m', …(19) ] to deeply equal [][39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- [][39m
+[31m+ [[39m
+[31m+   "-0.35 Left arm gap 0.025m",[39m
+[31m+   "-0.35 Right arm gap -0.004m",[39m
+[31m+   "-0.25 Left arm gap 0.026m",[39m
+[31m+   "-0.25 Right arm gap 0.014m",[39m
+[31m+   "-0.15 Left arm gap 0.026m",[39m
+[31m+   "-0.15 Right arm gap -0.032m",[39m
+[31m+   "-0.05 Left arm gap 0.026m",[39m
+[31m+   "-0.05 Right arm gap -0.020m",[39m
+[31m+   "0.05 Left arm gap -0.023m",[39m
+[31m+   "0.05 Right arm gap -0.009m",[39m
+[31m+   "0.15 Left arm gap 0.026m",[39m
+[31m+   "0.25 Left arm gap 0.026m",[39m
+[31m+   "0.35 Left arm gap 0.025m",[39m
+[31m+   "0.35 Right arm gap 0.026m",[39m
+[31m+   "0.45 Left arm gap 0.025m",[39m
+[31m+   "0.45 Right arm gap 0.003m",[39m
+[31m+   "0.55 Left arm gap 0.025m",[39m
+[31m+   "0.55 Right arm gap -0.003m",[39m
+[31m+   "0.65 Left arm gap 0.025m",[39m
+[31m+   "0.65 Right arm gap -0.004m",[39m
+[31m+ ][39m
+
+[36m [2m❯[22m tests/body-gate.test.ts:[2m112:54[22m[39m
+    [90m110| [39m            position("RightLeg").sub(position("LeftLeg")).dot(right) <…
+    [90m111| [39m      }
+    [90m112| [39m      [34mexpect[39m(errors[33m,[39m errors[33m.[39m[34mslice[39m([34m0[39m[33m,[39m [34m16[39m)[33m.[39m[34mjoin[39m([32m"\n"[39m))[33m.[39m[34mtoEqual[39m([])[33m;[39m
+    [90m   | [39m                                                     [31m^[39m
+    [90m113| [39m    })[33m;[39m
+    [90m114| [39m  }
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[17/27]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/body-gate.test.ts[2m > [22mSTEP 0 body gate — all 15 shots, A1/right[2m > [22mroll: 240 Hz paddle, pelvis, elbows, wrists, knees, feet; contact and speed peak
+[31m[1mAssertionError[22m: expected 0.23124999999999998 to be less than or equal to 0.04[39m
+[36m [2m❯[22m tests/body-gate.test.ts:[2m75:41[22m[39m
+    [90m 73| [39m      const discontinuities=auditBoundaries(sample,boundaries).filter(…
+    [90m 74| [39m      expect(discontinuities,`${type} C0/C1 limits: ${JSON.stringify(d…
+    [90m 75| [39m      [34mexpect[39m([33mMath[39m[33m.[39m[34mabs[39m(report[33m.[39mpeakTime))[33m.[39m[34mtoBeLessThanOrEqual[39m([34m0.04[39m)[33m;[39m
+    [90m   | [39m                                        [31m^[39m
+    [90m 76| [39m      [34mpose[39m(a1[33m,[39m shot[33m,[39m [34m0[39m)[33m;[39m
+    [90m 77| [39m      expect(paddle.position.distanceTo(new T.Vector3(shot.from.x-a1.x…
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[18/27]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/body-gate.test.ts[2m > [22mSTEP 0 body gate — all 15 shots, A1/right[2m > [22mroll: volume clearance, midline, joint limits, planted/flat feet and knees
+[31m[1mAssertionError[22m: -0.31 Left arm gap 0.025m
+-0.31 Right arm gap -0.004m
+-0.21 Left arm gap 0.025m
+-0.21 Right arm gap -0.005m
+-0.11 Left arm gap 0.026m
+-0.11 Right arm gap -0.090m
+-0.01 Left arm gap 0.025m
+-0.01 Right arm gap -0.038m
+0.09 Left arm gap -0.009m
+0.19 Left arm gap 0.026m
+0.29 Left arm gap 0.025m
+0.39 Left arm gap 0.025m
+0.39 Right arm gap 0.025m
+0.49 Left arm gap 0.025m
+0.49 Right arm gap -0.005m
+0.59 Left arm gap 0.025m: expected [ '-0.31 Left arm gap 0.025m', …(16) ] to deeply equal [][39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- [][39m
+[31m+ [[39m
+[31m+   "-0.31 Left arm gap 0.025m",[39m
+[31m+   "-0.31 Right arm gap -0.004m",[39m
+[31m+   "-0.21 Left arm gap 0.025m",[39m
+[31m+   "-0.21 Right arm gap -0.005m",[39m
+[31m+   "-0.11 Left arm gap 0.026m",[39m
+[31m+   "-0.11 Right arm gap -0.090m",[39m
+[31m+   "-0.01 Left arm gap 0.025m",[39m
+[31m+   "-0.01 Right arm gap -0.038m",[39m
+[31m+   "0.09 Left arm gap -0.009m",[39m
+[31m+   "0.19 Left arm gap 0.026m",[39m
+[31m+   "0.29 Left arm gap 0.025m",[39m
+[31m+   "0.39 Left arm gap 0.025m",[39m
+[31m+   "0.39 Right arm gap 0.025m",[39m
+[31m+   "0.49 Left arm gap 0.025m",[39m
+[31m+   "0.49 Right arm gap -0.005m",[39m
+[31m+   "0.59 Left arm gap 0.025m",[39m
+[31m+   "0.59 Right arm gap -0.004m",[39m
+[31m+ ][39m
+
+[36m [2m❯[22m tests/body-gate.test.ts:[2m112:54[22m[39m
+    [90m110| [39m            position("RightLeg").sub(position("LeftLeg")).dot(right) <…
+    [90m111| [39m      }
+    [90m112| [39m      [34mexpect[39m(errors[33m,[39m errors[33m.[39m[34mslice[39m([34m0[39m[33m,[39m [34m16[39m)[33m.[39m[34mjoin[39m([32m"\n"[39m))[33m.[39m[34mtoEqual[39m([])[33m;[39m
+    [90m   | [39m                                                     [31m^[39m
+    [90m113| [39m    })[33m;[39m
+    [90m114| [39m  }
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[19/27]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/body-gate.test.ts[2m > [22mSTEP 0 body gate — all 15 shots, A1/right[2m > [22mflick: 240 Hz paddle, pelvis, elbows, wrists, knees, feet; contact and speed peak
+[31m[1mAssertionError[22m: flick physiological acceleration (m/s²): [["RightHand",{"value":701.0204353882157,"time":-0.004166666666666667}]]: expected [ [ 'RightHand', { …(2) } ] ] to deeply equal [][39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- [][39m
+[31m+ [[39m
+[31m+   [[39m
+[31m+     "RightHand",[39m
+[31m+     {[39m
+[31m+       "time": -0.004166666666666667,[39m
+[31m+       "value": 701.0204353882157,[39m
+[31m+     },[39m
+[31m+   ],[39m
+[31m+ ][39m
+
+[36m [2m❯[22m tests/body-gate.test.ts:[2m66:97[22m[39m
+    [90m 64| [39m      const caps=(name:string)=>name==="paddle" ? 1500 : name==="Hips"…
+    [90m 65| [39m      const failures=Object.entries(report.acceleration).filter(([name…
+    [90m 66| [39m      expect(failures,`${type} physiological acceleration (m/s²): ${JS…
+    [90m   | [39m                                                                                                [31m^[39m
+    [90m 67| [39m      const spikes=Object.entries(report.spikes).filter(([name,a])=>a.…
+    [90m 68| [39m      expect(spikes,`${type} 9-sample median residual (m/s²): ${JSON.s…
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[20/27]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/body-gate.test.ts[2m > [22mSTEP 0 body gate — all 15 shots, A1/right[2m > [22mflick: volume clearance, midline, joint limits, planted/flat feet and knees
+[31m[1mAssertionError[22m: -0.20 Left arm gap 0.025m
+-0.20 Right arm gap -0.004m
+-0.10 Left arm gap 0.026m
+-0.10 Right arm gap -0.033m
+0.00 Left arm gap 0.026m
+0.00 Right arm gap -0.024m
+0.10 Left arm gap 0.025m
+0.20 Left arm gap 0.026m
+0.30 Left arm gap 0.026m
+0.30 Right arm gap 0.025m
+0.40 Left arm gap 0.025m
+0.40 Right arm gap -0.000m
+0.50 Left arm gap 0.025m
+0.50 Right arm gap -0.004m: expected [ '-0.20 Left arm gap 0.025m', …(13) ] to deeply equal [][39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- [][39m
+[31m+ [[39m
+[31m+   "-0.20 Left arm gap 0.025m",[39m
+[31m+   "-0.20 Right arm gap -0.004m",[39m
+[31m+   "-0.10 Left arm gap 0.026m",[39m
+[31m+   "-0.10 Right arm gap -0.033m",[39m
+[31m+   "0.00 Left arm gap 0.026m",[39m
+[31m+   "0.00 Right arm gap -0.024m",[39m
+[31m+   "0.10 Left arm gap 0.025m",[39m
+[31m+   "0.20 Left arm gap 0.026m",[39m
+[31m+   "0.30 Left arm gap 0.026m",[39m
+[31m+   "0.30 Right arm gap 0.025m",[39m
+[31m+   "0.40 Left arm gap 0.025m",[39m
+[31m+   "0.40 Right arm gap -0.000m",[39m
+[31m+   "0.50 Left arm gap 0.025m",[39m
+[31m+   "0.50 Right arm gap -0.004m",[39m
+[31m+ ][39m
+
+[36m [2m❯[22m tests/body-gate.test.ts:[2m112:54[22m[39m
+    [90m110| [39m            position("RightLeg").sub(position("LeftLeg")).dot(right) <…
+    [90m111| [39m      }
+    [90m112| [39m      [34mexpect[39m(errors[33m,[39m errors[33m.[39m[34mslice[39m([34m0[39m[33m,[39m [34m16[39m)[33m.[39m[34mjoin[39m([32m"\n"[39m))[33m.[39m[34mtoEqual[39m([])[33m;[39m
+    [90m   | [39m                                                     [31m^[39m
+    [90m113| [39m    })[33m;[39m
+    [90m114| [39m  }
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[21/27]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/body-gate.test.ts[2m > [22mSTEP 0 body gate — all 15 shots, A1/right[2m > [22matp: volume clearance, midline, joint limits, planted/flat feet and knees
+[31m[1mAssertionError[22m: -0.38 Left arm gap 0.025m
+-0.38 Right arm gap -0.004m
+-0.28 Left arm gap 0.026m
+-0.28 Right arm gap 0.011m
+-0.18 Left arm gap 0.026m
+-0.18 Right arm gap -0.104m
+-0.08 Left arm gap 0.026m
+-0.08 Right arm gap 0.008m
+0.02 Left arm gap 0.026m
+0.02 Right arm gap -0.013m
+0.12 Left arm gap 0.026m
+0.12 Right arm gap 0.011m
+0.22 Left arm gap 0.026m
+0.22 Right arm gap 0.020m
+0.32 Left arm gap 0.026m
+0.32 Right arm gap 0.024m: expected [ '-0.38 Left arm gap 0.025m', …(25) ] to deeply equal [][39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- [][39m
+[31m+ [[39m
+[31m+   "-0.38 Left arm gap 0.025m",[39m
+[31m+   "-0.38 Right arm gap -0.004m",[39m
+[31m+   "-0.28 Left arm gap 0.026m",[39m
+[31m+   "-0.28 Right arm gap 0.011m",[39m
+[31m+   "-0.18 Left arm gap 0.026m",[39m
+[31m+   "-0.18 Right arm gap -0.104m",[39m
+[31m+   "-0.08 Left arm gap 0.026m",[39m
+[31m+   "-0.08 Right arm gap 0.008m",[39m
+[31m+   "0.02 Left arm gap 0.026m",[39m
+[31m+   "0.02 Right arm gap -0.013m",[39m
+[31m+   "0.12 Left arm gap 0.026m",[39m
+[31m+   "0.12 Right arm gap 0.011m",[39m
+[31m+   "0.22 Left arm gap 0.026m",[39m
+[31m+   "0.22 Right arm gap 0.020m",[39m
+[31m+   "0.32 Left arm gap 0.026m",[39m
+[31m+   "0.32 Right arm gap 0.024m",[39m
+[31m+   "0.42 Left arm gap 0.026m",[39m
+[31m+   "0.42 Right arm gap 0.022m",[39m
+[31m+   "0.52 Left arm gap 0.026m",[39m
+[31m+   "0.52 Right arm gap 0.014m",[39m
+[31m+   "0.62 Left arm gap 0.025m",[39m
+[31m+   "0.62 Right arm gap 0.007m",[39m
+[31m+   "0.72 Left arm gap 0.025m",[39m
+[31m+   "0.72 Right arm gap 0.000m",[39m
+[31m+   "0.82 Left arm gap 0.025m",[39m
+[31m+   "0.82 Right arm gap -0.004m",[39m
+[31m+ ][39m
+
+[36m [2m❯[22m tests/body-gate.test.ts:[2m112:54[22m[39m
+    [90m110| [39m            position("RightLeg").sub(position("LeftLeg")).dot(right) <…
+    [90m111| [39m      }
+    [90m112| [39m      [34mexpect[39m(errors[33m,[39m errors[33m.[39m[34mslice[39m([34m0[39m[33m,[39m [34m16[39m)[33m.[39m[34mjoin[39m([32m"\n"[39m))[33m.[39m[34mtoEqual[39m([])[33m;[39m
+    [90m   | [39m                                                     [31m^[39m
+    [90m113| [39m    })[33m;[39m
+    [90m114| [39m  }
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[22/27]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/body-gate.test.ts[2m > [22mSTEP 0 body gate — all 15 shots, A1/right[2m > [22merne: 240 Hz paddle, pelvis, elbows, wrists, knees, feet; contact and speed peak
+[31m[1mAssertionError[22m: erne physiological acceleration (m/s²): [["Hips",{"value":87.32047160986163,"time":0.09583333333333334}]]: expected [ [ 'Hips', { …(2) } ] ] to deeply equal [][39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- [][39m
+[31m+ [[39m
+[31m+   [[39m
+[31m+     "Hips",[39m
+[31m+     {[39m
+[31m+       "time": 0.09583333333333334,[39m
+[31m+       "value": 87.32047160986163,[39m
+[31m+     },[39m
+[31m+   ],[39m
+[31m+ ][39m
+
+[36m [2m❯[22m tests/body-gate.test.ts:[2m66:97[22m[39m
+    [90m 64| [39m      const caps=(name:string)=>name==="paddle" ? 1500 : name==="Hips"…
+    [90m 65| [39m      const failures=Object.entries(report.acceleration).filter(([name…
+    [90m 66| [39m      expect(failures,`${type} physiological acceleration (m/s²): ${JS…
+    [90m   | [39m                                                                                                [31m^[39m
+    [90m 67| [39m      const spikes=Object.entries(report.spikes).filter(([name,a])=>a.…
+    [90m 68| [39m      expect(spikes,`${type} 9-sample median residual (m/s²): ${JSON.s…
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[23/27]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/body-gate.test.ts[2m > [22mSTEP 0 body gate — all 15 shots, A1/right[2m > [22merne: volume clearance, midline, joint limits, planted/flat feet and knees
+[31m[1mAssertionError[22m: -0.45 Left arm gap 0.025m
+-0.45 Right arm gap -0.004m
+-0.35 Left arm gap 0.025m
+-0.35 Right arm gap 0.003m
+-0.25 Left arm gap 0.025m
+-0.25 Right arm gap 0.012m
+-0.15 Left arm gap 0.026m
+-0.15 Right arm gap 0.013m
+-0.05 Left arm gap -0.055m
+-0.05 Right arm gap -0.016m
+0.05 Left arm gap -0.024m
+0.05 Right arm gap -0.054m
+0.15 Left arm gap -0.041m
+0.15 Right arm gap -0.033m
+0.25 Left arm gap -0.019m
+0.25 Right arm gap -0.023m: expected [ '-0.45 Left arm gap 0.025m', …(25) ] to deeply equal [][39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- [][39m
+[31m+ [[39m
+[31m+   "-0.45 Left arm gap 0.025m",[39m
+[31m+   "-0.45 Right arm gap -0.004m",[39m
+[31m+   "-0.35 Left arm gap 0.025m",[39m
+[31m+   "-0.35 Right arm gap 0.003m",[39m
+[31m+   "-0.25 Left arm gap 0.025m",[39m
+[31m+   "-0.25 Right arm gap 0.012m",[39m
+[31m+   "-0.15 Left arm gap 0.026m",[39m
+[31m+   "-0.15 Right arm gap 0.013m",[39m
+[31m+   "-0.05 Left arm gap -0.055m",[39m
+[31m+   "-0.05 Right arm gap -0.016m",[39m
+[31m+   "0.05 Left arm gap -0.024m",[39m
+[31m+   "0.05 Right arm gap -0.054m",[39m
+[31m+   "0.15 Left arm gap -0.041m",[39m
+[31m+   "0.15 Right arm gap -0.033m",[39m
+[31m+   "0.25 Left arm gap -0.019m",[39m
+[31m+   "0.25 Right arm gap -0.023m",[39m
+[31m+   "0.35 Left arm gap 0.026m",[39m
+[31m+   "0.35 Right arm gap -0.014m",[39m
+[31m+   "0.45 Left arm gap 0.026m",[39m
+[31m+   "0.45 Right arm gap -0.005m",[39m
+[31m+   "0.55 Left arm gap 0.026m",[39m
+[31m+   "0.55 Right arm gap 0.001m",[39m
+[31m+   "0.65 Left arm gap 0.025m",[39m
+[31m+   "0.65 Right arm gap -0.002m",[39m
+[31m+   "0.75 Left arm gap 0.025m",[39m
+[31m+   "0.75 Right arm gap -0.004m",[39m
+[31m+ ][39m
+
+[36m [2m❯[22m tests/body-gate.test.ts:[2m112:54[22m[39m
+    [90m110| [39m            position("RightLeg").sub(position("LeftLeg")).dot(right) <…
+    [90m111| [39m      }
+    [90m112| [39m      [34mexpect[39m(errors[33m,[39m errors[33m.[39m[34mslice[39m([34m0[39m[33m,[39m [34m16[39m)[33m.[39m[34mjoin[39m([32m"\n"[39m))[33m.[39m[34mtoEqual[39m([])[33m;[39m
+    [90m   | [39m                                                     [31m^[39m
+    [90m113| [39m    })[33m;[39m
+    [90m114| [39m  }
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[24/27]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/humanoid.test.ts[2m > [22mv2 Mixamo rig[2m > [22mkeeps every vertex finite through all shot poses with feet near the ground
+[31m[1mAssertionError[22m: smash t=0: expected 0.18916794303111592 to be less than 0.18[39m
+[36m [2m❯[22m tests/humanoid.test.ts:[2m105:43[22m[39m
+    [90m103| [39m        }
+    [90m104| [39m        [34mexpect[39m(minY[33m,[39m [32m`[39m[36m${[39mtype[36m}[39m[32m t=[39m[36m${[39mtime[36m}[39m[32m`[39m)[33m.[39m[34mtoBeGreaterThan[39m([33m-[39m[34m0.06[39m)[33m;[39m
+    [90m105| [39m        [34mexpect[39m(minY[33m,[39m [32m`[39m[36m${[39mtype[36m}[39m[32m t=[39m[36m${[39mtime[36m}[39m[32m`[39m)[33m.[39m[34mtoBeLessThan[39m(
+    [90m   | [39m                                          [31m^[39m
+    [90m106| [39m          [34m0.06[39m [33m+[39m [34mplayerPose[39m(p[33m,[39m shot[33m,[39m time)[33m.[39mhop[33m,[39m
+    [90m107| [39m        )[33m;[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[25/27]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/humanoid.test.ts[2m > [22marms (user feedback round 2)[2m > [22mready: paddle in front of the chest, head up 45–70°, elbows off the ribs, no arm across the midline
+[31m[1mAssertionError[22m: B1 left: expected 1.2869461058168508 to be less than 1.2566370614359172[39m
+[36m [2m❯[22m tests/humanoid.test.ts:[2m251:44[22m[39m
+    [90m249| [39m        [35mconst[39m elevation [33m=[39m [33mMath[39m[33m.[39m[34masin[39m(head[33m.[39my)[33m;[39m
+    [90m250| [39m        [34mexpect[39m(elevation[33m,[39m [32m`[39m[36m${[39mid[36m}[39m[32m [39m[36m${[39mhand[36m}[39m[32m`[39m)[33m.[39m[34mtoBeGreaterThan[39m([34mdeg[39m([34m42[39m))[33m;[39m
+    [90m251| [39m        [34mexpect[39m(elevation[33m,[39m [32m`[39m[36m${[39mid[36m}[39m[32m [39m[36m${[39mhand[36m}[39m[32m`[39m)[33m.[39m[34mtoBeLessThan[39m([34mdeg[39m([34m72[39m))[33m;[39m
+    [90m   | [39m                                           [31m^[39m
+    [90m252| [39m        [90m// face toward the net (within 30°)[39m
+    [90m253| [39m        const face = new T.Vector3(0, 0, 1).applyQuaternion(paddle.qua…
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[26/27]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m2 failed[39m[22m[90m (2)[39m
+[2m      Tests [22m [1m[31m27 failed[39m[22m[2m | [22m[1m[32m18 passed[39m[22m[90m (45)[39m
+[2m   Start at [22m 21:20:33
+[2m   Duration [22m 1.06s[2m (transform 158ms, setup 0ms, collect 377ms, tests 1.05s, environment 0ms, prepare 214ms)[22m
+

@@ -1,0 +1,45 @@
+serve    peak 18.35m/s@-0.102 contactErr 1.6e-16 | acc Hips=39@-0.20 LForeArm=222@-0.09 LHand=326@-0.09 LLeg=21@0.57 LFoot=19@0.56 RForeArm=309@-0.12 RHand=645@-0.11 RLeg=20@-0.20 RFoot=9@0.36 paddle=673@-0.10
+         spikes>50: RightHand=67@-0.13 paddle=72@-0.13 | disc: -
+         gapL 0.025@0.19 gapR -0.083@0.01 | len 0.00mm  headTop 1.527 hipsNeck 0.543/0.543 | elbow 105-160 flex 59 dev 29 knee 38-80 drift 0mm pelvisDrag 126mm | 28ms
+drive    peak 13.92m/s@0.002 contactErr 1.6e-16 | acc Hips=19@0.22 LForeArm=67@-0.20 LHand=88@-0.20 LLeg=8@0.28 LFoot=10@0.30 RForeArm=140@-0.00 RHand=268@-0.00 RLeg=15@0.22 RFoot=12@0.53 paddle=293@-0.00
+         spikes>50: paddle=75@-0.00 | disc: -
+         gapL -0.121@-0.07 gapR -0.041@-0.03 | len 0.00mm  headTop 1.529 hipsNeck 0.543/0.543 | elbow 112-157 flex 59 dev 29 knee 45-65 drift 0mm pelvisDrag 40mm | 18ms
+dink     peak 6.60m/s@-0.160 contactErr 1.2e-16 | acc Hips=34@-0.10 LForeArm=29@-0.10 LHand=33@-0.25 LLeg=22@-0.10 LFoot=17@-0.20 RForeArm=43@-0.05 RHand=119@-0.00 RLeg=27@-0.10 RFoot=28@-0.05 paddle=216@-0.00
+         spikes>50: paddle=86@-0.00 | disc: -
+         gapL 0.025@0.17 gapR -0.005@-0.05 | len 0.00mm  headTop 1.531 hipsNeck 0.541/0.543 | elbow 42-148 flex 59 dev 29 knee 45-65 drift 0mm pelvisDrag 45mm | 12ms
+drop     peak 6.11m/s@0.002 contactErr 0.0e+0 | acc Hips=13@0.25 LForeArm=89@-0.18 LHand=121@-0.18 LLeg=7@0.60 LFoot=7@0.34 RForeArm=100@-0.18 RHand=115@-0.00 RLeg=11@0.60 RFoot=8@0.57 paddle=124@-0.10
+         spikes>50: - | disc: -
+         gapL -0.009@0.11 gapR -0.056@-0.27 | len 0.00mm  headTop 1.526 hipsNeck 0.542/0.543 | elbow 56-157 flex 59 dev 29 knee 46-66 drift 0mm pelvisDrag 40mm | 13ms
+lob      peak 10.50m/s@0.027 contactErr 1.1e-16 | acc Hips=29@-0.30 LForeArm=104@-0.30 LHand=160@-0.30 LLeg=1007@0.18 LFoot=239@0.18 RForeArm=172@-0.00 RHand=328@-0.00 RLeg=721@0.20 RFoot=191@0.20 paddle=277@-0.00
+         spikes>50: LeftLeg=1009@0.18 LeftFoot=242@0.18 RightHand=64@-0.00 RightLeg=724@0.20 RightFoot=191@0.20 paddle=54@-0.00 | disc: -
+         gapL -0.112@0.15 gapR -0.101@-0.05 | len 0.00mm  headTop 1.573 hipsNeck 0.540/0.543 | elbow 112-160 flex 59 dev 29 knee 11-66 drift 14mm pelvisDrag 39mm | 12ms
+volley   peak 8.66m/s@-0.160 contactErr 1.2e-16 | acc Hips=43@-0.22 LForeArm=149@-0.22 LHand=248@-0.10 LLeg=18@-0.10 LFoot=11@-0.04 RForeArm=95@-0.00 RHand=173@-0.00 RLeg=24@-0.10 RFoot=17@-0.18 paddle=300@-0.00
+         spikes>50: LeftHand=84@-0.00 RightHand=69@-0.00 paddle=119@-0.22 | disc: -
+         gapL -0.047@-0.04 gapR -0.074@-0.02 | len 0.00mm  headTop 1.528 hipsNeck 0.541/0.543 | elbow 91-160 flex 59 dev 29 knee 46-61 drift 0mm pelvisDrag 39mm | 10ms
+smash    peak 9.10m/s@0.127 contactErr 1.1e-16 | acc Hips=30@-0.25 LForeArm=72@-0.12 LHand=161@-0.11 LLeg=742@-0.15 LFoot=173@-0.15 RForeArm=55@0.00 RHand=92@-0.00 RLeg=642@-0.13 RFoot=168@-0.13 paddle=121@0.00
+         spikes>50: LeftLeg=745@-0.15 LeftFoot=171@-0.15 RightLeg=645@-0.13 RightFoot=166@-0.13 | disc: -
+         gapL -0.112@0.56 gapR -0.004@-0.50 | len 0.00mm  headTop 1.635 hipsNeck 0.541/0.543 | elbow 75-160 flex 59 dev 29 knee 11-54 drift 28mm pelvisDrag 111mm | 15ms
+block    peak 8.32m/s@-0.173 contactErr 3.3e-16 | acc Hips=46@-0.10 LForeArm=220@-0.10 LHand=350@-0.10 LLeg=27@-0.10 LFoot=22@-0.18 RForeArm=152@-0.10 RHand=210@-0.00 RLeg=31@-0.10 RFoot=25@-0.04 paddle=387@-0.00
+         spikes>50: LeftForeArm=84@-0.00 LeftHand=128@-0.00 RightHand=63@-0.00 paddle=169@-0.00 | disc: -
+         gapL 0.025@0.46 gapR -0.057@0.10 | len 0.00mm  headTop 1.528 hipsNeck 0.540/0.543 | elbow 56-157 flex 59 dev 29 knee 45-63 drift 0mm pelvisDrag 52mm | 9ms
+punch    peak 8.59m/s@-0.165 contactErr 1.7e-16 | acc Hips=39@-0.22 LForeArm=202@-0.10 LHand=331@-0.10 LLeg=18@-0.10 LFoot=12@-0.04 RForeArm=117@-0.10 RHand=202@-0.00 RLeg=26@-0.10 RFoot=18@-0.18 paddle=305@-0.00
+         spikes>50: LeftForeArm=82@-0.00 LeftHand=120@-0.00 RightHand=69@-0.00 paddle=127@-0.22 | disc: -
+         gapL -0.045@0.42 gapR -0.049@-0.04 | len 0.00mm  headTop 1.529 hipsNeck 0.541/0.543 | elbow 87-160 flex 59 dev 29 knee 46-61 drift 0mm pelvisDrag 43mm | 12ms
+reset    peak 8.02m/s@0.002 contactErr 1.1e-16 | acc Hips=38@0.15 LForeArm=173@-0.00 LHand=259@-0.00 LLeg=18@0.40 LFoot=16@-0.05 RForeArm=281@-0.00 RHand=373@-0.00 RLeg=20@-0.10 RFoot=10@-0.20 paddle=243@-0.00
+         spikes>50: LeftForeArm=62@-0.10 LeftHand=94@-0.10 RightForeArm=131@-0.00 RightHand=156@-0.00 paddle=122@-0.00 | disc: -
+         gapL 0.009@0.03 gapR -0.041@-0.01 | len 0.00mm  headTop 1.527 hipsNeck 0.542/0.543 | elbow 44-156 flex 59 dev 29 knee 45-73 drift 0mm pelvisDrag 39mm | 10ms
+speedup  peak 9.01m/s@0.002 contactErr 2.5e-16 | acc Hips=34@0.15 LForeArm=98@-0.00 LHand=141@-0.00 LLeg=16@0.00 LFoot=10@0.22 RForeArm=125@0.01 RHand=206@-0.00 RLeg=21@0.15 RFoot=9@0.42 paddle=194@-0.00
+         spikes>50: paddle=53@-0.00 | disc: -
+         gapL -0.053@0.07 gapR -0.046@-0.09 | len 0.00mm  headTop 1.526 hipsNeck 0.543/0.543 | elbow 89-157 flex 59 dev 29 knee 45-67 drift 0mm pelvisDrag 41mm | 10ms
+roll     peak 8.61m/s@-0.231 contactErr 5.6e-17 | acc Hips=27@-0.30 LForeArm=69@-0.30 LHand=134@-0.30 LLeg=14@0.45 LFoot=11@0.42 RForeArm=109@-0.00 RHand=227@-0.00 RLeg=16@0.45 RFoot=9@0.42 paddle=190@-0.30
+         spikes>50: paddle=52@-0.16 | disc: -
+         gapL -0.036@0.07 gapR -0.110@-0.07 | len 0.00mm  headTop 1.526 hipsNeck 0.541/0.543 | elbow 112-157 flex 59 dev 29 knee 46-66 drift 0mm pelvisDrag 44mm | 10ms
+flick    peak 14.77m/s@0.002 contactErr 2.1e-16 | acc Hips=58@0.12 LForeArm=186@-0.00 LHand=255@-0.00 LLeg=21@-0.17 LFoot=25@-0.04 RForeArm=366@-0.00 RHand=701@-0.00 RLeg=30@-0.07 RFoot=17@-0.16 paddle=591@-0.00
+         spikes>50: LeftForeArm=62@-0.00 LeftHand=86@-0.00 RightForeArm=169@-0.00 RightHand=272@0.00 paddle=275@-0.00 | disc: -
+         gapL 0.007@0.04 gapR -0.071@-0.06 | len 0.00mm  headTop 1.525 hipsNeck 0.542/0.543 | elbow 111-157 flex 59 dev 29 knee 46-61 drift 0mm pelvisDrag 40mm | 8ms
+atp      peak 8.05m/s@-0.002 contactErr 1.9e-16 | acc Hips=28@-0.38 LForeArm=89@-0.18 LHand=125@-0.18 LLeg=20@-0.38 LFoot=3@-0.07 RForeArm=92@-0.00 RHand=120@-0.00 RLeg=23@0.20 RFoot=9@-0.30 paddle=135@-0.07
+         spikes>50: - | disc: -
+         gapL 0.025@0.16 gapR -0.104@-0.18 | len 0.00mm  headTop 1.538 hipsNeck 0.542/0.543 | elbow 92-160 flex 59 dev 29 knee 42-121 drift 0mm pelvisDrag 43mm | 12ms
+erne     peak 8.22m/s@-0.002 contactErr 2.2e-16 | acc Hips=87@0.10 LForeArm=89@0.00 LHand=103@0.00 LLeg=36@0.00 LFoot=11@0.23 RForeArm=154@0.00 RHand=257@0.00 RLeg=52@0.00 RFoot=11@0.02 paddle=298@0.00
+         spikes>50: RightHand=94@0.00 paddle=109@0.00 | disc: -
+         gapL -0.100@-0.03 gapR -0.059@0.03 | len 0.00mm  headTop 1.542 hipsNeck 0.542/0.543 | elbow 74-157 flex 59 dev 29 knee 30-52 drift 0mm pelvisDrag 42mm | 12ms

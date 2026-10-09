@@ -7,6 +7,7 @@ import {
   validateScenario,
 } from "../src/core/scenario";
 import { buildClips, interpolatePlayers } from "../src/core/playback";
+import { strokePreparation } from "../src/core/stroke-motion";
 it("roundtrips unicode names, notes and multiple steps through JSON and URL", () => {
   const s = initialScenario();
   s.name = "Chiến thuật đôi 🏓";
@@ -51,10 +52,10 @@ it("builds ordered transitions and interpolates by player identity", () => {
   next.players.find((p) => p.id === "A1")!.x = -1.5;
   s.steps.push(next);
   const clips = buildClips(s);
-  expect(clips[0].move).toBe(0.48);
+  expect(clips[0].move).toBe(strokePreparation(s.steps[0].shot!.type));
   expect(clips[0].end).toBe(clips[0].move + clips[0].trajectory!.duration);
   expect(clips[1].move).toBeGreaterThan(0);
-  expect(clips[1].move).toBeLessThanOrEqual(0.65);
+  expect(clips[1].move).toBeLessThanOrEqual(Math.max(0.65, strokePreparation(next.shot!.type) * 0.75));
   expect(clips[1].start).toBe(clips[0].end);
   expect(
     interpolatePlayers(s.steps[0].players, next.players, 0.5).find(

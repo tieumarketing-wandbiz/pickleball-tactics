@@ -1,0 +1,8 @@
+{
+  "maxBoneLengthErrorMetres": 0.7271219451636931,
+  "maxTorsoChainErrorMetres": 0.7271219451636931,
+  "maxScaleError": 0,
+  "worst": "lob t=0.2650 Spine",
+  "restTorsoChainMetres": 0.545069238209375,
+  "readyHeadJointY": 1.5683429536407483
+}

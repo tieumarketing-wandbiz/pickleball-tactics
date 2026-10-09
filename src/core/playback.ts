@@ -49,7 +49,7 @@ export function buildClips(s: Scenario, first = 0): Clip[] {
   );
   const receiveTimes = interceptions.map((hit, i) =>
     hit
-      ? Math.min(strokePreparation(steps[i].shot!.type) * 0.75, hit.time * 0.45)
+      ? Math.min(strokePreparation(steps[i].shot!.type), hit.time * 0.85)
       : 0,
   );
   let clock = 0,
@@ -89,7 +89,7 @@ export function buildClips(s: Scenario, first = 0): Clip[] {
           : 0
         : handoff
           ? Math.max(
-              step.shot ? strokePreparation(step.shot.type) * 0.75 : 0.12,
+              step.shot ? strokePreparation(step.shot.type) : 0.12,
               Math.min(0.65, distance / 10),
             )
           : tr

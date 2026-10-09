@@ -9,6 +9,7 @@ import { clone as cloneSkinned } from "three/addons/utils/SkeletonUtils.js";
 import { playerPose } from "../core/player-pose";
 import { STROKE_MOTION, strokeLoadTime, strokePreparation } from "../core/stroke-motion";
 import { PoseSpline, readQuaternion, type RigDrawing } from "./pose-spline";
+
 import { ease, softClamp } from "../core/motion";
 import { PADDLE_GRIP_Y, PADDLE_SUPPORT_OFFSET } from "./paddle";
 import type { Player, Shot } from "../core/scenario";
@@ -86,7 +87,7 @@ export const UPPER_ARM_FREE = 0.4;
 const HANDLE_OFFSET = 0.032;
 /** Paddle face roll about the handle relative to the palm (0 = handshake/eastern). */
 /** Socket shape: handle across the palm, tilted toward the fingers by `along`. */
-const GRIP = { kSign: 1, faceSign: -1, along: 0 };
+const GRIP = { kSign: 1, faceSign: -1, along: -0.25 };
 
 export interface HumanoidRig {
   scene: T.Object3D;
@@ -130,6 +131,7 @@ interface ArmRig {
   flexAxis: T.Vector3; // forearm local (rest)
   devAxis: T.Vector3; // forearm local (rest)
   handRest: T.Quaternion; // local
+  foreZero: T.Quaternion; // forearm in upper-arm space with a straight elbow
   foreInHand: T.Vector3; // elbow→wrist direction in hand space (rest)
   /** paddle in hand space when this hand holds the handle (dominant / support) */
   grip: T.Matrix4;
@@ -137,6 +139,7 @@ interface ArmRig {
   palm: T.Vector3; // hand local palm centre
   fingers: Finger[];
 }
+const mainSocket=(arm:ArmRig,swivel:number)=>arm.hand.matrixWorld.clone().multiply(arm.grip).multiply(new T.Matrix4().makeRotationY(-swivel));
 interface LegRig {
   sign: number;
   up: T.Object3D;
@@ -167,6 +170,7 @@ export class Humanoid {
   torsoCapsules: TorsoCapsule[] = [];
   private restQ = new Map<T.Object3D, T.Quaternion>();
   private hipsRest: T.Vector3;
+
   private ankleY: number;
   private arms: Record<Side, ArmRig>;
   private legs: Record<Side, LegRig>;
@@ -174,7 +178,7 @@ export class Humanoid {
   private walkPhase = 0;
   private anchors = new Map<string, { point: T.Vector3; swinging: boolean }>();
   private restLocal = new Map<T.Object3D, T.Quaternion>();
-  private drawings = new Map<string, PoseSpline>();
+
   private driven: T.Object3D[] = [];
   private sampleValues = new Float64Array(0);
   private splinePaddle = new T.Group();
@@ -202,8 +206,9 @@ export class Humanoid {
       this.restLocal.set(b, b.quaternion.clone());
       this.driven.push(b);
     }
-    this.sampleValues = new Float64Array(4 + this.driven.length * 4);
+    this.sampleValues = new Float64Array(4 + this.driven.length * 4 + 16);
     this.hipsRest = this.bone("Hips").position.clone();
+
     this.ankleY =
       (worldPos(this.bone("LeftFoot"), _a).y +
         worldPos(this.bone("RightFoot"), _b).y) /
@@ -422,6 +427,7 @@ export class Humanoid {
       flexAxis,
       devAxis,
       handRest: hand.quaternion.clone(),
+      foreZero: new T.Quaternion().setFromUnitVectors(foreAxis.clone().applyQuaternion(fore.quaternion),fore.position.clone().normalize()).multiply(fore.quaternion),
       foreInHand: W.clone()
         .sub(E)
         .normalize()
@@ -433,912 +439,284 @@ export class Humanoid {
     };
   }
 
-  /** Keyed IK drawings remove the discontinuous argmin/pole choices from the frame path.
-   * The hand socket stays rigid, and distributed pelvis correction meets the exact paddle
-   * path. Sampling is absolute: pause, seek and 24/240 Hz evaluation give the same stroke. */
-  pose(
-    p: Player, shot: Shot | undefined, time: number | undefined, paddle: T.Object3D,
-    movement?: { velocity: T.Vector3; clock: number; dt: number }, preparation?: number,
-  ) {
-    const prep = preparation ?? (shot ? strokePreparation(shot.type) : 1);
-    const key = JSON.stringify([p.id, p.hand, shot, prep]);
-    let spline = this.drawings.get(key);
-    const handSide: Side = p.hand === "left" ? "Left" : "Right";
-    const main = this.arms[handSide];
-    if (!spline) {
-      const profile = shot ? STROKE_MOTION[shot.type] : undefined;
-      const load = shot ? strokeLoadTime(shot.type, prep) : -0.5;
-      const times = profile ? [-prep, load, 0, profile.followTime,
-        ...(profile.hold ? [profile.followTime + profile.hold] : []),
-        profile.followTime + (profile.hold ?? 0) + (profile.recover - profile.followTime - (profile.hold ?? 0)) * 0.72,
-        profile.recover] : [-1, 1];
-      const keys: RigDrawing[] = [];
-      let impactVelocity: Float64Array | undefined;
-      let impactPose: Float64Array | undefined;
-      for (const t of times) {
-        // The original iterative constraint pass is a drawing author, not an animation state.
-        for (const b of this.driven) b.quaternion.copy(this.restLocal.get(b)!);
-        this.bone("Hips").position.copy(this.hipsRest);
-        this.root.updateMatrixWorld(true);
-        this.solvePose(p, shot, t, this.splinePaddle, undefined, prep);
-        const values = new Float64Array(this.sampleValues.length);
-        this.bone("Hips").position.toArray(values, 0);
-        // Socket swivel is unwrapped as an angle; it must not choose a different grip per frame.
-        const relative = main.grip.clone().invert()
-          .multiply(main.hand.matrixWorld.clone().invert())
-          .multiply(this.root.matrixWorld)
-          .multiply(this.splinePaddle.matrix);
-        let swivel = -Math.atan2(relative.elements[8], relative.elements[0]);
-        if (keys.length) swivel = keys.at(-1)!.values[3] + angleDiff(swivel, keys.at(-1)!.values[3]);
-        values[3] = swivel;
-        this.driven.forEach((b, i) => b.quaternion.toArray(values, 4 + i * 4));
-        keys.push({ time: t, values });
-        if (shot && t === 0) {
-          impactPose = values.slice();
-          // Differentiate the analytic IK at impact with the authored paddle velocity. This
-          // carries the whip in the ARM, rather than translating the pelvis up to fake it.
-          const h = 0.0001;
-          const before = playerPose(p, shot, -h, prep).paddle, after = playerPose(p, shot, h, prep).paddle;
-          const velocity = v(after.x - before.x, after.y - before.y, after.z - before.z).divideScalar(2 * h);
-          const shoulder = worldPos(main.upper, new T.Vector3());
-          const elbow0 = worldPos(main.fore, new T.Vector3()), wrist0 = worldPos(main.hand, new T.Vector3());
-          const upperQ = worldQuat(main.upper, new T.Quaternion()), foreQ = worldQuat(main.fore, new T.Quaternion()), handQ = worldQuat(main.hand, new T.Quaternion());
-          const axis = wrist0.clone().sub(shoulder).normalize();
-          const pole = elbow0.clone().sub(shoulder).addScaledVector(axis, -elbow0.clone().sub(shoulder).dot(axis));
-          const samples: Float64Array[] = [];
-          for (const sign of [-1, 1]) {
-            const e = new T.Vector3(), w = new T.Vector3(), bend = new T.Vector3();
-            twoBone(shoulder, wrist0.clone().addScaledVector(velocity, sign * h), main.l1, main.l2, pole,
-              chainReach(main.l1, main.l2, ELBOW_MIN), chainReach(main.l1, main.l2, ELBOW_MAX), e, w, bend);
-            setWorldQuat(main.upper, new T.Quaternion().setFromUnitVectors(elbow0.clone().sub(shoulder).normalize(), e.clone().sub(shoulder).normalize()).multiply(upperQ));
-            setWorldQuat(main.fore, new T.Quaternion().setFromUnitVectors(wrist0.clone().sub(elbow0).normalize(), w.sub(e).normalize()).multiply(foreQ));
-            setWorldQuat(main.hand, handQ);
-            const q = new Float64Array(values.length);
-            this.driven.forEach((b, i) => {
-              const c = 4 + i * 4;
-              b.quaternion.toArray(q, c);
-              if (q[c] * values[c] + q[c+1] * values[c+1] + q[c+2] * values[c+2] + q[c+3] * values[c+3] < 0)
-                for (let j=0;j<4;j++) q[c+j] *= -1;
-            });
-            samples.push(q);
-          }
-          impactVelocity = new Float64Array(values.length);
-          for (const b of [main.upper, main.fore, main.hand]) {
-            const c = 4 + this.driven.indexOf(b) * 4;
-            for (let j=0;j<4;j++) impactVelocity[c+j] = (samples[1][c+j] - samples[0][c+j]) / (2*h);
-          }
-        }
-      }
-      spline = new PoseSpline(keys, this.driven.map((_, i) => 4 + i * 4));
+  private drawings = new Map<string, PoseSpline>();
+  private drawingSwivel = 0;
 
-      // Bounded cache: editing a point must not retain old scenarios indefinitely.
-      if (this.drawings.size > 32) this.drawings.clear();
-      this.drawings.set(key, spline);
-    }
-    spline.sample(time ?? 0, this.sampleValues);
-    this.bone("Hips").position.fromArray(this.sampleValues);
-    this.driven.forEach((b, i) => readQuaternion(b.quaternion, this.sampleValues, 4 + i * 4));
-    this.root.updateMatrixWorld(true);
-    // Smooth joint-limit projection after interpolation; no hard corner or branch choice.
-    for (const s of [] as Side[]) {
-      const arm = this.arms[s];
-      const shoulder = worldPos(arm.upper, new T.Vector3()), elbow = worldPos(arm.fore, new T.Vector3()), wrist = worldPos(arm.hand, new T.Vector3());
-      const a = shoulder.sub(elbow).normalize(), b = wrist.sub(elbow).normalize();
-      const interior = a.angleTo(b), limited = softClamp(interior, ELBOW_MIN, ELBOW_MAX, 0.12);
-      const axis = a.clone().cross(b).normalize();
-      setWorldQuat(arm.fore, new T.Quaternion().setFromAxisAngle(axis, limited - interior).multiply(worldQuat(arm.fore, new T.Quaternion())));
-      const delta = arm.hand.quaternion.clone().multiply(arm.handRest.clone().invert());
-      const twist = twistAbout(delta, arm.foreAxis, new T.Quaternion());
-      const swing = delta.multiply(twist.clone().invert());
-      const ang = 2 * Math.acos(Math.min(1, Math.abs(swing.w)));
-      const dir = v(swing.x, swing.y, swing.z).multiplyScalar(Math.sign(swing.w) || 1).normalize();
-      const flex = softClamp(ang * dir.dot(arm.flexAxis), -WRIST_LIMITS.flex, WRIST_LIMITS.flex, 0.16);
-      const dev = softClamp(ang * dir.dot(arm.devAxis), -WRIST_LIMITS.deviation, WRIST_LIMITS.deviation, 0.12);
-      const r = arm.flexAxis.clone().multiplyScalar(flex).addScaledVector(arm.devAxis, dev), len = r.length();
-      arm.hand.quaternion.copy(len > 1e-9 ? new T.Quaternion().setFromAxisAngle(r.divideScalar(len), len) : new T.Quaternion())
-        .multiply(twist).multiply(arm.handRest);
-    }
-    this.root.updateMatrixWorld(true);
-    const toChar = _m1.copy(this.root.matrixWorld).invert();
-    const held = _m2.copy(toChar).multiply(main.hand.matrixWorld).multiply(main.grip);
-    held.multiply(new T.Matrix4().makeRotationY(-this.sampleValues[3]));
-    held.decompose(paddle.position, paddle.quaternion, _a);
-    const target = playerPose(p, shot, time, prep);
-    // Continuous analytic IK: the spline authors swivel/roll, never a discrete elbow search.
-    // Meet the paddle with the arm, NOT by using a large pelvis translation to fake its whip.
-    const invRoot = this.root.matrixWorld.clone().invert();
-    const shoulder0 = worldPos(main.upper, new T.Vector3()).applyMatrix4(invRoot);
-    const elbow0 = worldPos(main.fore, new T.Vector3()).applyMatrix4(invRoot);
-    const wrist0 = worldPos(main.hand, new T.Vector3()).applyMatrix4(invRoot);
-    const upperQ0 = worldQuat(main.upper, new T.Quaternion()), foreQ0 = worldQuat(main.fore, new T.Quaternion());
-    const upperDir = elbow0.clone().sub(shoulder0).normalize(), foreDir = wrist0.clone().sub(elbow0).normalize();
-    const axis0 = wrist0.clone().sub(shoulder0).normalize();
-    const pole = elbow0.clone().sub(shoulder0).addScaledVector(axis0, -elbow0.clone().sub(shoulder0).dot(axis0)).normalize();
-    const socketInv = main.grip.clone().invert();
-    const swivel = new T.Matrix4().makeRotationY(this.sampleValues[3]);
-    const centre = v(target.paddle.x, target.paddle.y, target.paddle.z);
-    const qPaddle = paddle.quaternion.clone();
-    const min = chainReach(main.l1, main.l2, ELBOW_MIN), max = chainReach(main.l1, main.l2, ELBOW_MAX);
-    for (let pass=0;pass<1;pass++) {
-      const handTarget = new T.Matrix4().compose(centre, qPaddle, v(1,1,1)).multiply(swivel).multiply(socketInv);
-      const goal = new T.Vector3(), handQ = new T.Quaternion();
-      handTarget.decompose(goal, handQ, _a);
-      for (let k=0;k<2;k++) {
-        const shoulder = worldPos(main.upper, new T.Vector3()).applyMatrix4(invRoot);
-        const d = goal.clone().sub(shoulder), length = d.length();
-        const mid = (min + max) / 2, half = (max - min) / 2;
-        const bounded = mid + half * Math.tanh((length - mid) / half);
-        this.bone("Hips").position.addScaledVector(d, (length-bounded)/Math.max(length,1e-6));
-        this.root.updateMatrixWorld(true);
+  /** Authored constraint solves are confined to drawings, not re-selected every frame.
+   * Playback interpolates ONLY rotations and Hips/root placement; never bone translations.
+   * Feet are re-planted with analytic IK. This is seekable and has shared C1 key tangents. */
+  pose(p: Player, shot: Shot | undefined, time: number | undefined, paddle: T.Object3D,
+    movement?: { velocity: T.Vector3; clock: number; dt: number }, preparation?: number) {
+    if (!shot || shot.hitter!==p.id || time===undefined) return this.solveDrawing(p,shot,time,paddle,movement,preparation);
+    const prep=preparation ?? strokePreparation(shot.type), profile=STROKE_MOTION[shot.type];
+    // Positions belong in the cache key: moving a player must not reuse the old relative contact.
+    const key=JSON.stringify([p,shot,prep]);
+    let spline=this.drawings.get(key);
+    if(!spline) {
+      const follow=profile.followTime+(profile.hold ?? 0), settle=follow+(profile.recover-follow)*.72;
+      const times=[-prep,strokeLoadTime(shot.type,prep),0,profile.followTime];
+      if(profile.hold)times.push(follow);
+      times.push(settle,profile.recover);
+      const keys:RigDrawing[]=times.map(t=>{
+        this.solveDrawing(p,shot,t,this.splinePaddle,undefined,prep);
+        const values=new Float64Array(4+this.driven.length*4+16);
+        this.bone("Hips").position.toArray(values,0); values[1]-=playerPose(p,shot,t,prep).hop; values[3]=this.drawingSwivel;
+        this.driven.forEach((b,i)=>b.quaternion.toArray(values,4+i*4));
+        SIDES.forEach((side,i)=>{
+          const arm=this.arms[side],c=4+this.driven.length*4+i*8;
+          const delta=arm.foreZero.clone().invert().multiply(arm.fore.quaternion),twist=twistAbout(delta,arm.foreAxis,new T.Quaternion());
+          const swing=delta.multiply(twist.clone().invert()),angle=2*Math.acos(Math.min(1,Math.abs(swing.w)));
+          v(swing.x,swing.y,swing.z).multiplyScalar(Math.sign(swing.w)||1).normalize().toArray(values,c);
+          values[c+3]=angle;values[c+4]=twistAngle(twist,arm.foreAxis);
+          const wrist=this.jointAngles(side); values[c+5]=wrist.flex;values[c+6]=wrist.deviation;values[c+7]=wrist.twist;
+        });
+        // Calibrate the root against the actual playback representation (normalized quaternions
+        // and anatomical channels), so contact is exact down to floating-point precision.
+        this.restoreRotations(values); this.root.updateMatrixWorld(true);
+        const held=mainSocket(this.arms[p.hand==="left" ? "Left" : "Right"],values[3]);
+        const actual=new T.Vector3().setFromMatrixPosition(held);
+        const desired=playerPose(p,shot,t,prep).paddle;
+        this.bone("Hips").position.add(v(desired.x,desired.y,desired.z).add(this.root.getWorldPosition(new T.Vector3())).sub(actual));
+        this.bone("Hips").position.toArray(values,0);values[1]-=playerPose(p,shot,t,prep).hop;
+        return {time:t,values};
+      });
+      const jointBase=4+this.driven.length*4;
+      for(const c of [3,jointBase+4,jointBase+7,jointBase+12,jointBase+15])
+        for(let i=1;i<keys.length;i++)keys[i].values[c]=keys[i-1].values[c]+angleDiff(keys[i].values[c],keys[i-1].values[c]);
+      spline=new PoseSpline(keys,this.driven.map((_,i)=>4+i*4));
+      // Monotone anatomical angles cannot overshoot the solved elbow/wrist limits.
+      for(const c of [jointBase+3,jointBase+5,jointBase+6,jointBase+11,jointBase+13,jointBase+14])spline.monotoneChannel(c);
+      // A passing contact tangent carries the proximal whip; no low-acceleration time dilation.
+      const index=this.driven.indexOf(this.bone(p.hand==="left" ? "LeftArm" : "RightArm"));
+      const whip={serve:6,drive:3,dink:2.25,drop:2.5,lob:6,volley:6,smash:4,block:4,punch:6,reset:6,speedup:3,roll:4,flick:6,atp:2.5,erne:4}[shot.type];
+      for(let c=4+index*4;c<8+index*4;c++) {
+        if(shot.type==="smash")spline.setVelocity(2,c,(keys[3].values[c]-keys[2].values[c])/profile.followTime*3);
+        else spline.scaleVelocity(2,c,whip);
       }
-      const shoulder = worldPos(main.upper, new T.Vector3()).applyMatrix4(invRoot);
-      const e = new T.Vector3(), w = new T.Vector3(), bend = new T.Vector3();
-      twoBone(shoulder, goal, main.l1, main.l2, pole, min, max, e, w, bend, 0);
-      setWorldQuat(main.upper, new T.Quaternion().setFromUnitVectors(upperDir, e.clone().sub(shoulder).normalize()).multiply(upperQ0));
-      setWorldQuat(main.fore, new T.Quaternion().setFromUnitVectors(foreDir, w.sub(e).normalize()).multiply(foreQ0));
-      setWorldQuat(main.hand, handQ);
-      this.root.updateMatrixWorld(true);
-      _m2.copy(invRoot).multiply(main.hand.matrixWorld).multiply(main.grip).multiply(new T.Matrix4().makeRotationY(-this.sampleValues[3]));
-      _m2.decompose(paddle.position, qPaddle, _a);
+      for(const c of [0,1,2])spline.monotoneChannel(c);
+      if(this.drawings.size>=24)this.drawings.clear(); this.drawings.set(key,spline);
     }
-    paddle.quaternion.copy(qPaddle);
-    this.bone("Hips").position.add(centre.clone().sub(paddle.position));
-    paddle.position.copy(centre);
-    paddle.updateMatrix();
+    spline.sample(time,this.sampleValues);
+    const hips=this.bone("Hips"); hips.position.fromArray(this.sampleValues,0);
+    hips.position.y+=playerPose(p,shot,time,prep).hop;
+    this.restoreRotations(this.sampleValues);
     this.root.updateMatrixWorld(true);
-    const forward = v(target.forward.x, 0, target.forward.z), right = v(target.right.x, 0, target.right.z);
-    for (const s of SIDES) {
-      const leg = this.legs[s], f = target.feet[s === "Left" ? "L" : "R"];
-      const ankle = v(f.x, this.ankleY + f.lift + target.hop, f.z);
-      if (movement) {
-        const cycle = Math.floor((movement.clock + (s === "Left" ? 0.4 : 0)) / 0.8);
-        const u = ((movement.clock + (s === "Left" ? 0.4 : 0)) / 0.8 - cycle) * 2;
-        const nominal = ankle.clone().add(v(p.x, 0, p.z));
-        let foot = this.smoothFeet.get(s);
-        if (!foot) {
-          foot = { start: nominal.clone(), end: nominal.clone(), cycle: cycle - 1 };
-          this.smoothFeet.set(s, foot);
-        }
-        if (cycle !== foot.cycle) {
-          foot.start.copy(foot.end);
-          foot.end.copy(nominal).addScaledVector(movement.velocity, 0.35);
-          foot.cycle = cycle;
-        }
-        ankle.copy(foot.start).lerp(foot.end, ease(u)).sub(v(p.x, 0, p.z));
-        ankle.y = this.ankleY + target.hop + (u < 1 ? Math.sin(Math.PI * u) ** 2 * Math.min(0.055, foot.start.distanceTo(foot.end) * 0.2) : 0);
-      } else this.smoothFeet.clear();
-      const hip = worldPos(leg.up, new T.Vector3()).applyMatrix4(_m1.copy(this.root.matrixWorld).invert());
-      const knee = new T.Vector3(), end = new T.Vector3(), bend = new T.Vector3();
-      twoBone(hip, ankle, leg.l1, leg.l2, forward.clone().addScaledVector(right, leg.sign * 0.2),
-        Math.abs(leg.l1 - leg.l2) + 0.01, (leg.l1 + leg.l2) * 0.999, knee, end, bend);
-      aim(leg.aimUp, knee.sub(hip), bend);
-      aim(leg.aimLeg, end.sub(hip).sub(knee), bend);
-      setWorldQuat(leg.foot, new T.Quaternion().setFromAxisAngle(UP, target.stanceYaw).multiply(this.restQ.get(leg.foot)!));
+    const target=playerPose(p,shot,time,prep), rootPosition=this.root.getWorldPosition(new T.Vector3());
+    const front=v(target.forward.x,0,target.forward.z), stance=new T.Quaternion().setFromAxisAngle(UP,target.stanceYaw);
+    // Legs → pelvis envelope → spine/clavicles → arms → hands/fingers → head.
+    for(const s of SIDES) {
+      const leg=this.legs[s], f=target.feet[s==="Left" ? "L" : "R"];
+      const ankle=v(f.x,this.ankleY+target.hop+f.lift,f.z).add(rootPosition),hip=worldPos(leg.up,new T.Vector3());
+      const axis=ankle.clone().sub(hip).normalize(),pole=front.clone(); pole.y=-(pole.x*axis.x+pole.z*axis.z)/axis.y;
+      const knee=new T.Vector3(),end=new T.Vector3(),bend=new T.Vector3();
+      twoBone(hip,ankle,leg.l1,leg.l2,pole,chainReach(leg.l1,leg.l2,40*Math.PI/180),(leg.l1+leg.l2)*.995,knee,end,bend,.004);
+      aim(leg.aimUp,knee.clone().sub(hip),bend); aim(leg.aimLeg,end.sub(knee),bend);
+      setWorldQuat(leg.foot,stance.clone().multiply(this.restQ.get(leg.foot)!));
     }
+
     this.root.updateMatrixWorld(true);
-    // Capsules follow the smoothed skeleton and distributed correction, not the last bake key.
-    const charPos = (n: string) => worldPos(this.bone(n), new T.Vector3()).applyMatrix4(_m1.copy(this.root.matrixWorld).invert());
-    const front = v(0, 0, -1).applyQuaternion(worldQuat(this.bone("Spine2"), new T.Quaternion()).multiply(this.restQ.get(this.bone("Spine2"))!.clone().invert()));
-    const spine = ["Hips", "Spine", "Spine1", "Spine2"].map(charPos);
-    this.torsoCapsules = [
-      { a: spine[0].clone().add(v(0, -0.12)), b: spine[0].clone(), radius: 0.175, squash: 1.75, front: front.clone() },
-      { a: spine[0].clone(), b: spine[2].clone(), radius: 0.14, squash: 1.5, front: front.clone() },
-      { a: spine[2].clone(), b: spine[3].clone().add(v(0, 0.05)), radius: 0.155, squash: 1.2, front: front.clone() },
+    const main=this.arms[p.hand==="left" ? "Left" : "Right"];
+    const held=main.hand.matrixWorld.clone().multiply(main.grip).multiply(new T.Matrix4().makeRotationY(-this.sampleValues[3]));
+    held.decompose(paddle.position,paddle.quaternion,_a); paddle.position.sub(rootPosition); paddle.updateMatrix();
+    this.gripWeights=p.hand==="left" ? [1,target.supportWeight] : [target.supportWeight,1];
+    const chestQ=worldQuat(this.bone("Spine2"),new T.Quaternion()).multiply(this.restQ.get(this.bone("Spine2"))!.clone().invert());
+    const cf=v(0,0,-1).applyQuaternion(chestQ), joints=["Hips","Spine","Spine1","Spine2"].map(n=>worldPos(this.bone(n),new T.Vector3()).sub(rootPosition));
+    this.torsoCapsules=[
+      {a:joints[0].clone().add(v(0,-.12)),b:joints[0].clone(),radius:.175,squash:1.75,front:cf.clone()},
+      {a:joints[0].clone(),b:joints[2].clone(),radius:.14,squash:1.5,front:cf.clone()},
+      {a:joints[2].clone(),b:joints[3].clone().add(v(0,.05)),radius:.155,squash:1.2,front:cf.clone()},
     ];
-    for (const c of this.torsoCapsules) { c.a.addScaledVector(front, 0.045); c.b = c.b.clone().addScaledVector(front, 0.045); }
-    this.gripWeights = p.hand === "left" ? [1, target.supportWeight] : [target.supportWeight, 1];
+    for(const c of this.torsoCapsules){c.a.addScaledVector(cf,.045);c.b=c.b.clone().addScaledVector(cf,.045);}
     this.mesh.skeleton.update();
-    return charPos("Head").add(v(0, 0.19));
+    return worldPos(this.bone("Head"),new T.Vector3()).sub(rootPosition).add(v(0,.19));
   }
 
-  private limitWrist(arm: ArmRig) {
-    const delta = arm.hand.quaternion.clone().multiply(arm.handRest.clone().invert());
-    const twist = twistAbout(delta, arm.foreAxis, new T.Quaternion());
-    const swing = delta.multiply(twist.clone().invert());
-    const ang = 2 * Math.acos(Math.min(1, Math.abs(swing.w)));
-    const dir = v(swing.x, swing.y, swing.z).multiplyScalar(Math.sign(swing.w) || 1).normalize();
-    const flex = softClamp(ang * dir.dot(arm.flexAxis), -WRIST_LIMITS.flex, WRIST_LIMITS.flex, 0.16);
-    const dev = softClamp(ang * dir.dot(arm.devAxis), -WRIST_LIMITS.deviation, WRIST_LIMITS.deviation, 0.12);
-    const r = arm.flexAxis.clone().multiplyScalar(flex).addScaledVector(arm.devAxis, dev), len = r.length();
-    arm.hand.quaternion.copy(len > 1e-9 ? new T.Quaternion().setFromAxisAngle(r.divideScalar(len), len) : new T.Quaternion())
-      .multiply(twist).multiply(arm.handRest);
+  private restoreRotations(values:Float64Array) {
+    this.driven.forEach((b,i)=>readQuaternion(b.quaternion,values,4+i*4));
+    // Monotone elbow/wrist channels preserve limits without per-frame branch selection.
+    SIDES.forEach((s,i)=>{
+      const arm=this.arms[s],c=4+this.driven.length*4+i*8;
+      const axis=v(values[c],values[c+1],values[c+2]).normalize();
+      arm.fore.quaternion.copy(arm.foreZero).multiply(new T.Quaternion().setFromAxisAngle(axis,values[c+3]))
+        .multiply(new T.Quaternion().setFromAxisAngle(arm.foreAxis,values[c+4]));
+      const wrist=arm.flexAxis.clone().multiplyScalar(values[c+5]).addScaledVector(arm.devAxis,values[c+6]),angle=wrist.length();
+      arm.hand.quaternion.copy(new T.Quaternion().setFromAxisAngle(wrist.normalize(),angle))
+        .multiply(new T.Quaternion().setFromAxisAngle(arm.foreAxis,values[c+7])).multiply(arm.handRest);
+    });
   }
 
-  private solvePose(
-    p: Player,
-    shot: Shot | undefined,
-    time: number | undefined,
-    paddle: T.Object3D,
-    movement?: { velocity: T.Vector3; clock: number; dt: number },
-    preparation?: number,
-  ) {
-    const pose = playerPose(p, shot, time, preparation);
-    const root = this.root;
-    root.updateMatrixWorld(true);
-    // Character (marker) space ↔ world. Markers only translate, so rotations are shared.
-    const toWorld = root.matrixWorld.clone(),
-      toChar = toWorld.clone().invert();
-    const charPos = (o: T.Object3D, out = new T.Vector3()) =>
-      worldPos(o, out).applyMatrix4(toChar);
-    const bodyQ = new T.Quaternion().setFromEuler(
-      new T.Euler(pose.pitch, pose.yaw, pose.roll, "YXZ"),
-    );
-    const hipQ = new T.Quaternion().setFromEuler(
-      new T.Euler(pose.pitch * 0.4, pose.hipYaw, pose.roll * 0.4, "YXZ"),
-    );
-    const stanceQ = new T.Quaternion().setFromAxisAngle(UP, pose.stanceYaw);
-    const forward = v(pose.forward.x, 0, pose.forward.z),
-      right = v(pose.right.x, 0, pose.right.z);
-    const chestRight = v(1, 0, 0).applyQuaternion(bodyQ),
-      chestFront = v(0, 0, -1).applyQuaternion(bodyQ),
-      chestUp = v(0, 1, 0).applyQuaternion(bodyQ);
-    // ---- pelvis ------------------------------------------------------------------------------
-    const targetGait = movement
-      ? T.MathUtils.clamp(movement.velocity.length() * 0.07, 0, 0.18)
-      : 0;
-    this.gait = movement
-      ? T.MathUtils.lerp(this.gait, targetGait, Math.min(1, movement.dt * 12))
-      : 0;
-    const direction =
-      movement && movement.velocity.lengthSq() > 0.001
-        ? movement.velocity.clone().normalize()
-        : forward;
-    if (movement)
-      this.walkPhase +=
-        movement.dt * (7 + Math.min(movement.velocity.length(), 3) * 3.5);
-    const phase = this.walkPhase + (p.id.charCodeAt(1) - 49) * Math.PI;
-    // pose.hip.y + 0.23 is the pelvis height of the reference 0.95 m stance.
-    const drop = Math.max(0.43, pose.hip.y + 0.23) - 0.95;
-    const ankles = {} as Record<Side, T.Vector3>;
+  /** Rotation-only drawing author: there is no bone stretch.
+   * Plan planted feet/pelvis first; then spine/clavicles, arms, hands/fingers, and head.
+   * Only Hips may translate. Rest-calibrated segment lengths are never changed. */
+  private solveDrawing(p: Player, shot: Shot | undefined, time: number | undefined, paddle: T.Object3D,
+    movement?: { velocity: T.Vector3; clock: number; dt: number }, preparation?: number) {
+    const target = playerPose(p, shot, time, preparation);
+    this.root.updateMatrixWorld(true);
+    const rootPosition = this.root.getWorldPosition(new T.Vector3());
+    const hips = this.bone("Hips");
+    const hipQ = new T.Quaternion().setFromEuler(new T.Euler(target.pitch*.4, target.hipYaw, target.roll*.4, "YXZ"));
+    const bodyQ = new T.Quaternion().setFromEuler(new T.Euler(target.pitch, target.yaw, target.roll, "YXZ"));
+    const stanceQ = new T.Quaternion().setFromAxisAngle(UP, target.stanceYaw);
+    const front = v(target.forward.x,0,target.forward.z), right = v(target.right.x,0,target.right.z);
+    const side: Side = p.hand === "left" ? "Left" : "Right";
+    const main = this.arms[side], off = this.arms[side === "Left" ? "Right" : "Left"];
+    const centre = v(target.paddle.x,target.paddle.y,target.paddle.z).add(rootPosition);
+    const paddleQ = new T.Quaternion().setFromEuler(new T.Euler(target.paddlePitch,target.paddleYaw,target.paddleRoll,"YXZ"));
+    const ankles = {} as Record<Side,T.Vector3>;
     for (const s of SIDES) {
-      const sign = sideSign(s),
-        suffix = s === "Left" ? "L" : "R";
-      const placed = pose.feet[suffix];
-      const legPhase =
-        (((phase + (sign < 0 ? Math.PI : 0)) % (Math.PI * 2)) + Math.PI * 2) %
-        (Math.PI * 2);
-      const ankle = v(placed.x, this.ankleY + pose.hop + placed.lift, placed.z);
-      const nominal = ankle.clone().add(v(p.x, 0, p.z));
-      let anchor = this.anchors.get(suffix);
-      if (!anchor) {
-        anchor = { point: nominal.clone(), swinging: false };
-        this.anchors.set(suffix, anchor);
-      }
-      if (movement && this.gait > 0.015 && movement.velocity.length() > 0.04) {
-        const swing = legPhase < Math.PI;
-        const landing = nominal
-          .clone()
-          .addScaledVector(direction, this.gait * 0.65);
-        if (swing) {
-          const u = legPhase / Math.PI,
-            ease = u * u * (3 - 2 * u);
-          ankle
-            .copy(anchor.point)
-            .lerp(landing, ease)
-            .sub(v(p.x, 0, p.z));
-          ankle.y =
-            this.ankleY + pose.hop + Math.sin(u * Math.PI) * this.gait * 0.42;
-        } else {
-          if (anchor.swinging) anchor.point.copy(landing);
-          ankle.copy(anchor.point).sub(v(p.x, 0, p.z));
+      const f=target.feet[s === "Left" ? "L" : "R"];
+      const ankle=v(f.x,this.ankleY+target.hop+f.lift,f.z).add(rootPosition);
+      // Foot anchors are world-space. A moving player lifts each foot once per .8s cycle.
+      if (movement && movement.velocity.lengthSq()>.0016) {
+        const phase=movement.clock/.8+(s === "Left" ? 0 : .5), cycle=Math.floor(phase), u=phase-cycle;
+        const key=p.id+s;
+        let anchor=this.smoothFeet.get(key);
+        if (!anchor) { anchor={start:ankle.clone(),end:ankle.clone(),cycle:cycle-1}; this.smoothFeet.set(key,anchor); }
+        if (anchor.cycle!==cycle) {
+          anchor.start.copy(anchor.end); anchor.end.copy(ankle).addScaledVector(movement.velocity,.4);
+          anchor.end.y=this.ankleY+rootPosition.y+target.hop; anchor.cycle=cycle;
         }
-        anchor.swinging = swing;
-      } else {
-        if (movement) anchor.point.lerp(nominal, Math.min(1, movement.dt * 12));
-        else anchor.point.copy(nominal);
-        ankle.copy(anchor.point).sub(v(p.x, 0, p.z));
-        anchor.swinging = false;
-      }
-      ankles[s] = ankle;
+        ankle.copy(anchor.start);
+        if(u<.5) { ankle.lerp(anchor.end,ease(u*2)); ankle.y+=.05*Math.sin(Math.PI*u*2)**2; }
+        else ankle.copy(anchor.end);
+      } else if (!movement) this.smoothFeet.delete(p.id+s);
+      ankles[s]=ankle;
     }
-    const hipsBase = v(
-      this.hipsRest.x + pose.hip.x,
-      this.hipsRest.y +
-        drop +
-        pose.hop +
-        this.gait * 0.08 * Math.abs(Math.sin(phase)),
-      this.hipsRest.z + pose.hip.z,
-    );
-    const run = (assist: T.Vector3) => {
-      const hipsPos = hipsBase.clone().add(assist);
-      const hips = this.bone("Hips");
-      hips.position.copy(hipsPos);
-      hips.quaternion.copy(hipQ).multiply(this.restQ.get(hips)!);
-      hips.updateWorldMatrix(false, false);
-      // ---- legs and feet ------------------------------------------------------------------------
-      for (const s of SIDES) {
-        const leg = this.legs[s],
-          sign = leg.sign;
-        const ankle = ankles[s];
-        leg.up.updateWorldMatrix(false, false);
-        const hip = charPos(leg.up);
-        const pole = forward.clone().addScaledVector(right, sign * 0.2);
-        const knee = new T.Vector3(),
-          end = new T.Vector3(),
-          bend = new T.Vector3();
-        twoBone(
-          hip,
-          ankle,
-          leg.l1,
-          leg.l2,
-          pole,
-          Math.abs(leg.l1 - leg.l2) + 0.01,
-          (leg.l1 + leg.l2) * 0.999,
-          knee,
-          end,
-          bend,
-        );
-        aim(leg.aimUp, knee.clone().sub(hip), bend);
-        aim(leg.aimLeg, end.clone().sub(knee), bend);
-        setWorldQuat(
-          leg.foot,
-          _q1.copy(stanceQ).multiply(this.restQ.get(leg.foot)!),
-        );
+    hips.position.set(this.hipsRest.x+target.hip.x,
+      this.hipsRest.y+Math.max(.43,target.hip.y+.23)-.95+target.hop,
+      this.hipsRest.z+target.hip.z);
+    hips.quaternion.copy(hipQ).multiply(this.restQ.get(hips)!);
+    hips.updateWorldMatrix(true,true);
+    // Pelvis placement respects the planted-leg envelope, rather than translating Spine.
+    let upper=Infinity, lower=-Infinity;
+    for (const s of SIDES) {
+      const leg=this.legs[s], hip=worldPos(leg.up,new T.Vector3()), ankle=ankles[s];
+      const dy=hip.y-(hips.position.y+rootPosition.y), flat=(hip.x-ankle.x)**2+(hip.z-ankle.z)**2;
+      const max=(leg.l1+leg.l2)*.985, min=chainReach(leg.l1,leg.l2,40*Math.PI/180);
+      upper=Math.min(upper,ankle.y-rootPosition.y-dy+Math.sqrt(Math.max(.0001,max*max-flat)));
+      lower=Math.max(lower,ankle.y-rootPosition.y-dy+Math.sqrt(Math.max(.0001,min*min-flat)));
+    }
+    hips.position.y=softClamp(hips.position.y,lower,upper,.008);
+    const plantLegs=()=>{
+      hips.updateWorldMatrix(true,true);
+      for(const s of SIDES) {
+        const leg=this.legs[s], hip=worldPos(leg.up,new T.Vector3()), ankle=ankles[s];
+        const axis=ankle.clone().sub(hip).normalize(), pole=front.clone();
+        // Preserve the toe's sagittal plane (axis.y is bounded away from zero by the leg envelope).
+        pole.y=-(pole.x*axis.x+pole.z*axis.z)/axis.y;
+        const knee=new T.Vector3(),end=new T.Vector3(),bend=new T.Vector3();
+        twoBone(hip,ankle,leg.l1,leg.l2,pole,chainReach(leg.l1,leg.l2,40*Math.PI/180),
+          (leg.l1+leg.l2)*.99,knee,end,bend,0);
+        aim(leg.aimUp,knee.clone().sub(hip),bend);
+        aim(leg.aimLeg,end.sub(knee),bend);
+        setWorldQuat(leg.foot,stanceQ.clone().multiply(this.restQ.get(leg.foot)!));
       }
-      // ---- spine, neck, head --------------------------------------------------------------------
-      const rel = hipQ.clone().invert().multiply(bodyQ);
-      ["Spine", "Spine1", "Spine2"].forEach((n, i) => {
-        const b = this.bone(n);
-        b.updateWorldMatrix(false, false);
-        setWorldQuat(
-          b,
-          _q1
-            .copy(hipQ)
-            .multiply(_q2.identity().slerp(rel, SPINE_SPLIT[i]))
-            .multiply(this.restQ.get(b)!),
-        );
-      });
-      const headQ = bodyQ
-        .clone()
-        .multiply(new T.Quaternion().setFromAxisAngle(v(1, 0), pose.track));
-      const neck = this.bone("Neck"),
-        head = this.bone("Head");
-      neck.updateWorldMatrix(false, false);
-      setWorldQuat(
-        neck,
-        _q1
-          .copy(bodyQ)
-          .slerp(headQ, NECK_SHARE)
-          .multiply(this.restQ.get(neck)!),
-      );
-      head.updateWorldMatrix(false, false);
-      setWorldQuat(head, _q1.copy(headQ).multiply(this.restQ.get(head)!));
-      // ---- torso volume for the arm clearance ---------------------------------------------------
-      const spine = ["Hips", "Spine", "Spine1", "Spine2"].map((n) =>
-        charPos(this.bone(n)),
-      );
-      // The mesh torso is centred ~4.5 cm in front of the Tripo spine joints.
-      const shift = chestFront.clone().multiplyScalar(0.045);
-      const capsule = (
-        a: T.Vector3,
-        b: T.Vector3,
-        radius: number,
-        squash: number,
-      ): TorsoCapsule => ({
-        a: a.clone().add(shift),
-        b: b.clone().add(shift),
-        radius,
-        squash,
-        front: chestFront.clone(),
-      });
-      // Cross-sections measured on the bind mesh (half width × half depth): hips 0.175×0.1,
-      // waist 0.14×0.095, chest 0.155×0.13.
-      this.torsoCapsules = [
-        capsule(
-          spine[0].clone().addScaledVector(chestUp, -0.12),
-          spine[0],
-          0.175,
-          1.75,
-        ),
-        capsule(spine[0], spine[2], 0.14, 1.5),
-        capsule(
-          spine[2],
-          spine[3].clone().addScaledVector(chestUp, 0.05),
-          0.155,
-          1.2,
-        ),
-      ];
-      // ---- paddle target ------------------------------------------------------------------------
-      const handSign = p.hand === "left" ? -1 : 1;
-      const main = this.arms[handSign < 0 ? "Left" : "Right"],
-        off = this.arms[handSign < 0 ? "Right" : "Left"];
-      const paddleQ = new T.Quaternion().setFromEuler(
-        new T.Euler(pose.paddlePitch, pose.paddleYaw, pose.paddleRoll, "YXZ"),
-      );
-      const paddleTarget = new T.Matrix4().compose(
-        v(pose.paddle.x, pose.paddle.y, pose.paddle.z),
-        paddleQ,
-        v(1, 1, 1),
-      );
-      // The hitting hand is locked to the ball around contact (the paddle must be on the ball).
-      const contactLock =
-        pose.active && time !== undefined
-          ? T.MathUtils.smoothstep(Math.abs(time), 0.01, 0.06)
-          : 1;
-      const shrugFor = (goalY: number, shoulderY: number) =>
-        T.MathUtils.smoothstep(goalY - shoulderY, 0.2, 0.6);
-      // ---- arms ---------------------------------------------------------------------------------
-      const solveArm = (
-        arm: ArmRig,
-        wristGoal: T.Vector3,
-        handGoalQ: T.Quaternion | undefined,
-        movable: number,
-        ownSide: boolean,
-      ) => {
-        const sign = arm.sign;
-        // Clavicle: follows the chest, elevates for high hands (scapulohumeral rhythm), protracts
-        // when the hand reaches across.
-        arm.clavicle.updateWorldMatrix(false, false);
-        arm.upper.updateWorldMatrix(false, false);
-        const restShoulder = charPos(arm.upper);
-        const lift = shrugFor(wristGoal.y, restShoulder.y) * 0.32;
-        const across = T.MathUtils.clamp(
-          -sign * wristGoal.clone().sub(restShoulder).dot(chestRight) * 1.2,
-          0,
-          0.35,
-        );
-        const dir = arm.clavicleDir
-          .clone()
-          .applyQuaternion(bodyQ)
-          .addScaledVector(chestUp, lift)
-          .addScaledVector(chestFront, across);
-        aim(arm.aimClavicle, dir, chestUp);
-        arm.upper.updateWorldMatrix(false, false);
-        const shoulder = charPos(arm.upper);
-        // Elbow pole: down + outward + slightly back, never into the ribs.
-        const pole = chestUp
-          .clone()
-          .multiplyScalar(-0.6)
-          .addScaledVector(chestRight, sign * (0.55 + pose.elbowOut * 0.4))
-          .addScaledVector(chestFront, -0.2);
-        if (handGoalQ) {
-          // Holding the paddle: put the elbow where the forearm lines up with the hand's
-          // orientation, so the wrist needs little bend (falls back to the default pole).
-          const ideal = wristGoal
-            .clone()
-            .addScaledVector(
-              arm.foreInHand.clone().applyQuaternion(handGoalQ),
-              -arm.l2,
-            )
-            .sub(shoulder);
-          if (ideal.lengthSq() > 1e-6)
-            pole.normalize().lerp(ideal.normalize(), 0.75);
-        }
-        const minReach = chainReach(arm.l1, arm.l2, ELBOW_MIN),
-          maxReach = chainReach(arm.l1, arm.l2, ELBOW_MAX);
-        const goal = wristGoal.clone();
-        if (ownSide) {
-          // Off arm / ready: the hand stays on its own side of the body midline.
-          const lat = goal.clone().sub(spine[3]).dot(chestRight) * sign;
-          if (lat < 0.02) goal.addScaledVector(chestRight, sign * (0.02 - lat));
-        }
-        const elbow = new T.Vector3(),
-          wrist = new T.Vector3(),
-          bend = new T.Vector3(),
-          palm = new T.Vector3();
-        const gap = (e: T.Vector3, w: T.Vector3, normal?: T.Vector3) => {
-          const from = shoulder.clone().lerp(e, UPPER_ARM_FREE);
-          const n1 = new T.Vector3(),
-            n2 = new T.Vector3();
-          const g1 = segmentGap(
-            this.torsoCapsules,
-            from,
-            e,
-            UPPER_ARM_RADIUS,
-            5,
-            n1,
-          );
-          palm.copy(w).addScaledVector(w.clone().sub(e).normalize(), 0.07);
-          const g2 = segmentGap(
-            this.torsoCapsules,
-            e,
-            palm,
-            FOREARM_RADIUS,
-            6,
-            n2,
-          );
-          normal?.copy(g1 < g2 ? n1 : n2);
-          return Math.min(g1, g2) - ARM_CLEARANCE;
-        };
-        const solve = (polar: T.Vector3) =>
-          twoBone(
-            shoulder,
-            goal,
-            arm.l1,
-            arm.l2,
-            polar,
-            minReach,
-            maxReach,
-            elbow,
-            wrist,
-            bend,
-          );
-        solve(pole);
-        // Clearance: (1) swing the elbow about the shoulder→wrist axis to the nearest clear angle;
-        // (2) still touching → move the hand out along the torso normal and repeat.
-        const push = new T.Vector3();
-        for (let pass = 0; pass < 8; pass++) {
-          let g = gap(elbow, wrist, push);
-          if (g >= 0) break;
-          const axis = wrist.clone().sub(shoulder).normalize();
-          const u0 = bend.clone(),
-            u1 = new T.Vector3().crossVectors(axis, u0);
-          let best = u0.clone(),
-            bestGap = g;
-          for (let k = 1; k <= 12 && bestGap < 0; k++)
-            for (const turn of [k, -k]) {
-              const angle = (turn * Math.PI) / 18;
-              const candidate = u0
-                .clone()
-                .multiplyScalar(Math.cos(angle))
-                .addScaledVector(u1, Math.sin(angle));
-              solve(candidate);
-              const cg = gap(elbow, wrist);
-              if (cg > bestGap + 1e-5) {
-                best = candidate;
-                bestGap = cg;
-              }
-            }
-          solve(best);
-          g = gap(elbow, wrist, push);
-          if (g >= 0 || movable <= 0) break;
-          goal.copy(wrist).addScaledVector(push, (-g + 0.008) * movable);
-          solve(best);
-        }
-        aim(arm.aimUpper, elbow.clone().sub(shoulder), bend);
-        aim(arm.aimFore, wrist.clone().sub(elbow), bend);
-        // Hand: target rotation (paddle grip) or a relaxed continuation of the forearm.
-        const foreQ = worldQuat(arm.fore, new T.Quaternion());
-        const handW = handGoalQ
-          ? handGoalQ.clone()
-          : foreQ.clone().multiply(arm.handRest);
-        // Forearm takes half the twist (swing-twist split, rig-guide §4.2).
-        const delta = foreQ
-          .clone()
-          .invert()
-          .multiply(handW)
-          .multiply(arm.handRest.clone().invert());
-        const twist = twistAbout(delta, arm.foreAxis, new T.Quaternion());
-        const angle = T.MathUtils.clamp(
-          twistAngle(twist, arm.foreAxis),
-          -MAX_TWIST,
-          MAX_TWIST,
-        );
-        arm.fore.quaternion.multiply(
-          _q3.setFromAxisAngle(arm.foreAxis, angle * FOREARM_TWIST),
-        );
-        arm.fore.updateWorldMatrix(false, false);
-        // Wrist: limit flexion/extension and deviation of what the hand has left.
-        const foreQ2 = worldQuat(arm.fore, new T.Quaternion());
-        const local = foreQ2.clone().invert().multiply(handW);
-        const rest = local.clone().multiply(arm.handRest.clone().invert()); // forearm frame
-        const residual = twistAbout(rest, arm.foreAxis, new T.Quaternion());
-        const swing = rest.clone().multiply(residual.clone().invert());
-        const sAngle =
-          2 * Math.acos(T.MathUtils.clamp(Math.abs(swing.w), -1, 1));
-        if (sAngle > 1e-5) {
-          const sAxis = v(swing.x, swing.y, swing.z)
-            .multiplyScalar(Math.sign(swing.w) || 1)
-            .normalize();
-          const flex = T.MathUtils.clamp(
-            sAngle * sAxis.dot(arm.flexAxis),
-            -WRIST_LIMITS.flex,
-            WRIST_LIMITS.flex,
-          );
-          const dev = T.MathUtils.clamp(
-            sAngle * sAxis.dot(arm.devAxis),
-            -WRIST_LIMITS.deviation,
-            WRIST_LIMITS.deviation,
-          );
-          const r = arm.flexAxis
-            .clone()
-            .multiplyScalar(flex)
-            .addScaledVector(arm.devAxis, dev);
-          const len = r.length();
-          if (len > 1e-6) swing.setFromAxisAngle(r.divideScalar(len), len);
-          else swing.identity();
-        }
-        const resAngle = T.MathUtils.clamp(
-          twistAngle(residual, arm.foreAxis),
-          -MAX_TWIST * (1 - FOREARM_TWIST),
-          MAX_TWIST * (1 - FOREARM_TWIST),
-        );
-        residual.setFromAxisAngle(arm.foreAxis, resAngle);
-        arm.hand.quaternion
-          .copy(swing)
-          .multiply(residual)
-          .multiply(arm.handRest);
-        arm.hand.updateWorldMatrix(false, false);
-        return { shoulder, elbow, wrist };
-      };
-      // hand = paddle · Ry(θ) · socket⁻¹: the hand may orbit the (round) handle so the forearm
-      // comes from the shoulder side — the paddle orientation itself stays exact.
-      // hand = paddle · Ry(θ) · socket⁻¹: the hand may orbit the round handle. θ is picked so the
-      // arm can hold the paddle with the least forearm twist / wrist bend (limits: twist 85°,
-      // flexion 60°, deviation 30°); the paddle orientation itself stays exact. A small preference
-      // toward the analytic θ₀ keeps the choice stable.
-      const handTarget = (
-        arm: ArmRig,
-        socket: T.Matrix4,
-        target = paddleTarget,
-      ) => {
-        const targetQ = new T.Quaternion().setFromRotationMatrix(target);
-        const inv = new T.Matrix4().copy(socket).invert();
-        const shoulder = charPos(arm.upper);
-        const fore = arm.foreInHand.clone().transformDirection(inv); // paddle space
-        const toShoulder = v(0, PADDLE_GRIP_Y, 0)
-          .applyMatrix4(target)
-          .sub(shoulder)
-          .applyQuaternion(targetQ.clone().invert());
-        const theta0 = Math.atan2(
-          toShoulder.x * fore.z - toShoulder.z * fore.x,
-          toShoulder.x * fore.x + toShoulder.z * fore.z,
-        );
-        const minReach = chainReach(arm.l1, arm.l2, ELBOW_MIN),
-          maxReach = chainReach(arm.l1, arm.l2, ELBOW_MAX);
-        const m = new T.Matrix4(),
-          pos = new T.Vector3(),
-          q = new T.Quaternion(),
-          elbow = new T.Vector3(),
-          wrist = new T.Vector3(),
-          bend = new T.Vector3(),
-          foreQ = new T.Quaternion(),
-          twist = new T.Quaternion(),
-          defaultPole = chestUp
-            .clone()
-            .multiplyScalar(-0.6)
-            .addScaledVector(chestRight, arm.sign * 0.6)
-            .addScaledVector(chestFront, -0.2);
-        let best = theta0,
-          bestCost = Infinity;
-        for (let k = -6; k <= 6; k++) {
-          const theta = theta0 + (k * Math.PI) / 12;
-          m.copy(target).multiply(_m2.makeRotationY(theta)).multiply(inv);
-          m.decompose(pos, q, _a);
-          const ideal = pos
-            .clone()
-            .addScaledVector(arm.foreInHand.clone().applyQuaternion(q), -arm.l2)
-            .sub(shoulder);
-          const pole = defaultPole
-            .clone()
-            .normalize()
-            .lerp(ideal.normalize(), 0.75);
-          twoBone(
-            shoulder,
-            pos,
-            arm.l1,
-            arm.l2,
-            pole,
-            minReach,
-            maxReach,
-            elbow,
-            wrist,
-            bend,
-          );
-          basisQuat(wrist.clone().sub(elbow), bend, foreQ).multiply(
-            arm.aimFore.frameInv,
-          );
-          const delta = foreQ
-            .invert()
-            .multiply(q)
-            .multiply(arm.handRest.clone().invert());
-          twistAbout(delta, arm.foreAxis, twist);
-          const tw = Math.abs(twistAngle(twist, arm.foreAxis));
-          const swing = delta.multiply(twist.invert());
-          const sAngle =
-            2 * Math.acos(T.MathUtils.clamp(Math.abs(swing.w), 0, 1));
-          const sAxis = v(swing.x, swing.y, swing.z);
-          if (sAxis.lengthSq() > 1e-12)
-            sAxis.multiplyScalar(Math.sign(swing.w) || 1).normalize();
-          const flex = Math.abs(sAngle * sAxis.dot(arm.flexAxis)),
-            dev = Math.abs(sAngle * sAxis.dot(arm.devAxis));
-          const cost =
-            2 * Math.max(0, tw - MAX_TWIST) +
-            Math.max(0, flex - WRIST_LIMITS.flex) +
-            Math.max(0, dev - WRIST_LIMITS.deviation) +
-            0.15 * (tw + flex + dev) +
-            0.05 * Math.abs(theta - theta0);
-          if (cost < bestCost) {
-            bestCost = cost;
-            best = theta;
-          }
-        }
-        m.copy(target).multiply(_m2.makeRotationY(best)).multiply(inv);
-        const outPos = new T.Vector3(),
-          outQ = new T.Quaternion();
-        m.decompose(outPos, outQ, _a);
-        return { pos: outPos, q: outQ, theta: best };
-      };
-      const fingersTo = (arm: ArmRig, grip: number) => {
-        for (const f of arm.fingers)
-          f.bone.quaternion
-            .copy(f.rest)
-            .multiply(
-              _q1.setFromAxisAngle(
-                f.hinge,
-                T.MathUtils.lerp(f.relaxed, f.grip, grip),
-              ),
-            );
-      };
-      const handM = (arm: ArmRig) =>
-        _m1.copy(toChar).multiply(arm.hand.matrixWorld);
-      // Hitting arm holds the paddle.
-      // Pass 1 aims for the authored paddle pose; the wrist limits may not allow its orientation.
-      // Pass 2 keeps the paddle centre on target with the orientation the hand can actually hold.
-      const first = handTarget(main, main.grip);
-      let mainTarget = first;
-      const held = (theta: number) =>
-        handM(main).multiply(main.grip).multiply(_m2.makeRotationY(-theta));
-      const centre = v(pose.paddle.x, pose.paddle.y, pose.paddle.z);
-      const missOf = (theta: number) =>
-        _b.setFromMatrixPosition(held(theta)).distanceTo(centre);
-      solveArm(main, first.pos, first.q, contactLock, !pose.active);
-      const miss1 = missOf(first.theta);
-      const reachable = new T.Quaternion();
-      held(first.theta).decompose(_a, reachable, _b);
-      if (reachable.angleTo(paddleQ) > 0.2) {
-        const second = handTarget(
-          main,
-          main.grip,
-          new T.Matrix4().compose(centre, reachable, v(1, 1, 1)),
-        );
-        solveArm(main, second.pos, second.q, contactLock, !pose.active);
-        if (missOf(second.theta) < miss1 - 0.005) mainTarget = second;
-        else solveArm(main, first.pos, first.q, contactLock, !pose.active);
-      }
-      // Close the remaining gap: shift the wrist target by the paddle-centre miss (twice at most).
-      for (let k = 0; k < 2; k++) {
-        const now = missOf(mainTarget.theta);
-        if (now < 0.01) break;
-        const shifted = {
-          ...mainTarget,
-          pos: mainTarget.pos.clone().add(centre).sub(_b),
-        };
-        solveArm(main, shifted.pos, shifted.q, contactLock, !pose.active);
-        if (missOf(shifted.theta) < now - 0.003) mainTarget = shifted;
-        else {
-          solveArm(
-            main,
-            mainTarget.pos,
-            mainTarget.q,
-            contactLock,
-            !pose.active,
-          );
-          break;
-        }
-      }
-      fingersTo(main, 1);
-      // Paddle follows the hand actually reached.
-      held(mainTarget.theta).decompose(paddle.position, paddle.quaternion, _a);
-      paddle.scale.set(1, 1, 1);
-      paddle.updateMatrix();
-      const paddleM = new T.Matrix4().compose(
-        paddle.position,
-        paddle.quaternion,
-        v(1, 1, 1),
-      );
-      const faceNormal = v(0, 0, 1).applyQuaternion(paddle.quaternion);
-      // ---- off arm ------------------------------------------------------------------------------
-      const offSign = off.sign,
-        clock = time ?? 0;
-      const shoulderOff = charPos(off.upper);
-      // Ready (video + user): off hand near, not across, the paddle throat.
-      const throat = v(0, -0.15, 0)
-        .applyMatrix4(paddleM)
-        .addScaledVector(right, offSign * 0.04)
-        .addScaledVector(
-          faceNormal
-            .clone()
-            .multiplyScalar(Math.sign(faceNormal.dot(forward)) || 1),
-          -0.04,
-        );
-      // Guard: when the paddle is away on the hitting side the off hand stays in front of its own
-      // half of the chest instead of chasing it across the body.
-      const guard = spine[3]
-        .clone()
-        .addScaledVector(chestRight, offSign * 0.2)
-        .addScaledVector(chestFront, 0.36)
-        .addScaledVector(chestUp, -0.1);
-      const throatSide = throat.clone().sub(spine[3]).dot(chestRight) * offSign;
-      const nearPaddle = throat.lerp(
-        guard,
-        1 - T.MathUtils.smoothstep(throatSide, -0.12, 0.02),
-      );
-      let offGoal = hipsPos
-        .clone()
-        .addScaledVector(right, offSign * 0.3)
-        .addScaledVector(forward, 0.25)
-        .add(v(0, 0.22));
-      const type = pose.active ? shot?.type : undefined;
-      if (type === "serve") {
-        // Holds the ball in front at the waist, releases it, then extends forward/out at shoulder height.
-        const hold = hipsPos
-          .clone()
-          .addScaledVector(forward, 0.36)
-          .addScaledVector(right, offSign * 0.04)
-          .add(v(0, 0.05));
-        const reach = shoulderOff
-          .clone()
-          .addScaledVector(forward, 0.4)
-          .addScaledVector(right, offSign * 0.25)
-          .add(v(0, -0.08));
-        offGoal = hold.lerp(reach, T.MathUtils.smoothstep(clock, -0.2, 0.08));
-      } else if (type === "dink") {
-        // Out to the side and slightly back for balance, not on the paddle.
-        offGoal = hipsPos
-          .clone()
-          .addScaledVector(right, offSign * 0.5)
-          .addScaledVector(forward, -0.02)
-          .add(v(0, 0.2));
-      } else if (type === "volley" || type === "punch" || type === "block") {
-        offGoal = nearPaddle.clone();
-      } else if (type === "smash" && shot) {
-        // Off arm points up at the ball through the load, then folds to the chest on the way down.
-        const ball = v(shot.from.x - p.x, shot.from.y + 0.1, shot.from.z - p.z);
-        const point = shoulderOff
-          .clone()
-          .addScaledVector(ball.sub(shoulderOff).normalize(), 0.55);
-        const chest = spine[3]
-          .clone()
-          .addScaledVector(chestRight, offSign * 0.08)
-          .addScaledVector(chestFront, 0.3)
-          .addScaledVector(chestUp, -0.08);
-        offGoal = point.lerp(chest, T.MathUtils.smoothstep(clock, -0.04, 0.26));
-      } else if (pose.active && !pose.twoHanded)
-        offGoal.addScaledVector(right, offSign * 0.12 * pose.loading);
-      offGoal.lerp(nearPaddle, T.MathUtils.clamp(pose.readiness, 0, 1));
-      let supportGrip = 0;
-      if (pose.twoHanded) {
-        const target = handTarget(off, off.support, paddleM);
-        solveArm(off, target.pos, target.q, contactLock, false);
-        supportGrip =
-          1 -
-          T.MathUtils.smoothstep(
-            charPos(off.hand).distanceTo(target.pos),
-            0.018,
-            0.075,
-          );
-      } else {
-        // wrist sits ~7 cm behind the palm goal along the reach direction
-        const reachDir = offGoal.clone().sub(shoulderOff).normalize();
-        solveArm(
-          off,
-          offGoal.clone().addScaledVector(reachDir, -0.07),
-          undefined,
-          1,
-          true,
-        );
-      }
-      fingersTo(off, supportGrip);
-      this.gripWeights = handSign < 0 ? [1, supportGrip] : [supportGrip, 1];
-      root.updateMatrixWorld(true);
-      const top = this.bones.get("HeadTop_End") ?? head;
-      return {
-        head: charPos(top).add(v(0, top === head ? 0.15 : 0.04)),
-        residual: mainTarget.pos.clone().sub(charPos(main.hand)),
-      };
     };
-    // Reach assist: when the hand can't get to the paddle target, move the upper body (pelvis)
-    // toward it and solve again — feet stay planted.
-    const assist = new T.Vector3();
-    let solved = run(assist);
-    if (pose.active && time !== undefined) {
-      // Only around contact (the ball must be met); overheads mostly reach up, not forward.
-      const near = 1 - T.MathUtils.smoothstep(Math.abs(time), 0.03, 0.12);
-      assist.copy(solved.residual).multiplyScalar(0.9 * near);
-      assist.y = T.MathUtils.clamp(assist.y, -0.15, 0.03);
-      const flatMax = pose.paddle.y > 1.5 ? 0.05 : 0.2;
-      const flat = Math.hypot(assist.x, assist.z);
-      if (flat > flatMax) {
-        assist.x *= flatMax / flat;
-        assist.z *= flatMax / flat;
+    plantLegs();
+    const applyTorso=()=>{
+      const rel=hipQ.clone().invert().multiply(bodyQ);
+      ["Spine","Spine1","Spine2"].forEach((n,i)=>{
+        const bone=this.bone(n);
+        setWorldQuat(bone,hipQ.clone().multiply(new T.Quaternion().slerp(rel,SPINE_SPLIT[i])).multiply(this.restQ.get(bone)!));
+      });
+      for(const a of [main,off]) setWorldQuat(a.clavicle,bodyQ.clone().multiply(this.restQ.get(a.clavicle)!));
+      this.root.updateMatrixWorld(true);
+    };
+    applyTorso();
+    const gripInverse=main.grip.clone().invert(), socketQ=new T.Quaternion();
+    main.grip.decompose(_a,socketQ,_b);
+    let swivel=0;
+    const request=new T.Matrix4(), goal=new T.Vector3(), handQ=new T.Quaternion();
+    const solveArm=(arm:ArmRig,point:T.Vector3,q:T.Quaternion,pole:T.Vector3)=>{
+      const shoulder=worldPos(arm.upper,new T.Vector3()),e=new T.Vector3(),w=new T.Vector3(),bend=new T.Vector3();
+      twoBone(shoulder,point,arm.l1,arm.l2,pole,chainReach(arm.l1,arm.l2,ELBOW_MIN),
+        chainReach(arm.l1,arm.l2,ELBOW_MAX),e,w,bend,0);
+      aim(arm.aimUpper,e.clone().sub(shoulder),bend);
+      const fq=q.clone().multiply(arm.handRest.clone().invert());
+      fq.premultiply(new T.Quaternion().setFromUnitVectors(arm.foreAxis.clone().applyQuaternion(fq),w.sub(e).normalize()));
+      setWorldQuat(arm.fore,fq); setWorldQuat(arm.hand,q); this.limitWrist(arm);
+    };
+    // Socket swivel is an analytic azimuth, not a discrete best-candidate search. Wrist/arm
+    // orientation converges while the face centre remains the authored trajectory target.
+    for(let pass=0;pass<24;pass++) {
+      request.compose(centre,paddleQ,v(1,1,1)).multiply(new T.Matrix4().makeRotationY(swivel)).multiply(gripInverse);
+      request.decompose(goal,handQ,_a);
+      // Unreachable arm targets are shared by trunk FLEXION, never by elongating the spine.
+      const shoulder=worldPos(main.upper,new T.Vector3()), pelvis=worldPos(hips,new T.Vector3());
+      const d=shoulder.distanceTo(goal), reach=chainReach(main.l1,main.l2,150*Math.PI/180);
+      const blend=ease((d-reach+.015)/.075);
+      if(blend>0) {
+        const proposed=new T.Vector3(),end=new T.Vector3(),bend=new T.Vector3();
+        const torso=shoulder.clone().sub(pelvis), pole=UP.clone().addScaledVector(right,-main.sign*.12).addScaledVector(front,-.12);
+        twoBone(pelvis,goal,torso.length(),reach,pole,.02,torso.length()+reach-.001,proposed,end,bend,.015);
+        const correction=new T.Quaternion().setFromUnitVectors(torso.normalize(),proposed.sub(pelvis).normalize());
+        bodyQ.premultiply(new T.Quaternion().slerp(correction,blend*.45));
+        applyTorso();
       }
-      solved = run(assist);
+      const chestRight=v(1,0,0).applyQuaternion(bodyQ), chestFront=v(0,0,-1).applyQuaternion(bodyQ);
+      const overhead=shot?.type==="smash" && target.active ? 1-ease(target.readiness) : 0;
+      const pole=chestRight.multiplyScalar(main.sign).addScaledVector(chestFront,-.08).add(v(0,-.12+1.62*overhead,0));
+      solveArm(main,goal,handQ,pole);
+      const fore=worldPos(main.hand,new T.Vector3()).sub(worldPos(main.fore,new T.Vector3())).normalize().applyQuaternion(paddleQ.clone().invert());
+      const atZero=main.foreInHand.clone().applyQuaternion(socketQ.clone().invert());
+      // The small rest-direction bias keeps the azimuth well-defined near the handle axis.
+      fore.addScaledVector(atZero,.04);
+      swivel=Math.atan2(atZero.z*fore.x-atZero.x*fore.z,atZero.x*fore.x+atZero.z*fore.z);
+      paddleQ.copy(worldQuat(main.hand,new T.Quaternion())).multiply(socketQ).multiply(new T.Quaternion().setFromAxisAngle(UP,-swivel));
     }
-    this.mesh.skeleton.update();
-    return solved.head;
+    this.root.updateMatrixWorld(true);
+    const held=main.hand.matrixWorld.clone().multiply(main.grip).multiply(new T.Matrix4().makeRotationY(-swivel));
+    const actual=new T.Vector3(); held.decompose(actual,paddle.quaternion,_a);
+    // Root/pelvis correction keeps contact and the rigid socket exact, with no bone stretch.
+    // The numerical body gate also measures this correction's acceleration.
+    hips.position.add(centre.clone().sub(actual));
+    plantLegs(); this.root.updateMatrixWorld(true);
+    held.copy(main.hand.matrixWorld).multiply(main.grip).multiply(new T.Matrix4().makeRotationY(-swivel));
+    held.decompose(paddle.position,paddle.quaternion,_a);
+    paddle.position.sub(rootPosition); paddle.updateMatrix();
+    const cr=v(1,0,0).applyQuaternion(bodyQ), cf=v(0,0,-1).applyQuaternion(bodyQ), cu=v(0,1,0).applyQuaternion(bodyQ);
+    const guard=worldPos(this.bone("Spine2"),new T.Vector3()).addScaledVector(cr,off.sign*.38).addScaledVector(cf,.34).addScaledVector(cu,-.18);
+    if(shot?.type==="smash" && target.active) guard.lerp(worldPos(this.bone("Neck"),new T.Vector3()).add(v(0,.23)).addScaledVector(cr,off.sign*.17),target.loading);
+    const guardQ=bodyQ.clone().multiply(this.restQ.get(off.hand)!);
+    if(target.supportWeight>0) {
+      const support=held.clone().multiply(off.support.clone().invert()), sp=new T.Vector3(),sq=new T.Quaternion(); support.decompose(sp,sq,_a);
+      guard.lerp(sp,target.supportWeight); guardQ.slerp(sq,target.supportWeight);
+    }
+    solveArm(off,guard,guardQ,cr.clone().multiplyScalar(off.sign).addScaledVector(cf,-.05));
+    this.gripWeights=p.hand==="left" ? [1,target.supportWeight] : [target.supportWeight,1];
+    for(const a of [main,off]) for(const f of a.fingers) f.bone.quaternion.copy(f.rest).multiply(new T.Quaternion().setFromAxisAngle(f.hinge,
+      T.MathUtils.lerp(f.relaxed,f.grip,a===main ? 1 : target.supportWeight)));
+    const headQ=bodyQ.clone().multiply(new T.Quaternion().setFromAxisAngle(v(1,0,0),target.track));
+    setWorldQuat(this.bone("Neck"),bodyQ.clone().slerp(headQ,NECK_SHARE).multiply(this.restQ.get(this.bone("Neck"))!));
+    setWorldQuat(this.bone("Head"),headQ.multiply(this.restQ.get(this.bone("Head"))!));
+    this.root.updateMatrixWorld(true);
+    const joints=["Hips","Spine","Spine1","Spine2"].map(n=>worldPos(this.bone(n),new T.Vector3()).sub(rootPosition));
+    this.torsoCapsules=[
+      {a:joints[0].clone().add(v(0,-.12)),b:joints[0].clone(),radius:.175,squash:1.75,front:cf.clone()},
+      {a:joints[0].clone(),b:joints[2].clone(),radius:.14,squash:1.5,front:cf.clone()},
+      {a:joints[2].clone(),b:joints[3].clone().add(v(0,.05)),radius:.155,squash:1.2,front:cf.clone()},
+    ];
+    for(const c of this.torsoCapsules){c.a.addScaledVector(cf,.045);c.b=c.b.clone().addScaledVector(cf,.045);}
+    this.mesh.skeleton.update(); this.drawingSwivel=swivel;
+    return worldPos(this.bone("Head"),new T.Vector3()).sub(rootPosition).add(v(0,.19));
   }
-  /** Elbow interior angle and wrist flexion/deviation/twist (rad) of the current pose. */
+
+  wristDemand: Record<string,{flex:number;dev:number;w:number}> = {};
+  private limitWrist(arm:ArmRig, playback=false) {
+    const delta=arm.hand.quaternion.clone().multiply(arm.handRest.clone().invert());
+    const twist=twistAbout(delta,arm.foreAxis,new T.Quaternion()), swing=delta.multiply(twist.clone().invert());
+    const angle=2*Math.acos(Math.min(1,Math.abs(swing.w)));
+    const dir=v(swing.x,swing.y,swing.z).multiplyScalar(Math.sign(swing.w)||1).normalize();
+    const rawFlex=angle*dir.dot(arm.flexAxis),rawDev=angle*dir.dot(arm.devAxis);
+    this.wristDemand[arm.sign]={flex:rawFlex,dev:rawDev,w:swing.w};
+    const flexLimit=playback ? Math.PI/3 : WRIST_LIMITS.flex, devLimit=playback ? Math.PI/6 : WRIST_LIMITS.deviation;
+    const width=playback ? .004 : .04;
+    const flex=softClamp(rawFlex,-flexLimit,flexLimit,width), dev=softClamp(rawDev,-devLimit,devLimit,width);
+    const axis=arm.flexAxis.clone().multiplyScalar(flex).addScaledVector(arm.devAxis,dev), a=axis.length();
+    arm.hand.quaternion.copy(new T.Quaternion().setFromAxisAngle(axis.normalize(),a)).multiply(twist).multiply(arm.handRest);
+    arm.hand.updateWorldMatrix(false,true);
+  }
+
   jointAngles(side: Side) {
     const arm = this.arms[side];
     const s = worldPos(arm.upper, new T.Vector3()),

@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { playerPose } from "../src/core/player-pose";
 import { SHOT_TYPES } from "../src/core/constants";
+import { STROKE_MOTION, strokeLoadTime } from "../src/core/stroke-motion";
 import type { Player, Shot } from "../src/core/scenario";
 const p: Player = { id: "A1", x: -1, z: 3 };
 const shot: Shot = {
@@ -34,10 +35,11 @@ describe("player posture", () => {
     );
   });
   it("moves from backswing through contact and follows through before recovering", () => {
-    const prepare = playerPose(p, shot, -0.24),
+    const profile = STROKE_MOTION[shot.type];
+    const prepare = playerPose(p, shot, strokeLoadTime(shot.type, profile.prepare)),
       contact = playerPose(p, shot, 0),
-      follow = playerPose(p, shot, 0.22),
-      ready = playerPose(p, shot, 1.2);
+      follow = playerPose(p, shot, profile.followTime),
+      ready = playerPose(p, shot, profile.recover + 0.01);
     expect(prepare.paddle.z).toBeGreaterThan(contact.paddle.z);
     // drive finish (technique-research E2): up and across the body
     expect(follow.paddle.y).toBeGreaterThan(contact.paddle.y + 0.4);
@@ -55,7 +57,7 @@ describe("player posture", () => {
       playerPose(p, { ...shot, from: { ...shot.from, y: 2.3 } }, 0).paddleRoll,
     ).toBeCloseTo(0, 8);
     // Recovered paddle matches the idle ready stance (paddle head up ~65°, tilted to the dominant side).
-    expect(playerPose(p, shot, 1.2).paddleRoll).toBeCloseTo(
+    expect(playerPose(p, shot, STROKE_MOTION[shot.type].recover + 0.01).paddleRoll).toBeCloseTo(
       playerPose(p).paddleRoll,
       8,
     );

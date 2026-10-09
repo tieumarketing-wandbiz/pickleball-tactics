@@ -1,0 +1,30 @@
+serve    core paddle=0.649@-0.004 hip=0.403@0.479 footL=0.080@0.558 footR=0.041@0.358 peak=8.84@0.002
+         RIG paddle=1.005@-0.092 Hips=0.249@-0.196 LeftForeArm=0.609@-0.004 RightForeArm=0.643@-0.196 LeftHand=0.760@-0.104 RightHand=0.779@-0.196 LeftLeg=0.162@-0.196 RightLeg=0.190@-0.196 LeftFoot=0.080@0.558 RightFoot=0.041@0.358 peak=10.63@-0.344
+drive    core paddle=0.801@-0.004 hip=0.160@-0.179 footL=0.038@0.296 footR=0.051@0.525 peak=9.08@0.002
+         RIG paddle=0.582@-0.083 Hips=0.078@0.217 LeftForeArm=0.304@-0.196 RightForeArm=0.450@-0.096 LeftHand=0.392@-0.196 RightHand=0.563@-0.100 LeftLeg=0.037@0.608 RightLeg=0.068@0.217 LeftFoot=0.038@0.296 RightFoot=0.051@0.525 peak=9.14@0.035
+dink     core paddle=0.656@-0.246 hip=0.962@0.388 footL=0.071@-0.204 footR=0.124@-0.050 peak=6.25@-0.177
+         RIG paddle=0.801@-0.004 Hips=0.129@0.492 LeftForeArm=0.167@0.492 RightForeArm=0.325@-0.096 LeftHand=0.161@0.492 RightHand=0.439@0.362 LeftLeg=0.134@0.492 RightLeg=0.145@0.492 LeftFoot=0.071@-0.204 RightFoot=0.124@-0.050 peak=6.40@-0.160
+drop     core paddle=0.440@-0.004 hip=0.164@-0.163 footL=0.026@0.338 footR=0.034@0.571 peak=4.56@-0.306
+         RIG paddle=0.497@-0.087 Hips=0.055@0.654 LeftForeArm=0.381@-0.175 RightForeArm=0.432@-0.096 LeftHand=0.488@-0.175 RightHand=0.452@-0.087 LeftLeg=0.037@0.654 RightLeg=0.056@0.654 LeftFoot=0.026@0.338 RightFoot=0.034@0.571 peak=5.50@-0.090
+lob      core paddle=0.883@-0.004 hip=0.206@-0.142 footL=0.038@-0.063 footR=0.035@-0.250 peak=8.71@0.002
+         RIG paddle=3.007@-0.229 Hips=0.112@-0.304 LeftForeArm=0.411@-0.304 RightForeArm=0.294@-0.229 LeftHand=0.646@-0.304 RightHand=0.577@-0.217 LeftLeg=3.314@0.171 RightLeg=2.042@0.196 LeftFoot=0.759@0.171 RightFoot=0.495@0.192 peak=15.28@-0.231
+volley   core paddle=0.994@-0.104 hip=0.505@-0.087 footL=0.038@-0.037 footR=0.079@-0.175 peak=7.69@-0.160
+         RIG paddle=1.295@-0.154 Hips=0.167@-0.217 LeftForeArm=0.809@-0.004 RightForeArm=0.590@-0.096 LeftHand=1.257@-0.096 RightHand=0.763@-0.096 LeftLeg=0.084@0.438 RightLeg=0.113@0.438 LeftFoot=0.038@-0.037 RightFoot=0.079@-0.175 peak=10.02@-0.152
+smash    core paddle=0.735@-0.004 hip=0.157@-0.225 footL=0.104@0.421 footR=0.069@0.637 peak=8.99@0.002
+         RIG paddle=0.416@-0.367 Hips=0.127@0.717 LeftForeArm=0.300@-0.121 RightForeArm=0.269@0.713 LeftHand=0.817@-0.100 RightHand=0.350@0.150 LeftLeg=3.588@-0.142 RightLeg=2.714@0.283 LeftFoot=0.850@-0.142 RightFoot=0.687@0.283 peak=8.99@0.140
+block    core paddle=0.947@-0.104 hip=0.489@-0.092 footL=0.087@-0.179 footR=0.112@-0.042 peak=7.33@-0.160
+         RIG paddle=1.688@-0.154 Hips=0.159@0.438 LeftForeArm=0.864@-0.096 RightForeArm=0.856@-0.096 LeftHand=1.378@-0.096 RightHand=0.992@-0.096 LeftLeg=0.117@0.438 RightLeg=0.144@0.438 LeftFoot=0.087@-0.179 RightFoot=0.112@-0.042 peak=9.92@-0.156
+punch    core paddle=0.999@-0.104 hip=0.500@-0.092 footL=0.041@-0.037 footR=0.084@-0.175 peak=7.73@-0.160
+         RIG paddle=1.496@-0.154 Hips=0.154@-0.217 LeftForeArm=0.917@-0.004 RightForeArm=0.739@-0.096 LeftHand=1.360@-0.096 RightHand=0.906@-0.096 LeftLeg=0.083@0.588 RightLeg=0.112@0.588 LeftFoot=0.041@-0.037 RightFoot=0.084@-0.175 peak=10.43@-0.152
+reset    core paddle=0.743@-0.004 hip=0.513@-0.087 footL=0.062@-0.050 footR=0.045@-0.204 peak=5.83@-0.177
+         RIG paddle=0.728@-0.096 Hips=0.152@0.146 LeftForeArm=0.715@-0.004 RightForeArm=0.956@-0.096 LeftHand=1.030@-0.004 RightHand=0.795@-0.096 LeftLeg=0.091@0.442 RightLeg=0.112@0.442 LeftFoot=0.062@-0.050 RightFoot=0.045@-0.204 peak=5.56@-0.165
+speedup  core paddle=0.835@-0.004 hip=0.322@-0.125 footL=0.037@0.221 footR=0.040@0.417 peak=7.83@0.002
+         RIG paddle=0.436@0.083 Hips=0.141@0.154 LeftForeArm=0.316@0.004 RightForeArm=0.455@0.067 LeftHand=0.420@0.004 RightHand=0.558@0.075 LeftLeg=0.064@0.483 RightLeg=0.095@0.154 LeftFoot=0.037@0.221 RightFoot=0.040@0.417 peak=6.13@-0.231
+roll     core paddle=0.807@-0.004 hip=0.205@-0.142 footL=0.041@0.425 footR=0.040@0.425 peak=8.58@0.002
+         RIG paddle=0.804@-0.221 Hips=0.110@0.175 LeftForeArm=0.290@-0.304 RightForeArm=0.522@0.079 LeftHand=0.598@-0.304 RightHand=0.620@0.087 LeftLeg=0.066@0.487 RightLeg=0.089@0.487 LeftFoot=0.041@0.425 RightFoot=0.040@0.425 peak=9.17@-0.227
+flick    core paddle=1.163@-0.196 hip=0.804@-0.071 footL=0.094@-0.037 footR=0.077@-0.163 peak=8.99@-0.140
+         RIG paddle=1.270@-0.079 Hips=0.233@0.117 LeftForeArm=0.777@-0.004 RightForeArm=0.712@0.054 LeftHand=1.008@-0.004 RightHand=0.821@0.058 LeftLeg=0.091@0.117 RightLeg=0.119@0.117 LeftFoot=0.094@-0.037 RightFoot=0.077@-0.163 peak=11.08@-0.131
+atp      core paddle=0.762@-0.004 hip=0.168@-0.163 footL=0.013@-0.192 footR=0.042@-0.304 peak=7.07@-0.281
+         RIG paddle=0.660@-0.083 Hips=0.114@-0.375 LeftForeArm=0.380@-0.175 RightForeArm=0.396@-0.092 LeftHand=0.500@-0.175 RightHand=0.540@-0.087 LeftLeg=0.112@0.650 RightLeg=0.126@0.650 LeftFoot=0.013@-0.192 RightFoot=0.042@-0.304 peak=6.70@-0.269
+erne     core paddle=0.239@-0.004 hip=0.696@0.058 footL=0.021@0.183 footR=0.022@0.446 peak=3.66@0.002
+         RIG paddle=0.515@0.096 Hips=0.358@0.096 LeftForeArm=0.272@0.096 RightForeArm=0.369@0.096 LeftHand=0.279@0.096 RightHand=0.324@0.096 LeftLeg=1.704@0.267 RightLeg=0.257@0.004 LeftFoot=0.397@0.267 RightFoot=0.046@0.021 peak=3.34@0.273

@@ -3,6 +3,7 @@ import {
   STROKE_MOTION,
   sampleStroke,
   strokePreparation,
+  strokeLoadTime,
 } from "../src/core/stroke-motion";
 import { SHOT_TYPES } from "../src/core/constants";
 import { playerPose } from "../src/core/player-pose";
@@ -24,10 +25,10 @@ it("preserves contact and nonzero continuous paddle velocity through impact", ()
 });
 it("distinguishes compact blocking, high drive finish, overhead downswing and lifting lob", () => {
   expect(Math.hypot(...sampleStroke("block", 0.14).offset)).toBeLessThan(0.05);
-  expect(sampleStroke("drive", 0.26).offset[2]).toBeGreaterThan(0.6);
-  expect(sampleStroke("smash", 0.3).offset[2]).toBeLessThan(-1);
-  expect(sampleStroke("lob", 0.32).offset[2]).toBeGreaterThan(0.5);
-  expect(sampleStroke("punch", 0.16).offset[0]).toBeGreaterThan(0.2);
+  expect(sampleStroke("drive", STROKE_MOTION.drive.followTime).offset[2]).toBeGreaterThan(0.6);
+  expect(sampleStroke("smash", STROKE_MOTION.smash.followTime).offset[2]).toBeLessThan(-1);
+  expect(sampleStroke("lob", STROKE_MOTION.lob.followTime).offset[2]).toBeGreaterThan(0.5);
+  expect(sampleStroke("punch", STROKE_MOTION.punch.followTime).offset[0]).toBeGreaterThan(0.2);
 });
 it("uses a stronger wrist roll for flick and roll than for dink", () => {
   expect(STROKE_MOTION.flick.wrist).toBeGreaterThan(STROKE_MOTION.roll.wrist);
@@ -44,8 +45,8 @@ it("turns the hitting shoulder back to load and forwards on a forehand finish", 
       from: { x: 0.35, y: 0.8, z: -0.25 },
       to: { x: 0, z: -4 },
     };
-  const load = playerPose(p, shot, -0.198),
-    follow = playerPose(p, shot, 0.26);
+  const load = playerPose(p, shot, strokeLoadTime("drive", strokePreparation("drive"))),
+    follow = playerPose(p, shot, STROKE_MOTION.drive.followTime);
   expect(load.yaw).toBeLessThan(load.stanceYaw);
   expect(follow.yaw).toBeGreaterThan(follow.stanceYaw);
   expect(
@@ -65,7 +66,7 @@ it("provides preparation before the first ball flight with no discontinuity at r
 });
 it("returns to a shared ready stance after each shot", () => {
   for (const type of SHOT_TYPES) {
-    const m = sampleStroke(type, 2);
+    const m = sampleStroke(type, STROKE_MOTION[type].recover + 0.01);
     expect(m.recovery).toBe(1);
     expect(Math.hypot(...m.offset)).toBe(0);
     expect(m.hop).toBe(0);
@@ -74,7 +75,7 @@ it("returns to a shared ready stance after each shot", () => {
 
 describe("pose-to-pose timeline (animation-principles.md)", () => {
   const loadTime = (type: (typeof SHOT_TYPES)[number]) =>
-    -STROKE_MOTION[type].prepare * 0.55;
+    strokeLoadTime(type, strokePreparation(type));
   it("eases out of the load and accelerates monotonically into contact", () => {
     for (const type of ["serve", "drive", "dink", "volley", "smash"] as const) {
       // From the breakdown on (before it the lagging paddle may still be finishing the takeback
@@ -88,10 +89,10 @@ describe("pose-to-pose timeline (animation-principles.md)", () => {
         previous = along;
       }
       // fastest close to contact: velocity just before contact beats the early forward swing
-      const v = (t: number) =>
-        (sampleStroke(type, t + 0.001).offset[0] -
-          sampleStroke(type, t - 0.001).offset[0]) /
-        0.002;
+      const v = (t: number) => {
+        const a = sampleStroke(type, t-0.001).offset, b = sampleStroke(type, t+0.001).offset;
+        return Math.hypot(...a.map((x,i) => (b[i]-x)/0.002));
+      };
       speed = v(-0.005);
       expect(speed).toBeGreaterThan(v(start));
     }
@@ -131,8 +132,9 @@ describe("pose-to-pose timeline (animation-principles.md)", () => {
   });
   it("holds the punch-volley finish before recovering", () => {
     const p = STROKE_MOTION.punch;
-    expect(sampleStroke("punch", p.followTime + p.hold! * 0.9).offset).toEqual(
-      sampleStroke("punch", p.followTime).offset,
-    );
+    const start = sampleStroke("punch", p.followTime).offset;
+    const held = sampleStroke("punch", p.followTime + p.hold! * 0.9).offset;
+    // A living hold drifts <1 cm and does not dead-stop the hand at the finish seam.
+    expect(Math.hypot(...held.map((x,i) => x-start[i]))).toBeLessThan(0.01);
   });
 });

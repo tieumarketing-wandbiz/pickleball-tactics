@@ -19,6 +19,17 @@ export class PoseSpline {
     });
   }
   setVelocity(key: number, channel: number, velocity: number) { this.tangents[key][channel] = velocity; }
+  scaleVelocity(key: number, channel: number, scale: number) { this.tangents[key][channel] *= scale; }
+  /** Fritsch-Carlson tangents for bounded anatomical scalar channels. */
+  monotoneChannel(channel:number){
+    for(let i=1;i<this.keys.length-1;i++){
+      const a=this.keys[i-1],b=this.keys[i],c=this.keys[i+1],h0=b.time-a.time,h1=c.time-b.time;
+      const left=(b.values[channel]-a.values[channel])/h0,right=(c.values[channel]-b.values[channel])/h1;
+      const w0=2*h1+h0,w1=h1+2*h0;
+      const m=left*right<=0 ? 0 : (w0+w1)/(w0/left+w1/right);
+      this.tangents[i][channel]=Math.sign(m)*Math.min(Math.abs(m),3*Math.min(Math.abs(left),Math.abs(right)));
+    }
+  }
   sample(time:number,out:Float64Array){
     const keys=this.keys;
     if(time<=keys[0].time){out.set(keys[0].values);return;}

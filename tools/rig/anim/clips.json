@@ -13,12 +13,12 @@
       "loop": true,
       "rootSpeed": 0.0,
       "rootDir": [
-        0.0,
-        0.0
+        0.37397,
+        -0.92744
       ],
       "mirrored": false,
       "sourceFile": "Ready Idle.fbx",
-      "contactSheet": "D:\\AI\\Code\\Tieu\\pickleball-tactics-main\\tools\\rig\\anim\\sheets\\idle_ready.png"
+      "contactSheet": "tools/rig/anim/sheets/idle_ready.png"
     },
     {
       "id": "idle_breath",
@@ -31,12 +31,12 @@
       "loop": true,
       "rootSpeed": 0.0,
       "rootDir": [
-        0.0,
-        0.0
+        0.8779,
+        -0.47885
       ],
       "mirrored": false,
       "sourceFile": "Breathing Idle.fbx",
-      "contactSheet": "D:\\AI\\Code\\Tieu\\pickleball-tactics-main\\tools\\rig\\anim\\sheets\\idle_breath.png"
+      "contactSheet": "tools/rig/anim/sheets/idle_breath.png"
     },
     {
       "id": "sidestep_R",
@@ -47,14 +47,14 @@
       "duration": 0.5,
       "fps": 30.0,
       "loop": true,
-      "rootSpeed": 0.0,
+      "rootSpeed": 5.64036,
       "rootDir": [
-        0.0,
+        -1.0,
         0.0
       ],
       "mirrored": false,
       "sourceFile": "Goalkeeper Sidestep.fbx",
-      "contactSheet": "D:\\AI\\Code\\Tieu\\pickleball-tactics-main\\tools\\rig\\anim\\sheets\\sidestep_R.png"
+      "contactSheet": "tools/rig/anim/sheets/sidestep_R.png"
     },
     {
       "id": "shuffle",
@@ -72,7 +72,7 @@
       ],
       "mirrored": false,
       "sourceFile": "Shuffling.fbx",
-      "contactSheet": "D:\\AI\\Code\\Tieu\\pickleball-tactics-main\\tools\\rig\\anim\\sheets\\shuffle.png"
+      "contactSheet": "tools/rig/anim/sheets/shuffle.png"
     },
     {
       "id": "jog_fwd",
@@ -83,14 +83,14 @@
       "duration": 0.8333333333333334,
       "fps": 30.0,
       "loop": true,
-      "rootSpeed": 0.0,
+      "rootSpeed": 4.65428,
       "rootDir": [
         0.0,
-        0.0
+        -1.0
       ],
       "mirrored": false,
       "sourceFile": "Jog Forward.fbx",
-      "contactSheet": "D:\\AI\\Code\\Tieu\\pickleball-tactics-main\\tools\\rig\\anim\\sheets\\jog_fwd.png"
+      "contactSheet": "tools/rig/anim/sheets/jog_fwd.png"
     },
     {
       "id": "jog_fwd_diag",
@@ -101,14 +101,14 @@
       "duration": 0.8333333333333334,
       "fps": 30.0,
       "loop": true,
-      "rootSpeed": 0.0,
+      "rootSpeed": 4.91028,
       "rootDir": [
-        0.0,
-        0.0
+        0.71159,
+        -0.7026
       ],
       "mirrored": false,
       "sourceFile": "Jog Forward Diagonal.fbx",
-      "contactSheet": "D:\\AI\\Code\\Tieu\\pickleball-tactics-main\\tools\\rig\\anim\\sheets\\jog_fwd_diag.png"
+      "contactSheet": "tools/rig/anim/sheets/jog_fwd_diag.png"
     },
     {
       "id": "backpedal",
@@ -119,14 +119,14 @@
       "duration": 0.8,
       "fps": 30.0,
       "loop": true,
-      "rootSpeed": 0.0,
+      "rootSpeed": 4.28432,
       "rootDir": [
         0.0,
-        0.0
+        1.0
       ],
       "mirrored": false,
       "sourceFile": "Jog Backward.fbx",
-      "contactSheet": "D:\\AI\\Code\\Tieu\\pickleball-tactics-main\\tools\\rig\\anim\\sheets\\backpedal.png"
+      "contactSheet": "tools/rig/anim/sheets/backpedal.png"
     },
     {
       "id": "jog_back_diag",
@@ -137,14 +137,14 @@
       "duration": 0.7333333333333333,
       "fps": 30.0,
       "loop": true,
-      "rootSpeed": 0.0,
+      "rootSpeed": 4.12904,
       "rootDir": [
-        0.0,
-        0.0
+        -0.71328,
+        0.70087
       ],
       "mirrored": false,
       "sourceFile": "Jog Backward Diagonal.fbx",
-      "contactSheet": "D:\\AI\\Code\\Tieu\\pickleball-tactics-main\\tools\\rig\\anim\\sheets\\jog_back_diag.png"
+      "contactSheet": "tools/rig/anim/sheets/jog_back_diag.png"
     },
     {
       "id": "run",
@@ -155,14 +155,14 @@
       "duration": 2.566666666666667,
       "fps": 30.0,
       "loop": true,
-      "rootSpeed": 0.0,
+      "rootSpeed": 3.55799,
       "rootDir": [
         0.0,
-        0.0
+        -1.0
       ],
       "mirrored": false,
       "sourceFile": "Jogging.fbx",
-      "contactSheet": "D:\\AI\\Code\\Tieu\\pickleball-tactics-main\\tools\\rig\\anim\\sheets\\run.png"
+      "contactSheet": "tools/rig/anim/sheets/run.png"
     },
     {
       "id": "walk_fwd",
@@ -173,14 +173,14 @@
       "duration": 1.0333333333333334,
       "fps": 30.0,
       "loop": true,
-      "rootSpeed": 0.0,
+      "rootSpeed": 3.21426,
       "rootDir": [
         0.0,
-        0.0
+        -1.0
       ],
       "mirrored": false,
       "sourceFile": "Walking.fbx",
-      "contactSheet": "D:\\AI\\Code\\Tieu\\pickleball-tactics-main\\tools\\rig\\anim\\sheets\\walk_fwd.png"
+      "contactSheet": "tools/rig/anim/sheets/walk_fwd.png"
     },
     {
       "id": "walk_back",
@@ -191,14 +191,14 @@
       "duration": 1.5,
       "fps": 30.0,
       "loop": true,
-      "rootSpeed": 0.0,
+      "rootSpeed": 0.99768,
       "rootDir": [
-        0.0,
-        0.0
+        9e-05,
+        1.0
       ],
       "mirrored": false,
       "sourceFile": "Walking Backwards.fbx",
-      "contactSheet": "D:\\AI\\Code\\Tieu\\pickleball-tactics-main\\tools\\rig\\anim\\sheets\\walk_back.png"
+      "contactSheet": "tools/rig/anim/sheets/walk_back.png"
     },
     {
       "id": "hop",
@@ -211,12 +211,12 @@
       "loop": false,
       "rootSpeed": 0.0,
       "rootDir": [
-        0.0,
-        0.0
+        -0.88676,
+        0.46222
       ],
       "mirrored": false,
       "sourceFile": "Jump.fbx",
-      "contactSheet": "D:\\AI\\Code\\Tieu\\pickleball-tactics-main\\tools\\rig\\anim\\sheets\\hop.png"
+      "contactSheet": "tools/rig/anim/sheets/hop.png"
     },
     {
       "id": "cele_fist",
@@ -229,12 +229,12 @@
       "loop": false,
       "rootSpeed": 0.0,
       "rootDir": [
-        0.0,
-        0.0
+        0.85776,
+        -0.51406
       ],
       "mirrored": false,
       "sourceFile": "Fist Pump.fbx",
-      "contactSheet": "D:\\AI\\Code\\Tieu\\pickleball-tactics-main\\tools\\rig\\anim\\sheets\\cele_fist.png"
+      "contactSheet": "tools/rig/anim/sheets/cele_fist.png"
     },
     {
       "id": "react_bad",
@@ -247,12 +247,12 @@
       "loop": false,
       "rootSpeed": 0.0,
       "rootDir": [
-        0.0,
-        0.0
+        -0.68293,
+        -0.73049
       ],
       "mirrored": false,
       "sourceFile": "Disappointed.fbx",
-      "contactSheet": "D:\\AI\\Code\\Tieu\\pickleball-tactics-main\\tools\\rig\\anim\\sheets\\react_bad.png"
+      "contactSheet": "tools/rig/anim/sheets/react_bad.png"
     }
   ]
 }

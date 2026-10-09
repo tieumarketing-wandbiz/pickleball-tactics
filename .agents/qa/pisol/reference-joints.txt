@@ -1,0 +1,11 @@
+
+[1m[46m RUN [49m[22m [36mv3.2.7 [39m[90mD:/AI/Code/Tieu/pickleball-tactics-main[39m
+
+ [32m✓[39m tests/humanoid.test.ts [2m([22m[2m13 tests[22m[2m)[22m[33m 949[2mms[22m[39m
+   [33m[2m✓[22m[39m v2 Mixamo rig[2m > [22mkeeps every vertex finite through all shot poses with feet near the ground [33m 498[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m1 passed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[32m13 passed[39m[22m[90m (13)[39m
+[2m   Start at [22m 21:10:53
+[2m   Duration [22m 1.52s[2m (transform 131ms, setup 0ms, collect 240ms, tests 949ms, environment 0ms, prepare 129ms)[22m
+

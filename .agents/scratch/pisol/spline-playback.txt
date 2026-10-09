@@ -1,0 +1,69 @@
+  private drawings = new Map<string, PoseSpline>();
+  private drawingSwivel = 0;
+
+  /** Authored constraint solves are confined to drawings, not re-selected every frame.
+   * Playback interpolates ONLY rotations and Hips/root placement; never bone translations.
+   * Feet are re-planted with analytic IK. This is seekable and has shared C1 key tangents. */
+  pose(p: Player, shot: Shot | undefined, time: number | undefined, paddle: T.Object3D,
+    movement?: { velocity: T.Vector3; clock: number; dt: number }, preparation?: number) {
+    if (!shot || shot.hitter!==p.id || time===undefined || movement) return this.solveDrawing(p,shot,time,paddle,movement,preparation);
+    const prep=preparation ?? strokePreparation(shot.type), profile=STROKE_MOTION[shot.type];
+    // Positions belong in the cache key: moving a player must not reuse the old relative contact.
+    const key=JSON.stringify([p,shot,prep]);
+    let spline=this.drawings.get(key);
+    if(!spline) {
+      const follow=profile.followTime+(profile.hold ?? 0), settle=follow+(profile.recover-follow)*.72;
+      const times=[-prep,strokeLoadTime(shot.type,prep),0,profile.followTime];
+      if(profile.hold)times.push(follow);
+      times.push(settle,profile.recover);
+      const keys:RigDrawing[]=times.map(t=>{
+        this.solveDrawing(p,shot,t,this.splinePaddle,undefined,prep);
+        const values=new Float64Array(4+this.driven.length*4);
+        this.bone("Hips").position.toArray(values,0); values[3]=this.drawingSwivel;
+        this.driven.forEach((b,i)=>b.quaternion.toArray(values,4+i*4));
+        return {time:t,values};
+      });
+      for(let i=1;i<keys.length;i++)keys[i].values[3]=keys[i-1].values[3]+angleDiff(keys[i].values[3],keys[i-1].values[3]);
+      spline=new PoseSpline(keys,this.driven.map((_,i)=>4+i*4));
+      // The contact is a passing key, not a slow ease-in/ease-out stop.
+      for(const name of [p.hand==="left" ? "LeftArm" : "RightArm",p.hand==="left" ? "LeftForeArm" : "RightForeArm",p.hand==="left" ? "LeftHand" : "RightHand"]){
+        const index=this.driven.indexOf(this.bone(name));
+        for(let c=4+index*4;c<8+index*4;c++)spline.scaleVelocity(2,c,2);
+      }
+      if(this.drawings.size>=24)this.drawings.clear(); this.drawings.set(key,spline);
+    }
+    spline.sample(time,this.sampleValues);
+    const hips=this.bone("Hips"); hips.position.fromArray(this.sampleValues,0);
+    this.driven.forEach((b,i)=>readQuaternion(b.quaternion,this.sampleValues,4+i*4));
+    this.root.updateMatrixWorld(true);
+    const target=playerPose(p,shot,time,prep), rootPosition=this.root.getWorldPosition(new T.Vector3());
+    const front=v(target.forward.x,0,target.forward.z), stance=new T.Quaternion().setFromAxisAngle(UP,target.stanceYaw);
+    // Legs → pelvis envelope → spine/clavicles → arms → hands/fingers → head.
+    for(const s of SIDES) {
+      const leg=this.legs[s], f=target.feet[s==="Left" ? "L" : "R"];
+      const ankle=v(f.x,this.ankleY+target.hop+f.lift,f.z).add(rootPosition),hip=worldPos(leg.up,new T.Vector3());
+      const axis=ankle.clone().sub(hip).normalize(),pole=front.clone(); pole.y=-(pole.x*axis.x+pole.z*axis.z)/axis.y;
+      const knee=new T.Vector3(),end=new T.Vector3(),bend=new T.Vector3();
+      twoBone(hip,ankle,leg.l1,leg.l2,pole,chainReach(leg.l1,leg.l2,40*Math.PI/180),(leg.l1+leg.l2)*.995,knee,end,bend,.004);
+      aim(leg.aimUp,knee.clone().sub(hip),bend); aim(leg.aimLeg,end.sub(knee),bend);
+      setWorldQuat(leg.foot,stance.clone().multiply(this.restQ.get(leg.foot)!));
+    }
+    // Interpolated wrist swings obey the same physiological limits, with C1 corner rounding.
+    for(const arm of Object.values(this.arms))this.limitWrist(arm,true);
+    this.root.updateMatrixWorld(true);
+    const main=this.arms[p.hand==="left" ? "Left" : "Right"];
+    const held=main.hand.matrixWorld.clone().multiply(main.grip).multiply(new T.Matrix4().makeRotationY(-this.sampleValues[3]));
+    held.decompose(paddle.position,paddle.quaternion,_a); paddle.position.sub(rootPosition); paddle.updateMatrix();
+    this.gripWeights=p.hand==="left" ? [1,target.supportWeight] : [target.supportWeight,1];
+    const chestQ=worldQuat(this.bone("Spine2"),new T.Quaternion()).multiply(this.restQ.get(this.bone("Spine2"))!.clone().invert());
+    const cf=v(0,0,-1).applyQuaternion(chestQ), joints=["Hips","Spine","Spine1","Spine2"].map(n=>worldPos(this.bone(n),new T.Vector3()).sub(rootPosition));
+    this.torsoCapsules=[
+      {a:joints[0].clone().add(v(0,-.12)),b:joints[0].clone(),radius:.175,squash:1.75,front:cf.clone()},
+      {a:joints[0].clone(),b:joints[2].clone(),radius:.14,squash:1.5,front:cf.clone()},
+      {a:joints[2].clone(),b:joints[3].clone().add(v(0,.05)),radius:.155,squash:1.2,front:cf.clone()},
+    ];
+    for(const c of this.torsoCapsules){c.a.addScaledVector(cf,.045);c.b=c.b.clone().addScaledVector(cf,.045);}
+    this.mesh.skeleton.update();
+    return worldPos(this.bone("Head"),new T.Vector3()).sub(rootPosition).add(v(0,.19));
+  }
+

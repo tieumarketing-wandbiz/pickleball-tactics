@@ -10,6 +10,8 @@ export class Players {
   group = new THREE.Group();
   markers = new Map<PlayerId, THREE.Group>();
   pickables: THREE.Object3D[] = [];
+  /** Stable references used by the pooled shutter renderer, not additional actors. */
+  paddles: THREE.Object3D[] = [];
   ready: Promise<void>;
   private lastPose?: {
     shot?: Shot;
@@ -104,6 +106,7 @@ export class Players {
       marker.add(label);
       this.pickables.push(label);
       const { group: paddle, face, edge } = createPaddle();
+      this.paddles.push(paddle);
       for (const mesh of [face, edge]) {
         mesh.userData.id = p.id;
         this.pickables.push(mesh);

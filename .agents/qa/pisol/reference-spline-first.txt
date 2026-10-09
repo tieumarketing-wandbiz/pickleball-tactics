@@ -1,0 +1,39 @@
+
+[1m[46m RUN [49m[22m [36mv3.2.7 [39m[90mD:/AI/Code/Tieu/pickleball-tactics-main[39m
+
+ [31m❯[39m tests/humanoid.test.ts [2m([22m[2m13 tests[22m[2m | [22m[31m1 failed[39m[2m)[22m[33m 634[2mms[22m[39m
+   [32m✓[39m v2 Mixamo rig[2m > [22mloads the user's skeleton in app space facing −Z[32m 9[2mms[22m[39m
+   [33m[2m✓[22m[39m v2 Mixamo rig[2m > [22mkeeps every vertex finite through all shot poses with feet near the ground [33m 400[2mms[22m[39m
+   [32m✓[39m v2 Mixamo rig[2m > [22muses independent skeletons for each player[32m 3[2mms[22m[39m
+   [32m✓[39m v2 Mixamo rig[2m > [22mholds a stance foot in world coordinates while the body advances[32m 7[2mms[22m[39m
+   [32m✓[39m v2 Mixamo rig[2m > [22mkeeps the paddle handle in the dominant palm for both hands and every stroke[32m 58[2mms[22m[39m
+   [32m✓[39m v2 Mixamo rig[2m > [22mputs the support hand above the dominant hand on two-handed backhands[32m 2[2mms[22m[39m
+   [32m✓[39m arms (user feedback round 2)[2m > [22mkeeps upper arm and forearm volumes off the torso[32m 122[2mms[22m[39m
+[31m   [31m×[31m arms (user feedback round 2)[2m > [22mkeeps elbows and wrists inside their joint limits[39m[32m 6[2mms[22m[39m
+[31m     → A1 right serve t=-0.15 Right: expected 2.839439903885385 to be less than 2.8099800957108703[39m
+   [32m✓[39m arms (user feedback round 2)[2m > [22mready: paddle in front of the chest, head up 45–70°, elbows off the ribs, no arm across the midline[32m 2[2mms[22m[39m
+   [32m✓[39m arms (user feedback round 2)[2m > [22mfollows the guide-video rules for the serve and the dink[32m 4[2mms[22m[39m
+   [32m✓[39m technique-research E3 checks[2m > [22mcontact is in front of the pelvis for every shot[32m 10[2mms[22m[39m
+   [32m✓[39m technique-research E3 checks[2m > [22mdink, reset and block keep the pelvis from rising into contact[32m 3[2mms[22m[39m
+   [32m✓[39m technique-research E3 checks[2m > [22mlob finishes high; smash points the off hand up and finishes on the off side[32m 2[2mms[22m[39m
+
+[31m⎯⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 1 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m tests/humanoid.test.ts[2m > [22marms (user feedback round 2)[2m > [22mkeeps elbows and wrists inside their joint limits
+[31m[1mAssertionError[22m: A1 right serve t=-0.15 Right: expected 2.839439903885385 to be less than 2.8099800957108703[39m
+[36m [2m❯[22m tests/humanoid.test.ts:[2m225:32[22m[39m
+    [90m223| [39m        const label = `${player.id} ${player.hand} ${shot?.type ?? "id…
+    [90m224| [39m        [34mexpect[39m(j[33m.[39melbow[33m,[39m label)[33m.[39m[34mtoBeGreaterThan[39m([34mdeg[39m([34m24[39m))[33m;[39m
+    [90m225| [39m        [34mexpect[39m(j[33m.[39melbow[33m,[39m label)[33m.[39m[34mtoBeLessThan[39m([34mdeg[39m([34m161[39m))[33m;[39m
+    [90m   | [39m                               [31m^[39m
+    [90m226| [39m        [34mexpect[39m([33mMath[39m[33m.[39m[34mabs[39m(j[33m.[39mflex)[33m,[39m label)[33m.[39m[34mtoBeLessThan[39m([34mdeg[39m([34m61[39m))[33m;[39m
+    [90m227| [39m        [34mexpect[39m([33mMath[39m[33m.[39m[34mabs[39m(j[33m.[39mdeviation)[33m,[39m label)[33m.[39m[34mtoBeLessThan[39m([34mdeg[39m([34m31[39m))[33m;[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[31m1 failed[39m[22m[2m | [22m[1m[32m12 passed[39m[22m[90m (13)[39m
+[2m   Start at [22m 21:00:39
+[2m   Duration [22m 1.07s[2m (transform 97ms, setup 0ms, collect 149ms, tests 634ms, environment 0ms, prepare 99ms)[22m
+

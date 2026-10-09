@@ -40,7 +40,7 @@ and arms that never stick to the torso. "Just enough for the web": no keyframe c
 |---|---|---|---|
 | `sol` | Codex · GPT-6.1-Sol, xhigh, --search, MCP blender (also reviewer, see tasks/shot-loop.md) | Stage A: audit + fix weights of the user rig in Blender, normalize | `tools/rig/blender_rig.py`, `tools/rig/out/*` |
 | `luna` | Pi · gpt-6-luna, medium | Stage B: finalize, compress, validate | `tools/rig/finalize.ts`, `tools/rig/validate.ts`, `tools/rig/lib/*`, `package.json`, `package-lock.json`, `public/models/male-rigged.glb` |
-| `pisol` (runtime + per-shot implementer, see tasks/shot-loop.md) | Pi · gpt-6.1-sol, xhigh | Stage C + tech lead: runtime retarget, keyed animation, clearance, sign-off | `src/**`, `tests/*.test.ts`, `vite.config.ts` |
+| `fable` (runtime + per-shot implementer; took over from `pisol`, which hit its ChatGPT usage limit 2026-10-09 ~21:00) | Claude Fable (coordinator subagent) | Stage C + tech lead: runtime retarget, keyed animation, clearance, sign-off | `src/**`, `tests/*.test.ts`, `vite.config.ts` |
 | `flash` | Pi · gpt-6-luna, medium | QA + docs | `tests/pose-snapshots.mjs`, the `launch` line in `tests/*-browser.mjs`/`browser.mjs`, `.agents/qa/*`, `docs/*`, `README.md` |
 
 `tools/rig/source/` is read-only for everyone (user's file). Need a change in a file you don't own? Write it under

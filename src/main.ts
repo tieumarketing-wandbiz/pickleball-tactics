@@ -40,6 +40,8 @@ import { Store } from "./state/store";
 import { createCourt } from "./scene/court";
 import { Players } from "./scene/players";
 import { BallView } from "./scene/ball";
+import { PlaybackClock, PlaybackRenderClock, PLAYBACK_FPS } from "./core/render-clock";
+import { ShutterGhosts } from "./scene/shutter-ghosts";
 import { buildUI, icons, toast } from "./ui/toolbar";
 import { renderTimeline } from "./ui/timeline";
 
@@ -110,6 +112,8 @@ scene.add(key);
 const court = createCourt(scene),
   players = new Players(scene, store.step.players),
   ball = new BallView(scene);
+const shutter = new ShutterGhosts(scene, players.paddles, ball.ball);
+const playbackClock = new PlaybackClock(), renderClock = new PlaybackRenderClock();
 let currentTrajectory: Trajectory | undefined;
 let shotKey = "";
 let lastIncomingKey = "";
@@ -133,7 +137,7 @@ let activePointer: number | undefined;
 let frame = 0;
 let lastTime = 0;
 const renderStats = { renders: 0, cpuMs: 0, calls: 0, triangles: 0, elapsed: 0, playing: false };
-if (import.meta.env.DEV) Object.assign(window, { __courtDebug: { stats: renderStats, renderer } });
+if (import.meta.env.DEV) Object.assign(window, { __courtDebug: { stats: renderStats, renderer, shutter, fps: PLAYBACK_FPS } });
 function invalidate() {
   dirty = true;
   requestFrame();
@@ -258,6 +262,7 @@ function stop() {
   restingPlayers = undefined;
   session = undefined;
   store.playing = false;
+  playbackClock.reset(); shutter.clear();
   lastTime = 0;
   ball.group.visible = !!currentTrajectory;
 }
@@ -505,6 +510,8 @@ players.ready
   .catch(() => toast("Không tải được mô hình người chơi. Hãy tải lại trang."));
 function startPlayback(preview = false) {
   if (store.playing && session?.preview === preview) {
+    session.elapsed = Math.min(playbackClock.pause(performance.now()/1000),session.clips.at(-1)!.end);
+    shutter.clear();
     store.playing = false;
     if (session) session.paused = true;
     refresh();
@@ -517,6 +524,7 @@ function startPlayback(preview = false) {
     const clips = preview
       ? [buildPreviewClip(store.scenario, store.index)]
       : fullClips;
+    playbackClock.reset(); shutter.clear();
     session = {
       clips,
       elapsed: 0,
@@ -526,6 +534,8 @@ function startPlayback(preview = false) {
     };
   }
   session.paused = false;
+  playbackClock.resume(performance.now()/1000);
+  renderClock.reset(performance.now());
   store.playing = true;
   store.picking = false;
 
@@ -536,11 +546,13 @@ function startPlayback(preview = false) {
 function tick(time: number) {
   const cpuStart = performance.now();
   frame = 0;
-  const dt = lastTime ? Math.max(0, (time - lastTime) / 1000) : 0;
   lastTime = time;
   const cameraMoving = controls.update();
-  if (session && store.playing) {
-    session.elapsed = Math.min(session.elapsed + dt, session.clips.at(-1)!.end);
+  if (session && store.playing)
+    session.elapsed = Math.min(playbackClock.sample(time/1000),session.clips.at(-1)!.end);
+  const due = renderClock.due(time,store.playing,dirty || cameraMoving);
+  if (!due) { if (store.playing || cameraMoving) requestFrame(); return; }
+  if (session && (store.playing || dirty || cameraMoving)) {
     const clip =
       session.clips.find((c) => session!.elapsed < c.end) ??
       session.clips.at(-1)!;
@@ -594,12 +606,14 @@ function tick(time: number) {
       restingPlayers = clone(poses);
       session = undefined;
       store.playing = false;
+      playbackClock.reset(); shutter.clear();
       lastTime = 0;
       refresh();
       toast("Đã phát xong.");
     }
   }
-  if (dirty || cameraMoving) {
+  if (dirty || cameraMoving || store.playing) {
+    shutter.update(session?.elapsed ?? 0,store.playing);
     renderer.render(scene, camera);
     Object.assign(renderStats, { renders: renderStats.renders + 1, cpuMs: performance.now() - cpuStart,
       calls: renderer.info.render.calls, triangles: renderer.info.render.triangles,

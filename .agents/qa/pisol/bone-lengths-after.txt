@@ -1,0 +1,8 @@
+{
+  "maxBoneLengthErrorMetres": 7.852141309383498e-8,
+  "maxTorsoChainErrorMetres": 5.551115123125783e-16,
+  "maxScaleError": 0,
+  "worst": "atp t=0.0950 LeftForeArm",
+  "restTorsoChainMetres": 0.545069238209375,
+  "readyHeadJointY": 1.5233171704767634
+}

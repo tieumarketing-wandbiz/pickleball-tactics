@@ -1,0 +1,11 @@
+import { initialScenario } from "../../src/core/scenario";
+import { buildClips } from "../../src/core/playback";
+import { trajectory } from "../../src/core/trajectory";
+import { strokePreparation } from "../../src/core/stroke-motion";
+const s = initialScenario();
+const clips = buildClips(s);
+for (const c of clips as any[]) console.log("clip", { start: c.start?.toFixed?.(3), move: c.move?.toFixed?.(3), end: c.end?.toFixed?.(3), keys: Object.keys(c).join(",") });
+const shot = (s.steps[0] as any).shot;
+const tr: any = trajectory(shot);
+console.log("serve shot", JSON.stringify({ type: shot.type, from: shot.from, to: shot.to, apex: shot.apex }), "flight", tr.time ?? tr.duration ?? tr.flight, "keys", Object.keys(tr).join(","));
+console.log("prep serve", strokePreparation("serve" as any));
