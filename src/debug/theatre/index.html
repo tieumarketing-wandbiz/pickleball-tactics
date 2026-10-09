@@ -1,0 +1,87 @@
+<!doctype html>
+<!-- Dev-only Theatre.js animation-authoring demo (not part of the build; root index.html is the only build entry). -->
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Theatre.js pose demo</title>
+    <link rel="icon" href="data:," />
+    <style>
+      html,
+      body {
+        margin: 0;
+        height: 100%;
+        overflow: hidden;
+        background: #1c2731;
+        color: #e8eef2;
+        font: 12px/1.35 system-ui, sans-serif;
+      }
+      canvas {
+        display: block;
+      }
+      #ui {
+        position: fixed;
+        left: 50%;
+        top: 10px;
+        transform: translateX(-50%);
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        padding: 8px 10px;
+        background: rgba(16, 22, 28, 0.82);
+        border: 1px solid #33424f;
+        border-radius: 8px;
+        z-index: 10;
+        max-width: calc(100vw - 32px);
+      }
+      #ui .row {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 4px;
+      }
+      #ui button {
+        background: #26333e;
+        color: #e8eef2;
+        border: 1px solid #3c4d5b;
+        border-radius: 4px;
+        padding: 3px 8px;
+        font: inherit;
+        cursor: pointer;
+      }
+      #ui button.on {
+        background: #3d6e9e;
+        border-color: #5d8fc0;
+      }
+      #ui button:disabled {
+        opacity: 0.45;
+        cursor: default;
+      }
+      #ui label {
+        display: inline-flex;
+        align-items: center;
+        gap: 3px;
+      }
+      #ui .sep {
+        width: 8px;
+      }
+      #ui .mono {
+        display: block;
+        font: 11px/1.3 ui-monospace, Consolas, monospace;
+        color: #b9c7d2;
+        white-space: pre;
+      }
+      #ui b {
+        font-weight: normal;
+        color: #9fe39f;
+      }
+      #ui b.bad {
+        color: #ff8a7a;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="ui"></div>
+    <script type="module" src="./main.ts"></script>
+  </body>
+</html>

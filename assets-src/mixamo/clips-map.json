@@ -1,0 +1,27 @@
+{
+  "_note": "User-downloaded Mixamo clips (Without Skin, 30 fps, 65 mixamorig bones, armature scale 0.01). Many are NOT 'In Place' - strip root XZ translation in Blender, keep vertical bob, and record the original root speed (m/s) in extras.rootSpeed for speed matching. Inspected by the coordinator 2026-10-09.",
+  "clips": {
+    "idle_ready":      { "file": "Ready Idle.fbx",            "frames": [1, 76],  "loop": true },
+    "idle_breath":     { "file": "Breathing Idle.fbx",        "frames": [1, 299], "loop": true, "use": "additive breathing layer" },
+    "sidestep_R":      { "file": "Goalkeeper Sidestep.fbx",   "frames": [1, 16],  "loop": true, "rootTravel_m": 1.48, "note": "mirror for sidestep_L; check direction" },
+    "shuffle":         { "file": "Shuffling.fbx",             "frames": [1, 226], "check": "may be a DANCE shuffle, not athletic - render and verify; if dance, drop it and use sidestep_*" },
+    "jog_fwd":         { "file": "Jog Forward.fbx",           "frames": [1, 26],  "loop": true, "rootTravel_m": 2.06 },
+    "jog_fwd_diag":    { "file": "Jog Forward Diagonal.fbx",  "frames": [1, 26],  "loop": true, "note": "mirror for the other diagonal" },
+    "backpedal":       { "file": "Jog Backward.fbx",          "frames": [1, 25],  "loop": true, "rootTravel_m": 1.90 },
+    "jog_back_diag":   { "file": "Jog Backward Diagonal.fbx", "frames": [1, 23],  "loop": true, "note": "mirror for the other diagonal" },
+    "run":             { "file": "Jogging.fbx",               "frames": [1, 78],  "loop": true, "rootTravel_m": 5.04 },
+    "walk_fwd":        { "file": "Walking.fbx",               "frames": [1, 32],  "loop": true, "rootTravel_m": 1.79 },
+    "walk_back":       { "file": "Walking Backwards.fbx",     "frames": [1, 46],  "loop": true, "rootTravel_m": 0.82 },
+    "hop":             { "file": "Jump.fbx",                  "frames": [1, 66],  "use": "split-step source: take only the small dip/hop, scale height down to ~0.05-0.08 m" },
+    "cele_fist":       { "file": "Fist Pump.fbx",             "frames": [1, 115] },
+    "react_bad":       { "file": "Disappointed.fbx",          "frames": [1, 127] }
+  },
+  "body_bases": {
+    "_note": "Downloaded by the coordinator 2026-10-09 (Mixamo has NO tennis/racket clips). Use as BODY bases only (hips/trunk/legs timing, weight shift); the arms/paddle are overridden by the stroke keys + IK. Mixamo search confirmed: 'tennis' 0 results, 'volleyball' 0, 'bowling' 0.",
+    "base_drive":    { "file": "Baseball Hit.fbx",              "frames": [1, 88],  "use": "two-handed horizontal swing: hip->trunk rotation, weight shift, stride for forehand/backhand drive; root travels 1.27 m (strip)" },
+    "base_overhead": { "file": "Goalkeeper Overhand Throw.fbx", "frames": [1, 86],  "use": "overhand kinetic chain for smash (side-on turn, off arm, trunk flexion); root travels ~3.9 m — take the throw portion in place" },
+    "base_overhead2":{ "file": "Bash.fbx",                      "frames": [1, 121], "use": "overhead bashing swing, down-and-across finish for smash" },
+    "base_chip":     { "file": "Golf Chip.fbx",                 "frames": [1, 384], "use": "low pendulum touch swing for dink / drop / reset / underhand serve pendulum (two-handed in source — use trunk/legs + arm arc timing only); long clip, find the stroke window" }
+  },
+  "unused": { "Jogging Stumble.fbx": "a stumble, not needed" }
+}

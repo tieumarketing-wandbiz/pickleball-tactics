@@ -1,21 +1,27 @@
-# pisol — runtime / motion
+# pisol — STEP 0 in progress
 
-State: **working** (priority 0a first).
+State: **working**. Implementer under `tasks/shot-loop.md`; no commits, no server or asset changes.
 
-## Scope / decisions
-- Own `src/**`, `tests/*.test.ts`, `vite.config.ts`; authorized scratch/QA/status work. Do not change `tools/rig/`, `public/models/`, packages, or the running :5173 server.
-- Read v2 board/Decisions, opus handoff, sol-runtime task, animation principles, technique research C/D/E, rig guide.
-- Prioritize stateless, seekable C1 motion (matched Hermite tangents) over hiding discontinuities with rendering. 24 fps will be render pacing only, not simulation speed.
+## Current verification
+- Resumed `54fab32`: baseline **7 failures / 100 tests**, reproduced. Five failures are obsolete hard-coded timeline/hold assumptions; two are real rig issues (floating feet, wrist limits/support grip).
+- Core paths now have matched Hermite tangents and one recovery curve. All 15 paddle peaks are within **0.0021 s** of contact in the standard 240 Hz audit; original jumps were 2.5–17.16 m/s/frame.
+- Actual rig audit is being tightened (not just `playerPose`): continuous pole/IK, smooth wrist saturation, foot reach reserve. Latest full per-shot measurements: `.agents/qa/pisol/jerk-resume5.txt`. Gate is **not green yet**; do not start shot review fixes.
+- Retarget already uses v2 Mixamo bones and loader bind matrices. Old discrete clearance/socket search is confined to authored key drawings, not selected anew on every playback frame.
 
-## Baseline (reproduced)
-- `npx vite-node .agents/scratch/jerk.ts`: paddle velocity jumps **2.50–17.16 m/s per 1/240 s**; serve 16.01 at +0.303 s, smash 17.16 at +0.354 s. Touch-shot maximum speed occurs on ready→load, not contact.
-- `npm test`: **99/99** (handoff was 97; two diagnostic tests also present). Existing code already loads the v2 Mixamo GLB, no heuristic fallback.
-- Root causes seen: nonzero ease-out-back derivative starts recovery from a stationary follow key; path recovery multiplied twice; readiness compressed into 45% of tiny touch-shot preparations; discrete hand socket / pole searches and reach-assist branches; stateful gait anchor swaps.
+## Reviewer render URL (implemented)
+`http://localhost:5173/src/debug/pose-lab.html?type=serve&t=0&view=front`
+- `type=idle` for ready; any of the 15 shot IDs otherwise.
+- `t` is seconds relative to contact; `view=front|side|top`.
+- Defaults are A1, right-handed. Optional `w=800&h=900`, `x`, `y`, `z` change canvas/contact parameters.
+- Wait for `document.title === 'ready'` or `canvas[data-ready="true"]` before screenshot. A single time/view draws one deterministic panel, no running animation.
 
-## Next
-- Fix stroke/body timelines and playback transitions, extend jerk harness with actual rig joints, add 240 Hz regression coverage.
-- Fixed 24 fps render clock + single-pass paddle/ball shutter ghosts; benchmark and Chrome screenshots.
-- Recheck runtime arms, grip, toes and all-shot silhouettes; preserve asset binding contract.
+## Pending STEP 0
+- Consolidated `tests/body-gate.test.ts`, including true marker-space volume checks and rally boundaries.
+- Green legacy suite; explicit legs → pelvis → spine → clavicles → arms/clearance → hands/fingers → head order.
+- 24 fps playback clock (real-time simulation; immediate interactive renders) + 180° paddle/ball shutter ghosts, browser timing/GPU verification.
+
+## Baseline cost
+Chrome 1440×1000: 115 renders/s, mean CPU **3.25 ms**, GPU **2.12 ms**, **108 calls / 41,440 triangles** per render (`.agents/qa/pisol/perf-baseline.json`).
 
 ## Requests
-None.
+None. Will mark **STEP 0 DONE** only when the actual body gate and full suite pass, then read `01-ready-footwork/review.md` (currently absent).

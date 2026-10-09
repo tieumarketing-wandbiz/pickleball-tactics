@@ -1,0 +1,25 @@
+studio: true motions: dink, punch-volley, split-step-shuffle
+export sheets: dink, punch-volley, split-step-shuffle
+dink: len 1.67s  reach-short R 0.000 L 0.000  foot-short 0.000  min elbow gap R 0.112 L 0.144  auto-heel 0.0°  planted slide L 0.000 R 0.000 m  max wrist swing 36° twist 108°  (worst reach -, worst gapR f12.5)
+  f 0 ready        gapR 0.214 gapL 0.144 reachR 0.000 wrist swing 31° twist 24° face [-0.05, 1.17, -0.32]
+  f12 step plant   gapR 0.113 gapL 0.222 reachR 0.000 wrist swing 6° twist 88° face [0.52, 0.74, -0.49]
+  f15 load         gapR 0.121 gapL 0.218 reachR 0.000 wrist swing 31° twist 96° face [0.52, 0.61, -0.50]
+  f20 contact      gapR 0.143 gapL 0.238 reachR 0.000 wrist swing 21° twist 106° face [0.50, 0.66, -0.61]
+  f25 follow       gapR 0.171 gapL 0.237 reachR 0.000 wrist swing 34° twist 93° face [0.47, 0.90, -0.65]
+  f31 settle       gapR 0.227 gapL 0.194 reachR 0.000 wrist swing 24° twist 42° face [0.07, 1.19, -0.45]
+punch-volley: len 1.31s  reach-short R 0.005 L 0.000  foot-short 0.000  min elbow gap R 0.119 L 0.144  auto-heel 0.0°  planted slide L 0.000 R 0.000 m  max wrist swing 47° twist 70°  (worst reach f19.5, worst gapR f10.0)
+  f 0 ready        gapR 0.214 gapL 0.144 reachR 0.000 wrist swing 31° twist 24° face [-0.05, 1.17, -0.32]
+  f10 load         gapR 0.119 gapL 0.215 reachR 0.000 wrist swing 36° twist 34° face [0.46, 1.30, -0.26]
+  f13 contact      gapR 0.170 gapL 0.195 reachR 0.000 wrist swing 47° twist 49° face [0.47, 1.24, -0.55]
+  f17 held finish  gapR 0.195 gapL 0.195 reachR 0.000 wrist swing 25° twist 68° face [0.48, 1.14, -0.65]
+  f24 settle       gapR 0.196 gapL 0.156 reachR 0.000 wrist swing 31° twist 44° face [0.09, 1.24, -0.43]
+split-step-shuffle: len 1.81s  reach-short R 0.000 L 0.000  foot-short 0.000  min elbow gap R 0.195 L 0.142  auto-heel 0.0°  planted slide L 0.000 R 0.000 m  max wrist swing 31° twist 30°  (worst reach -, worst gapR f18.5)
+  f 0 ready        gapR 0.214 gapL 0.144 reachR 0.000 wrist swing 31° twist 24° face [-0.05, 1.17, -0.32]
+  f 9 split (air)  gapR 0.211 gapL 0.142 reachR 0.000 wrist swing 30° twist 23° face [-0.05, 1.19, -0.32]
+  f13 land/absorb  gapR 0.238 gapL 0.172 reachR 0.000 wrist swing 23° twist 28° face [-0.05, 1.13, -0.32]
+  f18 R1 step      gapR 0.197 gapL 0.180 reachR 0.000 wrist swing 22° twist 25° face [-0.00, 1.13, -0.32]
+  f23 L1 step      gapR 0.210 gapL 0.171 reachR 0.000 wrist swing 25° twist 26° face [0.21, 1.13, -0.32]
+  f34 L2 plant     gapR 0.218 gapL 0.175 reachR 0.000 wrist swing 27° twist 29° face [0.56, 1.16, -0.32]
+UI: {"length":"1.333","rateQuarter":"0.201","distinctPositions24":25,"skeleton":true,"playLabel":"Play"}
+playback check: playhead at 0.697 s after 0.7 s of play
+console: clean

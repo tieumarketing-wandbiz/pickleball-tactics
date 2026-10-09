@@ -41,8 +41,9 @@ def suffix(name): return name.split(":", 1)[-1]
 
 def normalize(armature, mesh):
     # Blender import is Z-up: source vertical is Z, lateral is Y, and the
-    # source front is -X.  Rz(-90) maps source front to +Y and left (+Y) to
-    # app-left (-X); Blender export then maps +Y to glTF -Z.
+    # source front is -X. Rz(-90) is the established app-space transform for
+    # the shipped glTF contract; review cameras account for the human-facing
+    # side separately.
     before = world_points(mesh); min_z, max_z = min(p.z for p in before), max(p.z for p in before)
     scale = 1.8 / (max_z - min_z); min_y, max_y = min(p.y for p in before), max(p.y for p in before); center_y = (min_y + max_y) * 0.5
     transform = Matrix.Scale(scale, 4) @ Matrix.Rotation(-math.pi / 2.0, 4, "Z") @ Matrix.Translation(Vector((0.0, -center_y, -min_z)))
@@ -157,6 +158,47 @@ def clean_arm_trunk(mesh):
         fixed += 1
     return fixed
 
+def apply_shoulder_gradient(mesh):
+    """Blend Spine2 -> Shoulder -> Arm through the source armpit band."""
+    groups = {g.name: g for g in mesh.vertex_groups}
+    trunk_names = ("mixamorig:Spine2", "mixamorig:Spine1", "mixamorig:Spine")
+    changed = 0
+    for v in mesh.data.vertices:
+        p = v.co
+        side = 1 if p.y > 0.07 else -1 if p.y < -0.07 else 0
+        if side == 0 or not (0.66 <= p.z <= 0.98):
+            continue
+        side_name = "Right" if side > 0 else "Left"
+        shoulder = groups.get(f"mixamorig:{side_name}Shoulder")
+        arm = groups.get(f"mixamorig:{side_name}Arm")
+        if shoulder is None or arm is None:
+            continue
+        weights = {}
+        for g in mesh.vertex_groups:
+            try:
+                weights[g.name] = g.weight(v.index)
+            except RuntimeError:
+                pass
+        trunk_w = sum(weights.get(n, 0.0) for n in trunk_names)
+        side_w = weights.get(shoulder.name, 0.0) + weights.get(arm.name, 0.0)
+        if trunk_w <= 0.02 and side_w <= 0.02:
+            continue
+        t = max(0.0, min(1.0, (p.z - 0.66) / 0.32))
+        transfer = min(trunk_w * (0.10 + 0.08 * t), 0.12)
+        if transfer <= 1e-6:
+            continue
+        for n in trunk_names:
+            g = groups.get(n)
+            if not g:
+                continue
+            old = weights.get(n, 0.0)
+            if old > 0:
+                g.add([v.index], max(0.0, old - transfer * old / trunk_w), "REPLACE")
+        shoulder.add([v.index], weights.get(shoulder.name, 0.0) + transfer * (1.0 - t), "REPLACE")
+        arm.add([v.index], weights.get(arm.name, 0.0) + transfer * t, "REPLACE")
+        changed += 1
+    return changed
+
 def bone_world_positions(armature):
     bpy.context.view_layer.update(); wanted = {"Hips", "LeftArm", "LeftHand", "LeftUpLeg", "LeftFoot", "RightHand"}; result = {}
     for b in armature.data.bones:
@@ -194,6 +236,7 @@ def set_pose(armature, kind):
     for bone in armature.pose.bones:
         bone.rotation_mode = "XYZ"
         bone.rotation_euler = (0.0, 0.0, 0.0)
+        bone.location = (0.0, 0.0, 0.0)
     def rot(name, angle, axis=(1, 0, 0)):
         b = next((b for b in armature.pose.bones if suffix(b.name) == name), None)
         if not b: return
@@ -204,8 +247,8 @@ def set_pose(armature, kind):
         elif axis == (0, 1, 0): b.rotation_euler = (0.0, angle, 0.0)
         else: b.rotation_euler = (0.0, 0.0, angle)
     if kind in ("ready", "deep-dink"):
-        knee = 0.30 if kind == "ready" else 0.65; rot("LeftUpLeg", -knee); rot("RightUpLeg", -knee); rot("LeftLeg", knee * 1.5); rot("RightLeg", knee * 1.5); rot("LeftArm", -0.22, (0, 0, 1)); rot("RightArm", 0.22, (0, 0, 1)); rot("LeftForeArm", -0.45); rot("RightForeArm", -0.45)
-    elif kind == "wide-lunge": rot("LeftUpLeg", -0.65); rot("LeftLeg", 0.55); rot("RightUpLeg", -0.1); rot("LeftArm", -0.55, (0, 0, 1)); rot("LeftForeArm", -0.3)
+        rot("LeftArm", -0.22, (0, 0, 1)); rot("RightArm", 0.22, (0, 0, 1)); rot("LeftForeArm", -0.45); rot("RightForeArm", -0.45)
+    elif kind == "wide-lunge": rot("LeftArm", -0.55, (0, 0, 1)); rot("LeftForeArm", -0.3)
     elif kind == "smash": rot("RightArm", -0.85, (0, 0, 1)); rot("RightForeArm", 0.4); rot("LeftArm", -0.65, (0, 0, 1)); rot("Spine", 0.18); rot("Spine1", 0.18)
     elif kind == "trunk-turn": rot("Hips", 0.18, (0, 1, 0)); rot("Spine", 0.22, (0, 1, 0)); rot("Spine1", 0.22, (0, 1, 0)); rot("Spine2", 0.22, (0, 1, 0))
     elif kind == "pronation": rot("RightForeArm", 0.8, (0, 1, 0)); rot("RightHand", 0.3, (1, 0, 0))
@@ -228,6 +271,21 @@ def set_pose(armature, kind):
             pole = bpy.data.objects.new("RigAuditPole" + side, None); bpy.context.scene.collection.objects.link(pole); pole.empty_display_type = "CUBE"; pole.empty_display_size = .02; pole.location = (target_position[0], target_position[1] - .35, target_position[2] - .20)
             hand = next(b for b in armature.pose.bones if suffix(b.name) == side + "Hand")
             constraint = hand.constraints.new("IK"); constraint.name = "RigAuditIK" + side; constraint.target = target; constraint.pole_target = pole; constraint.chain_count = 3; constraint.pole_angle = 0.0
+    if kind in ("ready", "deep-dink", "wide-lunge"):
+        hips = next((b for b in armature.pose.bones if suffix(b.name) == "Hips"), None)
+        if hips:
+            # Hips local +Y is Blender world +Z on this imported hierarchy.
+            hips.location.y = {"ready": -0.045, "deep-dink": -0.22, "wide-lunge": -0.10}[kind]
+        foot_targets = {
+            "ready": ((-0.25, -0.01, 0.025), (0.25, 0.01, 0.025)),
+            "deep-dink": ((-0.27, -0.04, 0.025), (0.27, 0.04, 0.025)),
+            "wide-lunge": ((-0.58, -0.16, 0.025), (0.34, 0.14, 0.025)),
+        }[kind]
+        for side, target_position in (("Left", foot_targets[0]), ("Right", foot_targets[1])):
+            target = bpy.data.objects.new("RigAuditTargetFoot" + side, None); bpy.context.scene.collection.objects.link(target); target.empty_display_type = "SPHERE"; target.empty_display_size = .035; target.location = target_position
+            pole = bpy.data.objects.new("RigAuditPoleFoot" + side, None); bpy.context.scene.collection.objects.link(pole); pole.empty_display_type = "CUBE"; pole.empty_display_size = .025; pole.location = (target_position[0], target_position[1] - .50, target_position[2] + .45)
+            foot = next(b for b in armature.pose.bones if suffix(b.name) == side + "Foot")
+            constraint = foot.constraints.new("IK"); constraint.name = "RigAuditIKFoot" + side; constraint.target = target; constraint.pole_target = pole; constraint.chain_count = 3; constraint.pole_angle = 0.0
     if kind == "pronation":
         forearm = next(b for b in armature.pose.bones if suffix(b.name) == "RightForeArm")
         hand = next(b for b in armature.pose.bones if suffix(b.name) == "RightHand")
@@ -250,7 +308,7 @@ def set_pose(armature, kind):
 
 def pose_snapshot(armature, kind):
     bpy.context.view_layer.update()
-    wanted = ("LeftArm", "LeftForeArm", "LeftHand", "RightArm", "RightForeArm", "RightHand", "RightUpLeg")
+    wanted = ("LeftArm", "LeftForeArm", "LeftHand", "RightArm", "RightForeArm", "RightHand", "LeftUpLeg", "LeftLeg", "LeftFoot", "RightUpLeg", "RightLeg", "RightFoot")
     result = {}
     for bone in armature.pose.bones:
         if suffix(bone.name) not in wanted: continue
@@ -279,9 +337,8 @@ def clear_audit_pose(armature):
 def render_pose(armature, path, kind, view):
     set_pose(armature, kind); snapshot = pose_snapshot(armature, kind); POSE_SNAPSHOTS[f"{kind}-{view}"] = snapshot; scene = bpy.context.scene; cd = bpy.data.cameras.get("RigAuditCamera") or bpy.data.cameras.new("RigAuditCamera"); camera = bpy.data.objects.get("RigAuditCamera") or bpy.data.objects.new("RigAuditCamera", cd)
     if camera.name not in scene.objects: scene.collection.objects.link(camera)
-    # After the source -90 degree Z turn this mesh's face/chest is on +Y;
-    # camera +Y is therefore the human-facing front view.
-    scene.camera = camera; camera.location = (0, 4, 1.15) if view == "front" else (4, 0, 1.15); camera.rotation_euler = (Vector((0, 0, 0.9)) - camera.location).to_track_quat("-Z", "Y").to_euler(); cd.lens = 48
+    # The normalized Blender asset faces -Y; cameras stay horizontal at chest height.
+    scene.camera = camera; camera.location = (0, -4, 1.15) if view == "front" else (4, 0, 1.15); camera.rotation_euler = (Vector((0, 0, 0.9)) - camera.location).to_track_quat("-Z", "Y").to_euler(); cd.lens = 48
     scene.render.engine = "BLENDER_WORKBENCH"; scene.render.resolution_x = 800; scene.render.resolution_y = 800; scene.render.resolution_percentage = 100; scene.render.image_settings.file_format = "PNG"; scene.render.filepath = path; scene.display.shading.light = "STUDIO"; scene.display.shading.color_type = "MATERIAL"; scene.world.color = (0.04, 0.04, 0.04); bpy.ops.render.render(write_still=True)
 
 def export(armature, mesh, path):
@@ -294,11 +351,11 @@ def main():
     for pose in poses:
         for view in ("front", "side"): render_pose(armature, os.path.join(out_dir, f"v2-{pose}-before-{view}.png"), pose, view)
     # Pass 2: reload source so the mirror uses its measured Blender-Y axis.
-    clear_scene(); armature, mesh = imported_objects(source); asym_before, asym_mean_before = asymmetry(mesh); audit_before = audit_weights(mesh); mirror = mirror_weights(mesh, lateral=1, tol=.01); arm_fixed = clean_arm_trunk(mesh); transform = normalize(armature, mesh); weld = weld_mesh(mesh); prune = prune_unweighted_leaves(armature, mesh); max_inf, min_sum, max_sum = normalize_weights(mesh); asym_after, asym_mean_after = asymmetry(mesh); audit_after = audit_weights(mesh)
+    clear_scene(); armature, mesh = imported_objects(source); asym_before, asym_mean_before = asymmetry(mesh); audit_before = audit_weights(mesh); mirror = mirror_weights(mesh, lateral=1, tol=.01); arm_fixed = clean_arm_trunk(mesh); shoulder_gradient = apply_shoulder_gradient(mesh); transform = normalize(armature, mesh); weld = weld_mesh(mesh); prune = prune_unweighted_leaves(armature, mesh); max_inf, min_sum, max_sum = normalize_weights(mesh); asym_after, asym_mean_after = asymmetry(mesh); audit_after = audit_weights(mesh)
     for pose in poses:
         for view in ("front", "side"): render_pose(armature, os.path.join(out_dir, f"v2-{pose}-after-{view}.png"), pose, view)
     clear_audit_pose(armature); export(armature, mesh, output)
-    report = {"version": "v2", "input": source, "output": output, "transform": transform, "baselineTransform": transform_before, "weld": {"before": weld[0], "after": weld[1]}, "jointCountBeforePrune": prune[0], "jointCountAfterPrune": prune[1], "prunedUnweightedLeaves": prune[2], "weightedBones": prune[3], "maxInfluences": max_inf, "weightSumRange": [min_sum, max_sum], "weightFixes": {"kdTreeMirror": {"copied": mirror[0], "misses": mirror[1], "lateralAxis": "Blender Y on source"}, "armTrunkVerticesCleaned": arm_fixed, "pipeline": ["source-space targeted trunk/upper-arm cleanup below armpit", "source-space KD-tree mirror", "weld seams", "Limit Total 4", "Normalize All"]}, "audit": {"before": audit_before_raw, "after": audit_after, "rawBeforeFix": audit_before}, "lrAsymmetry": {"before": asym_mean_before_raw, "beforeByBone": asym_before_raw, "after": asym_mean_after, "afterByBone": asym_after}, "jointRestWorldPositions": bone_world_positions(armature), "poseSnapshots": POSE_SNAPSHOTS, "camera": {"front": "Blender +Y looking toward chest after source -90 degree Z turn", "side": "Blender +X"}, "poses": {p: {"before": [f"v2-{p}-before-front.png", f"v2-{p}-before-side.png"], "after": [f"v2-{p}-after-front.png", f"v2-{p}-after-side.png"]} for p in poses}, "notes": "Before renders use untouched Tripo weights. After renders use source-space KD-tree mirroring and targeted arm-side trunk cleanup before app normalization. Pose snapshots are captured after IK/pose evaluation and before each render."}
+    report = {"version": "v2", "input": source, "output": output, "transform": transform, "baselineTransform": transform_before, "weld": {"before": weld[0], "after": weld[1]}, "jointCountBeforePrune": prune[0], "jointCountAfterPrune": prune[1], "prunedUnweightedLeaves": prune[2], "weightedBones": prune[3], "maxInfluences": max_inf, "weightSumRange": [min_sum, max_sum], "weightFixes": {"kdTreeMirror": {"copied": mirror[0], "misses": mirror[1], "lateralAxis": "Blender Y on source"}, "armTrunkVerticesCleaned": arm_fixed, "shoulderGradientVertices": shoulder_gradient, "pipeline": ["source-space targeted trunk/upper-arm cleanup below armpit", "source-space KD-tree mirror", "Spine2-Shoulder-Arm armpit gradient", "weld seams", "Limit Total 4", "Normalize All"]}, "audit": {"before": audit_before_raw, "after": audit_after, "rawBeforeFix": audit_before}, "lrAsymmetry": {"before": asym_mean_before_raw, "beforeByBone": asym_before_raw, "after": asym_mean_after, "afterByBone": asym_after}, "jointRestWorldPositions": bone_world_positions(armature), "poseSnapshots": POSE_SNAPSHOTS, "camera": {"front": "Blender -Y looking toward face/chest", "side": "Blender +X"}, "poses": {p: {"before": [f"v2-{p}-before-front.png", f"v2-{p}-before-side.png"], "after": [f"v2-{p}-after-front.png", f"v2-{p}-after-side.png"]} for p in poses}, "notes": "Before renders use untouched Tripo weights. After renders use source-space KD-tree mirroring, targeted arm-side trunk cleanup, and a Spine2-Shoulder-Arm gradient before app normalization. Pose snapshots are captured after IK/pose evaluation and before each render."}
     with open(os.path.join(out_dir, "rig-report.json"), "w", encoding="utf-8") as f: json.dump(report, f, indent=2)
     print(json.dumps(report, indent=2))
 

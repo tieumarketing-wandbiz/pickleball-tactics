@@ -6,8 +6,8 @@ import { ALL_EXTENSIONS } from "@gltf-transform/extensions";
 import { MeshoptEncoder } from "meshoptimizer";
 import { meshopt, quantize, reorder, weld } from "@gltf-transform/functions";
 
-if (!process.argv.includes("--from-source")) throw new Error("Use --from-source (v1 heuristic mode retired).");
-const input="tools/rig/source/human-rig.glb", output="public/models/male-rigged.glb";
+const fromSource=process.argv.includes("--from-source");
+const input=fromSource?"tools/rig/source/human-rig.glb":"tools/rig/out/human-rig.fixed.glb", output="public/models/male-rigged.glb";
 await MeshoptEncoder.ready;
 const data=await readFile(input), array=data.buffer.slice(data.byteOffset,data.byteOffset+data.byteLength);
 const loader=new GLTFLoader(); const sourceThree=await loader.parseAsync(array,""), skeletonMeshes:T.SkinnedMesh[]=[];
@@ -15,9 +15,9 @@ sourceThree.scene.updateMatrixWorld(true); sourceThree.scene.traverse(o=>{if((o 
 if(skeletonMeshes.length!==1)throw new Error(`Expected one SkinnedMesh, got ${skeletonMeshes.length}`);
 const sourceMesh=skeletonMeshes[0]; sourceMesh.skeleton.pose(); sourceThree.scene.updateMatrixWorld(true); sourceMesh.bindMode="attached"; sourceMesh.updateMatrixWorld(true);
 const original=[] as T.Vector3[]; for(let i=0;i<sourceMesh.geometry.getAttribute("position").count;i++) original.push(sourceMesh.getVertexPosition(i,new T.Vector3()).applyMatrix4(sourceMesh.matrixWorld));
-const rotation=new T.Matrix4().makeRotationY(-Math.PI/2), scale=new T.Matrix4().makeScale(1.8,1.8,1.8), rs=rotation.clone().multiply(scale);
-const transformed=original.map(p=>p.clone().applyMatrix4(rs)); const minY=Math.min(...transformed.map(p=>p.y)), minX=Math.min(...transformed.map(p=>p.x)), maxX=Math.max(...transformed.map(p=>p.x));
-const translation=new T.Matrix4().makeTranslation(-(minX+maxX)/2,-minY,0), N=translation.clone().multiply(rs);
+const rotation=fromSource?new T.Matrix4().makeRotationY(-Math.PI/2):new T.Matrix4(), scale=fromSource?new T.Matrix4().makeScale(1.8,1.8,1.8):new T.Matrix4(), rs=rotation.clone().multiply(scale);
+const transformed=original.map(p=>p.clone().applyMatrix4(rs)); const minY=fromSource?Math.min(...transformed.map(p=>p.y)):0, minX=fromSource?Math.min(...transformed.map(p=>p.x)):0, maxX=fromSource?Math.max(...transformed.map(p=>p.x)):0;
+const translation=fromSource?new T.Matrix4().makeTranslation(-(minX+maxX)/2,-minY,0):new T.Matrix4(), N=translation.clone().multiply(rs);
 const io=new NodeIO().registerExtensions(ALL_EXTENSIONS).registerDependencies({"meshopt.encoder":MeshoptEncoder,"meshopt.decoder":(await import("meshoptimizer")).MeshoptDecoder});
 const doc=await io.read(input), root=doc.getRoot(), skins=root.listSkins(), skin=skins[0]; if(!skin)throw new Error("No source skin");
 const meshNodes=root.listNodes().filter(n=>n.getMesh()); if(meshNodes.length!==1)throw new Error("Expected one mesh node"); const meshNode=meshNodes[0];
